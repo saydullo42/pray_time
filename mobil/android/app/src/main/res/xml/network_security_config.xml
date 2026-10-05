@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Allows plain HTTP only to the local dev backend, so the audio player
+     (ExoPlayer enforces this separately from Dio) can stream from it while
+     developing against a non-HTTPS server. Production builds point at an
+     HTTPS backend/CDN and never hit this exception. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>
