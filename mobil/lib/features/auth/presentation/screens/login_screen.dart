@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/custom_button.dart';
@@ -57,6 +58,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.hasError) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(next.error.toString())));
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Kirish')),
@@ -87,7 +97,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isLoading: authState.isLoading,
                         onPressed: _submit,
                         fontSize: 18,
-                        backgroundColor: const Color(0xFF396E0D),
+                        backgroundColor:
+                            isDark ? const Color(0xFF396E0D) : AppColors.lightSurfaceStrong,
                         foregroundColor: Colors.black,
                       ),
                     ],

@@ -35,4 +35,6 @@ class AppConstants {
   static const String keyCalculationMethod = 'calculation_method';
   static const String keyLatitude = 'latitude';
   static const String keyLongitude = 'longitude';
+  static const String keySelectedRegion = 'selected_region';
+  static const String keySelectedDistrict = 'selected_district';
 }

@@ -21,10 +21,20 @@ class DuaDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
+            'O\'qilishi:',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text(
             dua.transliteration,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
           ),
           const SizedBox(height: 16),
+          Text(
+            'Ma\'nosi:',
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
           Text(dua.translation, style: Theme.of(context).textTheme.bodyMedium),
           if (dua.source != null) ...[
             const SizedBox(height: 24),

@@ -5,9 +5,10 @@ import '../models/calculation_method.dart';
 import '../models/custom_prayer_time_model.dart';
 import '../models/prayer_time_model.dart';
 
-/// Fetches backend-computed prayer times (the backend proxies Aladhan) and
-/// merges in the user's custom overrides, producing the final times shown
-/// in the UI and used to schedule reminder notifications.
+/// Fetches backend-computed prayer times (the backend proxies Aladhan) for
+/// the selected location. Custom overrides are fetched/displayed separately
+/// (see [getCustomOverrides]) rather than baked in here, so the computed
+/// table always reflects the currently selected viloyat/tuman.
 class PrayerTimesRepository {
   PrayerTimesRepository(this._client);
 
@@ -28,9 +29,7 @@ class PrayerTimesRepository {
         'method': method.id,
       },
     );
-    final computed = PrayerTimeModel.fromJson(response.data!);
-    final custom = await getCustomOverrides();
-    return _applyOverrides(computed, custom);
+    return PrayerTimeModel.fromJson(response.data!);
   }
 
   Future<List<PrayerTimeModel>> getMonthlyTimes({
@@ -64,29 +63,6 @@ class PrayerTimesRepository {
 
   Future<void> saveCustomOverrides(CustomPrayerTimeModel overrides) async {
     await _client.put(ApiEndpoints.customPrayerTimes, data: overrides.toJson());
-  }
-
-  PrayerTimeModel _applyOverrides(
-    PrayerTimeModel base,
-    CustomPrayerTimeModel overrides,
-  ) {
-    if (!overrides.hasAnyOverride) return base;
-
-    DateTime? parse(String? hhmm) {
-      if (hhmm == null) return null;
-      final parts = hhmm.split(':');
-      return DateTime(base.date.year, base.date.month, base.date.day,
-          int.parse(parts[0]), int.parse(parts[1]));
-    }
-
-    return base.copyWith(
-      fajr: parse(overrides.fajr),
-      dhuhr: parse(overrides.dhuhr),
-      asr: parse(overrides.asr),
-      maghrib: parse(overrides.maghrib),
-      isha: parse(overrides.isha),
-      isCustom: true,
-    );
   }
 
   String _formatDate(DateTime date) =>

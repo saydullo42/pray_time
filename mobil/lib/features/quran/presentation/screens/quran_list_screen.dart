@@ -7,11 +7,12 @@ class QuranListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final buttonStyle = OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(64),
       side: BorderSide.none,
-      foregroundColor: Colors.black,
-      backgroundColor: const Color(0xFF396E0D),
+      foregroundColor: theme.colorScheme.onSurface,
+      backgroundColor: theme.cardTheme.color,
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     );
 
@@ -35,9 +36,7 @@ class QuranListScreen extends StatelessWidget {
             const SizedBox(height: 16),
             OutlinedButton(
               style: buttonStyle,
-              onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Tez orada qo\'shiladi')),
-              ),
+              onPressed: () => context.push(RouteNames.quranTranslationList),
               child: const Text('Qur\'on tarjimasi'),
             ),
           ],

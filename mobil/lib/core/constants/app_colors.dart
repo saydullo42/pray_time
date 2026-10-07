@@ -9,8 +9,9 @@ class AppColors {
   static const Color secondary = Color(0xFFC9A227);
 
   // Light theme
-  static const Color lightBackground = Color(0xFFF7F8F5);
-  static const Color lightSurface = Color(0xFFFFFFFF);
+  static const Color lightBackground = Color(0xFFE7E8E5);
+  static const Color lightSurface = Color(0xFFD6D7D3);
+  static const Color lightSurfaceStrong = Color(0xFFADAFA9);
   static const Color lightOnSurface = Color(0xFF1A1C1A);
 
   // Dark theme

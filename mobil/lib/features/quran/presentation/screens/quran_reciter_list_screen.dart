@@ -12,10 +12,11 @@ class QuranReciterListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final recitersAsync = ref.watch(reciterListProvider);
+    final theme = Theme.of(context);
     final buttonStyle = ElevatedButton.styleFrom(
       minimumSize: const Size.fromHeight(64),
-      backgroundColor: const Color(0xFF396E0D),
-      foregroundColor: Colors.black,
+      backgroundColor: theme.cardTheme.color,
+      foregroundColor: theme.colorScheme.onSurface,
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     );
 

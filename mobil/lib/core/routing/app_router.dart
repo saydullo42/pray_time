@@ -21,6 +21,7 @@ import '../../features/quran/presentation/screens/quran_audio_player_screen.dart
 import '../../features/quran/presentation/screens/quran_list_screen.dart';
 import '../../features/quran/presentation/screens/quran_mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_reciter_list_screen.dart';
+import '../../features/quran/presentation/screens/quran_translation_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_video_screen.dart';
 import '../../features/quran/presentation/screens/surah_list_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
@@ -91,6 +92,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: RouteNames.quranBookList,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const SurahListScreen(mode: QuranListMode.book),
+      ),
+      GoRoute(
+        path: RouteNames.quranTranslationList,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SurahListScreen(mode: QuranListMode.translation),
+      ),
+      GoRoute(
+        path: RouteNames.quranTranslationReader,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) =>
+            QuranTranslationReaderScreen(surah: state.extra as SurahModel),
       ),
       GoRoute(
         path: RouteNames.quranReciterList,

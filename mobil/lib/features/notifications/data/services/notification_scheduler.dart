@@ -29,6 +29,7 @@ class NotificationScheduler {
           title: '${entry.key} namoziga $offset daqiqa qoldi',
           body: 'Namozga tayyorlaning.',
           scheduledTime: scheduledTime,
+          reminderSoundId: settings.reminderSound,
         );
       }
     }

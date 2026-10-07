@@ -23,6 +23,12 @@ class RequestOtpView(APIView):
         serializer.is_valid(raise_exception=True)
         phone_number = serializer.validated_data["phone_number"]
 
+        if OTP.rate_limit_exceeded(phone_number):
+            return Response(
+                {"detail": "Juda ko'p urinish. Iltimos, 10 daqiqadan so'ng qayta urining."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
         otp = OTP.generate(phone_number)
         logger.info("OTP for %s: %s", phone_number, otp.code)
 

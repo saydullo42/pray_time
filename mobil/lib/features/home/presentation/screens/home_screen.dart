@@ -6,10 +6,10 @@ import '../../../../core/widgets/loading_indicator.dart';
 import '../../../prayer_times/data/models/custom_prayer_time_model.dart';
 import '../../../prayer_times/data/models/prayer_time_model.dart';
 import '../../../prayer_times/data/repositories/prayer_times_repository.dart';
-import '../../../prayer_times/presentation/providers/location_provider.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_provider.dart';
 import '../../../prayer_times/presentation/widgets/hijri_gregorian_date_header.dart';
 import '../../../prayer_times/presentation/widgets/hijri_yearly_calendar_dialog.dart';
+import '../../../prayer_times/presentation/widgets/location_selector_buttons.dart';
 import '../../../tracking/presentation/providers/tracking_provider.dart';
 import '../../../tracking/presentation/utils/completion_color.dart';
 import '../../../tracking/presentation/utils/date_utils.dart';
@@ -82,8 +82,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         content: const Text(
           "Pastda joylashgan namoz vaqtlarini o'zingiz kiritishingiz mumkin. "
           "O'zingizga eng yaqin joylashgan masjidning namoz vaqtlarini kiriting.\n\n"
-          "Eslatma! Masjiddagi namoz vaqtlari haftaning har Juma kuni o'zgaradi.",
+          "Eslatma! Masjiddagi namoz vaqtlari haftaning har Juma kuni o'zgaradi.\n\n"
+          "Eslatma! Agar namoz vaqtlarini o'zingiz kiritsangiz,\n"
+          "'Profil -> Eslatma sozlamalari' bo'limiga o'tib 2-jadvalni tanlab qo'ying.",
           style: TextStyle(fontSize: 18, height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              'Tushunarli',
+              style: TextStyle(fontSize: 18, color: Color(0xFF4CAF17)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCalendarInfo(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        title: const Text("Ma'lumot", style: TextStyle(fontSize: 24)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Pastdagi kalendardan istalgan sanani bosib, o'sha kun uchun "
+              "o'qilgan namozlaringizni belgilashingiz mumkin.",
+              style: TextStyle(fontSize: 18, height: 1.4),
+            ),
+            const SizedBox(height: 12),
+            _LegendRow(color: Colors.green, label: 'Yashil - barcha namoz o\'qilgan'),
+            const SizedBox(height: 6),
+            _LegendRow(color: Colors.amber, label: 'Sariq - qisman o\'qilgan'),
+            const SizedBox(height: 6),
+            _LegendRow(color: Colors.red, label: 'Qizil - kam yoki umuman o\'qilmagan'),
+          ],
         ),
         actions: [
           TextButton(
@@ -195,30 +233,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ).valueOrNull ??
         const {};
 
-    final locationLabelAsync = ref.watch(deviceLocationLabelProvider);
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.location_on, color: Color(0xFF369E0D), size: 20),
-            const SizedBox(width: 4),
-            Flexible(
-              child: Text(
-                locationLabelAsync.when(
-                  data: (label) => label.isEmpty ? 'Namoz Vaqtlari' : label,
-                  loading: () => 'Aniqlanmoqda...',
-                  error: (_, _) => 'Namoz Vaqtlari',
-                ),
-                style: const TextStyle(fontSize: 16, color: Color(0xFF369E0D)),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+        title: const LocationSelectorButtons(),
       ),
       body: ListView(
         children: [
@@ -232,7 +250,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: prayerTimesAsync.when(
@@ -244,7 +262,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               data: (prayerTime) => _PrayerTimesBar(prayerTime: prayerTime),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: _ManualPrayerTimesBar(
@@ -253,7 +271,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -276,7 +294,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+            padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '* Kalendardagi sanalar ustiga bosing...',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(width: 6),
+                GestureDetector(
+                  onTap: () => _showCalendarInfo(context),
+                  child: Text(
+                    'Ko\'proq o\'qish',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: const Color(0xFF4CAF17),
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -315,6 +356,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
+class _LegendRow extends StatelessWidget {
+  const _LegendRow({required this.color, required this.label});
+
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: Text(label, style: const TextStyle(fontSize: 18, height: 1.4))),
+      ],
+    );
+  }
+}
+
 class _PrayerTimesBar extends StatelessWidget {
   const _PrayerTimesBar({required this.prayerTime});
 
@@ -336,6 +400,7 @@ class _PrayerTimesBar extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
       decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color,
         border: Border.all(color: scheme.outline),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -406,6 +471,7 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
       decoration: BoxDecoration(
+        color: Theme.of(context).cardTheme.color,
         border: Border.all(color: scheme.outline),
         borderRadius: BorderRadius.circular(16),
       ),

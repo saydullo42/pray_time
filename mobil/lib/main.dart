@@ -20,14 +20,14 @@ Future<void> main() async {
     ],
   );
 
-  final notificationService = container.read(localNotificationServiceProvider);
-  await notificationService.init();
-  await notificationService.requestPermissions();
-
   runApp(
     UncontrolledProviderScope(
       container: container,
       child: const NamozVaqtlariApp(),
     ),
   );
+
+  // Runs after the first frame so engine/plugin setup can't hold up the
+  // native splash screen's dismissal.
+  await container.read(localNotificationServiceProvider).init();
 }

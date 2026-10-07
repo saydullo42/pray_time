@@ -63,11 +63,6 @@ dependencies:
   table_calendar: ^3.1.3
   fl_chart: ^0.69.2
 
-  # Qur'an: page-accurate Mushaf text (personal/testing use only — bundled
-  # QCF fonts are not licensed for commercial use, see package README)
-  qcf_quran: ^0.0.5
-  flutter_screenutil: ^5.9.3
-
   # Qur'an: audio / video
   just_audio: ^0.9.42
   audio_service: ^0.18.15
@@ -102,6 +97,22 @@ dev_dependencies:
   freezed: ^2.5.7
   json_serializable: ^6.9.0
   riverpod_generator: ^2.6.3
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+
+flutter_native_splash:
+  color: "#E7E8E5"
+  color_dark: "#0F1512"
+  image: "assets/icon/splash_icon.png"
+  android_12:
+    color: "#E7E8E5"
+    color_dark: "#0F1512"
+    image: "assets/icon/splash_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -118,6 +129,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/sounds/
+    - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -144,3 +157,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: UthmanicHafs
+      fonts:
+        - asset: assets/fonts/UthmanicHafs.otf

@@ -3,6 +3,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 DEFAULT_ENABLED_PRAYERS = ["Bomdod", "Peshin", "Asr", "Shom", "Xufton"]
+REMINDER_SOUND_CHOICES = ["klassik", "yumshoq", "signal", "uygonish", "raqamli"]
+DEFAULT_REMINDER_SOUND = "klassik"
 
 
 def default_enabled_offsets():
@@ -18,6 +20,12 @@ class NotificationSettings(models.Model):
     enabled_offsets_minutes = ArrayField(models.IntegerField(), default=default_enabled_offsets)
     enabled_prayers = ArrayField(models.CharField(max_length=20), default=default_enabled_prayers)
     sound_enabled = models.BooleanField(default=True)
+    use_custom_times = models.BooleanField(default=False)
+    reminder_sound = models.CharField(
+        max_length=20,
+        choices=[(c, c) for c in REMINDER_SOUND_CHOICES],
+        default=DEFAULT_REMINDER_SOUND,
+    )
 
     def __str__(self):
         return f"{self.user.phone_number}'s notification settings"

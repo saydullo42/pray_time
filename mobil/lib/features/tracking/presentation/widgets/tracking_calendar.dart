@@ -33,9 +33,11 @@ class TrackingCalendar extends StatelessWidget {
       onPageChanged: onPageChanged,
       calendarFormat: CalendarFormat.month,
       startingDayOfWeek: StartingDayOfWeek.monday,
+      rowHeight: 42,
+      daysOfWeekHeight: 20,
       daysOfWeekStyle: const DaysOfWeekStyle(
-        weekdayStyle: TextStyle(fontWeight: FontWeight.w600),
-        weekendStyle: TextStyle(fontWeight: FontWeight.w600),
+        weekdayStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+        weekendStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
       ),
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
@@ -70,7 +72,7 @@ class _DayCell extends StatelessWidget {
     final dotColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
 
     return Container(
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(6),
@@ -89,7 +91,7 @@ class _DayCell extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 8,
+            height: 6,
             child: isToday
                 ? Center(
                     child: Container(

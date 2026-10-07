@@ -7,7 +7,7 @@ class Validators {
     if (value == null || value.isEmpty) return 'Telefon raqamini kiriting';
     final normalized = value.replaceAll(' ', '');
     if (!_uzPhoneRegExp.hasMatch(normalized)) {
-      return 'Raqam +998XXXXXXXXX formatida bo\'lishi kerak';
+      return 'Raqam formati noto\'g\'ri';
     }
     return null;
   }

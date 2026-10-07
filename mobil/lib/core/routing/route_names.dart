@@ -19,9 +19,11 @@ class RouteNames {
   // Qur'an
   static const String quranList = '/quran';
   static const String quranBookList = '/quran/book';
+  static const String quranTranslationList = '/quran/translation-list';
   static const String quranReciterList = '/quran/reciters';
   static const String quranAudioList = '/quran/audio-list';
   static const String quranPdfReader = '/quran/pdf';
+  static const String quranTranslationReader = '/quran/translation';
   static const String quranAudioPlayer = '/quran/audio';
   static const String quranVideo = '/quran/video';
 

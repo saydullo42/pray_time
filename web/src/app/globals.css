@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f1512;
+  --surface: #17201b;
+  --surface-alt: #1d2a22;
+  --foreground: #e7ede9;
+  --foreground-muted: #9fb0a7;
+  --primary: #1c7c54;
+  --accent: #396e0d;
+  --accent-light: #4caf17;
+  --outline: #2b372f;
+  --warning: #ef6c00;
+  --danger: #c62828;
+}
+
+:root[data-theme="light"] {
+  --background: #e5e7e8;
+  --surface: #ffffff;
+  --surface-alt: #eceeef;
+  --foreground: #1a1c1a;
+  --foreground-muted: #5b655f;
+  --primary: #1c7c54;
+  --accent: #396e0d;
+  --accent-light: #2e7d32;
+  --outline: #d7ddd4;
+  --warning: #ef6c00;
+  --danger: #c62828;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-outline: var(--outline);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+:root[data-theme="light"] input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+.font-arabic {
+  font-family: var(--font-arabic), serif;
+}
+
+/* Qur'on hub buttons: green bg / black text on dark theme, white bg / black text on light theme. */
+.quran-hub-btn {
+  background: var(--accent);
+  color: #000;
+}
+:root[data-theme="light"] .quran-hub-btn {
+  background: #fff;
+}
+
+.themed-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--outline) var(--surface-alt);
+}
+.themed-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: var(--surface-alt);
+  border-radius: 8px;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--outline);
+  border-radius: 8px;
+}

@@ -3,19 +3,19 @@ import '../../data/models/calculation_method.dart';
 import '../../data/models/custom_prayer_time_model.dart';
 import '../../data/models/prayer_time_model.dart';
 import '../../data/repositories/prayer_times_repository.dart';
-import 'location_provider.dart';
+import 'region_selection_provider.dart';
 
 final calculationMethodProvider = StateProvider<CalculationMethod>(
   (ref) => CalculationMethod.muslimWorldLeague,
 );
 
 final todayPrayerTimesProvider = FutureProvider.autoDispose<PrayerTimeModel>((ref) async {
-  final position = await ref.watch(currentPositionProvider.future);
+  final selection = ref.watch(regionSelectionProvider);
   final repository = ref.watch(prayerTimesRepositoryProvider);
   final method = ref.watch(calculationMethodProvider);
   return repository.getTodayTimes(
-    latitude: position.latitude,
-    longitude: position.longitude,
+    latitude: selection.latitude,
+    longitude: selection.longitude,
     date: DateTime.now(),
     method: method,
   );
@@ -23,12 +23,12 @@ final todayPrayerTimesProvider = FutureProvider.autoDispose<PrayerTimeModel>((re
 
 final monthlyPrayerTimesProvider = FutureProvider.autoDispose
     .family<List<PrayerTimeModel>, ({int month, int year})>((ref, args) async {
-  final position = await ref.watch(currentPositionProvider.future);
+  final selection = ref.watch(regionSelectionProvider);
   final repository = ref.watch(prayerTimesRepositoryProvider);
   final method = ref.watch(calculationMethodProvider);
   return repository.getMonthlyTimes(
-    latitude: position.latitude,
-    longitude: position.longitude,
+    latitude: selection.latitude,
+    longitude: selection.longitude,
     month: args.month,
     year: args.year,
     method: method,
