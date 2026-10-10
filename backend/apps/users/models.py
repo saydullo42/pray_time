@@ -7,8 +7,6 @@ from django.db import models
 from django.utils import timezone
 
 OTP_VALIDITY_MINUTES = 5
-OTP_RATE_LIMIT_WINDOW_MINUTES = 10
-OTP_RATE_LIMIT_MAX_ATTEMPTS = 3
 
 
 class UserManager(BaseUserManager):
@@ -60,12 +58,6 @@ class OTP(models.Model):
     def generate(cls, phone_number: str) -> "OTP":
         code = f"{random.randint(0, 999999):06d}"
         return cls.objects.create(phone_number=phone_number, code=code)
-
-    @classmethod
-    def rate_limit_exceeded(cls, phone_number: str) -> bool:
-        window_start = timezone.now() - timedelta(minutes=OTP_RATE_LIMIT_WINDOW_MINUTES)
-        recent_count = cls.objects.filter(phone_number=phone_number, created_at__gte=window_start).count()
-        return recent_count >= OTP_RATE_LIMIT_MAX_ATTEMPTS
 
     @property
     def is_expired(self) -> bool:

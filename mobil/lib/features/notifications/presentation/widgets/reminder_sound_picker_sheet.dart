@@ -25,7 +25,8 @@ class _ReminderSoundPickerSheet extends StatefulWidget {
   final String selectedId;
 
   @override
-  State<_ReminderSoundPickerSheet> createState() => _ReminderSoundPickerSheetState();
+  State<_ReminderSoundPickerSheet> createState() =>
+      _ReminderSoundPickerSheetState();
 }
 
 class _ReminderSoundPickerSheetState extends State<_ReminderSoundPickerSheet> {
@@ -60,7 +61,10 @@ class _ReminderSoundPickerSheetState extends State<_ReminderSoundPickerSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Center(
-              child: Text('Eslatma tovushi', style: Theme.of(context).textTheme.titleMedium),
+              child: Text(
+                'Eslatma tovushi',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             const SizedBox(height: 8),
             Expanded(
@@ -73,7 +77,9 @@ class _ReminderSoundPickerSheetState extends State<_ReminderSoundPickerSheet> {
                   return ListTile(
                     leading: IconButton(
                       icon: Icon(
-                        isPlaying ? Icons.stop_circle_outlined : Icons.play_circle_outline,
+                        isPlaying
+                            ? Icons.stop_circle_outlined
+                            : Icons.play_circle_outline,
                         color: const Color(0xFF396E0D),
                       ),
                       onPressed: () => _preview(sound),
@@ -81,7 +87,9 @@ class _ReminderSoundPickerSheetState extends State<_ReminderSoundPickerSheet> {
                     title: Text(
                       sound.label,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.normal,
                         color: isSelected ? const Color(0xFF396E0D) : null,
                       ),
                     ),

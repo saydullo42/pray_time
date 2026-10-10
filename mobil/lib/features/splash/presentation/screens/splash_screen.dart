@@ -23,7 +23,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _redirect() async {
     final results = await Future.wait([
       ref.read(authProvider.future),
-      Future.delayed(const Duration(seconds: 3)),
+      Future.delayed(const Duration(seconds: 4)),
     ]);
     if (!mounted) return;
     final state = results[0] as AuthState;

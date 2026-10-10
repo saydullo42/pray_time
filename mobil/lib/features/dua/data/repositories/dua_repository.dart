@@ -9,9 +9,13 @@ class DuaRepository {
   final DioClient _client;
 
   Future<List<DuaCategoryModel>> getCategories() async {
-    final response = await _client.get<Map<String, dynamic>>(ApiEndpoints.duaCategories);
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiEndpoints.duaCategories,
+    );
     final list = response.data!['results'] as List<dynamic>;
-    return list.map((e) => DuaCategoryModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => DuaCategoryModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<DuaModel>> getDuasByCategory(String categoryId) async {
@@ -20,7 +24,9 @@ class DuaRepository {
       query: {'category_id': categoryId},
     );
     final list = response.data!['results'] as List<dynamic>;
-    return list.map((e) => DuaModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => DuaModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
 

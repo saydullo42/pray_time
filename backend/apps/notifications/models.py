@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 DEFAULT_ENABLED_PRAYERS = ["Bomdod", "Peshin", "Asr", "Shom", "Xufton"]
-REMINDER_SOUND_CHOICES = ["klassik", "yumshoq", "signal", "uygonish", "raqamli"]
+REMINDER_SOUND_CHOICES = ["klassik", "yumshoq", "signal", "uygonish", "raqamli", "allohning_99_ismi"]
 DEFAULT_REMINDER_SOUND = "klassik"
 
 

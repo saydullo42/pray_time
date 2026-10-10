@@ -24,7 +24,7 @@ const amiri = Amiri({
 
 export const metadata: Metadata = {
   title: "Namoz Vaqtlari",
-  description: "Namoz vaqtlari, Qur'on va dualar",
+  description: "Namoz vaqtlari, Qur'on va duolar",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

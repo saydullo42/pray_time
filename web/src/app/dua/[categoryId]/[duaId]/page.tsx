@@ -39,6 +39,10 @@ function Content({ categoryId, duaId }: { categoryId: string; duaId: number }) {
       <p dir="rtl" lang="ar" className="rounded-2xl bg-surface p-5 text-right text-2xl leading-loose font-arabic">
         {dua.arabic_text}
       </p>
+      {dua.image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={dua.image_url} alt={dua.title} className="w-full rounded-2xl" />
+      )}
       <div>
         <p className="mb-1 font-bold">O&apos;qilishi:</p>
         <p className="italic leading-relaxed">{dua.transliteration}</p>

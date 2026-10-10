@@ -4,6 +4,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from . import cache
 from .aladhan_client import fetch_calendar, fetch_timings
 from .models import CustomPrayerTime
 from .serializers import CustomPrayerTimeSerializer
@@ -40,7 +41,9 @@ class TodayPrayerTimeView(APIView):
         target_date = date_cls.fromisoformat(date_param) if date_param else date_cls.today()
         method = int(request.query_params.get("method", DEFAULT_METHOD))
 
-        data = fetch_timings(latitude, longitude, target_date, method)
+        data = cache.lookup(latitude, longitude, target_date, method)
+        if data is None:
+            data = fetch_timings(latitude, longitude, target_date, method)
         return Response(data)
 
 

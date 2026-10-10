@@ -25,7 +25,7 @@ function Content() {
 
   return (
     <div>
-      <h1 className="mb-4 text-center text-xl font-semibold">Dualar</h1>
+      <h1 className="mb-4 text-center text-xl font-semibold">Duolar</h1>
       <div className="space-y-2">
         {(data?.results ?? []).map((c) => (
           <Link

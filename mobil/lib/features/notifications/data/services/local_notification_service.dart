@@ -23,14 +23,18 @@ class LocalNotificationService {
   Future<void> init() async {
     tz_data.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings();
     await _plugin.initialize(
       const InitializationSettings(android: androidSettings, iOS: iosSettings),
     );
 
-    final androidPlugin =
-        _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     for (final sound in reminderSounds) {
       await androidPlugin?.createNotificationChannel(
         AndroidNotificationChannel(
@@ -46,10 +50,14 @@ class LocalNotificationService {
 
   Future<bool> requestPermissions() async {
     final androidGranted = await _plugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
     final iosGranted = await _plugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
     return (androidGranted ?? true) && (iosGranted ?? true);
   }
@@ -69,7 +77,10 @@ class LocalNotificationService {
       body,
       tz.TZDateTime.from(scheduledTime, tz.local),
       NotificationDetails(
-        android: AndroidNotificationDetails(_channelId(reminderSoundId), _channelName),
+        android: AndroidNotificationDetails(
+          _channelId(reminderSoundId),
+          _channelName,
+        ),
         iOS: DarwinNotificationDetails(sound: '$reminderSoundId.wav'),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -81,6 +92,8 @@ class LocalNotificationService {
   Future<void> cancelAll() => _plugin.cancelAll();
 }
 
-final localNotificationServiceProvider = Provider<LocalNotificationService>((ref) {
+final localNotificationServiceProvider = Provider<LocalNotificationService>((
+  ref,
+) {
   return LocalNotificationService(FlutterLocalNotificationsPlugin());
 });

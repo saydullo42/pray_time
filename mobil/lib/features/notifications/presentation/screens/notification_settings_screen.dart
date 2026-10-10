@@ -10,6 +10,33 @@ import '../widgets/reminder_sound_picker_sheet.dart';
 class NotificationSettingsScreen extends ConsumerWidget {
   const NotificationSettingsScreen({super.key});
 
+  Widget _tableButton(
+    BuildContext context,
+    String label, {
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    const green = Color(0xFF396E0D);
+    return OutlinedButton(
+      onPressed: onTap,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: selected ? green.withValues(alpha: 0.25) : null,
+        side: BorderSide(color: selected ? green : Colors.grey),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+          color: selected
+              ? const Color(0xFF4CAF17)
+              : Theme.of(context).colorScheme.onSurface,
+        ),
+      ),
+    );
+  }
+
   void _showTableInfo(BuildContext context) {
     showDialog(
       context: context,
@@ -25,7 +52,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Tushunarli', style: TextStyle(fontSize: 18, color: Color(0xFF4CAF17))),
+            child: const Text(
+              'Tushunarli',
+              style: TextStyle(fontSize: 18, color: Color(0xFF4CAF17)),
+            ),
           ),
         ],
       ),
@@ -47,7 +77,10 @@ class NotificationSettingsScreen extends ConsumerWidget {
         data: (settings) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text('Necha daqiqa oldin eslatilsin', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Necha daqiqa oldin eslatilsin',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 4),
             Row(
               children: [
@@ -56,15 +89,24 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 3),
                       child: FilterChip(
-                        label: Text('$offset daqiqa', style: const TextStyle(fontSize: 14)),
+                        label: Text(
+                          '$offset daqiqa',
+                          style: const TextStyle(fontSize: 14),
+                        ),
                         labelPadding: const EdgeInsets.symmetric(horizontal: 2),
                         showCheckmark: false,
                         visualDensity: VisualDensity.compact,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        selected: settings.enabledOffsetsMinutes.contains(offset),
+                        selected: settings.enabledOffsetsMinutes.contains(
+                          offset,
+                        ),
                         onSelected: (_) {
-                          ref.read(notificationSettingsProvider.notifier).updateSettings(
-                                settings.copyWith(enabledOffsetsMinutes: {offset}),
+                          ref
+                              .read(notificationSettingsProvider.notifier)
+                              .updateSettings(
+                                settings.copyWith(
+                                  enabledOffsetsMinutes: {offset},
+                                ),
                               );
                         },
                       ),
@@ -76,13 +118,13 @@ class NotificationSettingsScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                _tableButton(
+                  context,
                   '1-jadval',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: settings.useCustomTimes ? FontWeight.normal : FontWeight.w700,
-                    color: settings.useCustomTimes ? null : const Color(0xFF396E0D),
-                  ),
+                  selected: settings.useCustomTimes == false,
+                  onTap: () => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateSettings(settings.copyWith(useCustomTimes: false)),
                 ),
                 const SizedBox(width: 16),
                 Switch(
@@ -91,18 +133,20 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   activeTrackColor: const Color(0xFFA5D493),
                   inactiveThumbColor: const Color(0xFF396E0D),
                   inactiveTrackColor: const Color(0xFFA5D493),
-                  onChanged: (useCustomTimes) => ref.read(notificationSettingsProvider.notifier).updateSettings(
+                  onChanged: (useCustomTimes) => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateSettings(
                         settings.copyWith(useCustomTimes: useCustomTimes),
                       ),
                 ),
                 const SizedBox(width: 16),
-                Text(
+                _tableButton(
+                  context,
                   '2-jadval',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: settings.useCustomTimes ? FontWeight.w700 : FontWeight.normal,
-                    color: settings.useCustomTimes ? const Color(0xFF396E0D) : null,
-                  ),
+                  selected: settings.useCustomTimes == true,
+                  onTap: () => ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateSettings(settings.copyWith(useCustomTimes: true)),
                 ),
               ],
             ),
@@ -112,12 +156,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 onTap: () => _showTableInfo(context),
                 child: const Text(
                   'Batafsil',
-                  style: TextStyle(color: Color(0xFF4CAF17), fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Color(0xFF4CAF17),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 12),
-            Text('Qaysi namozlar uchun', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Qaysi namozlar uchun',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             for (final prayer in AppConstants.prayerNames)
               SwitchListTile(
                 title: Text(prayer),
@@ -126,7 +176,9 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 onChanged: (enabled) {
                   final updated = Set<String>.from(settings.enabledPrayers);
                   enabled ? updated.add(prayer) : updated.remove(prayer);
-                  ref.read(notificationSettingsProvider.notifier).updateSettings(
+                  ref
+                      .read(notificationSettingsProvider.notifier)
+                      .updateSettings(
                         settings.copyWith(enabledPrayers: updated),
                       );
                 },
@@ -142,12 +194,16 @@ class NotificationSettingsScreen extends ConsumerWidget {
                     selectedId: settings.reminderSound,
                   );
                   if (pickedId != null) {
-                    ref.read(notificationSettingsProvider.notifier).updateSettings(
+                    ref
+                        .read(notificationSettingsProvider.notifier)
+                        .updateSettings(
                           settings.copyWith(reminderSound: pickedId),
                         );
                   }
                 },
-                style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF396E0D)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF396E0D),
+                ),
                 child: Text(findReminderSound(settings.reminderSound).label),
               ),
             ),

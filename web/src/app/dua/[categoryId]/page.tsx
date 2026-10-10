@@ -21,7 +21,7 @@ export default function DuaListPage({ params }: { params: Promise<{ categoryId: 
 
 function Content({ categoryId }: { categoryId: string }) {
   const searchParams = useSearchParams();
-  const categoryName = searchParams.get("name") ?? "Dualar";
+  const categoryName = searchParams.get("name") ?? "Duolar";
 
   const { data, error, isLoading, mutate } = useSWR(["duas", categoryId], () =>
     api.get<{ results: Dua[] }>("/dua/", { category_id: categoryId })

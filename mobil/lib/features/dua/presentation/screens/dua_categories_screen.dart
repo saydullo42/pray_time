@@ -14,7 +14,7 @@ class DuaCategoriesScreen extends ConsumerWidget {
     final categoriesAsync = ref.watch(duaCategoriesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dualar')),
+      appBar: AppBar(title: const Text('Duolar')),
       body: categoriesAsync.when(
         loading: () => const LoadingIndicator(),
         error: (error, _) => ErrorView(

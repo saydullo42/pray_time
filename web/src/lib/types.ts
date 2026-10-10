@@ -79,6 +79,7 @@ export interface Dua {
   arabic_text: string;
   transliteration: string;
   translation: string;
+  image_url: string | null;
   audio_url: string | null;
   source: string | null;
 }

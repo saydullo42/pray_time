@@ -22,7 +22,8 @@ class NotificationSettingsModel {
   /// Id of the selected notification sound; see [reminderSounds].
   final String reminderSound;
 
-  factory NotificationSettingsModel.defaults() => const NotificationSettingsModel(
+  factory NotificationSettingsModel.defaults() =>
+      const NotificationSettingsModel(
         enabledOffsetsMinutes: {15},
         enabledPrayers: {'Bomdod', 'Peshin', 'Asr', 'Shom', 'Xufton'},
       );
@@ -32,21 +33,23 @@ class NotificationSettingsModel {
       enabledOffsetsMinutes: (json['enabled_offsets_minutes'] as List<dynamic>)
           .map((e) => e as int)
           .toSet(),
-      enabledPrayers:
-          (json['enabled_prayers'] as List<dynamic>).map((e) => e as String).toSet(),
+      enabledPrayers: (json['enabled_prayers'] as List<dynamic>)
+          .map((e) => e as String)
+          .toSet(),
       soundEnabled: json['sound_enabled'] as bool? ?? true,
       useCustomTimes: json['use_custom_times'] as bool? ?? false,
-      reminderSound: json['reminder_sound'] as String? ?? defaultReminderSoundId,
+      reminderSound:
+          json['reminder_sound'] as String? ?? defaultReminderSoundId,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'enabled_offsets_minutes': enabledOffsetsMinutes.toList(),
-        'enabled_prayers': enabledPrayers.toList(),
-        'sound_enabled': soundEnabled,
-        'use_custom_times': useCustomTimes,
-        'reminder_sound': reminderSound,
-      };
+    'enabled_offsets_minutes': enabledOffsetsMinutes.toList(),
+    'enabled_prayers': enabledPrayers.toList(),
+    'sound_enabled': soundEnabled,
+    'use_custom_times': useCustomTimes,
+    'reminder_sound': reminderSound,
+  };
 
   NotificationSettingsModel copyWith({
     Set<int>? enabledOffsetsMinutes,
@@ -56,7 +59,8 @@ class NotificationSettingsModel {
     String? reminderSound,
   }) {
     return NotificationSettingsModel(
-      enabledOffsetsMinutes: enabledOffsetsMinutes ?? this.enabledOffsetsMinutes,
+      enabledOffsetsMinutes:
+          enabledOffsetsMinutes ?? this.enabledOffsetsMinutes,
       enabledPrayers: enabledPrayers ?? this.enabledPrayers,
       soundEnabled: soundEnabled ?? this.soundEnabled,
       useCustomTimes: useCustomTimes ?? this.useCustomTimes,

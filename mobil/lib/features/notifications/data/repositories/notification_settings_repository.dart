@@ -19,11 +19,14 @@ class NotificationSettingsRepository {
   }
 
   Future<void> save(NotificationSettingsModel settings) async {
-    await _client.put(ApiEndpoints.notificationSettings, data: settings.toJson());
+    await _client.put(
+      ApiEndpoints.notificationSettings,
+      data: settings.toJson(),
+    );
   }
 }
 
 final notificationSettingsRepositoryProvider =
     Provider<NotificationSettingsRepository>((ref) {
-  return NotificationSettingsRepository(ref.watch(dioClientProvider));
-});
+      return NotificationSettingsRepository(ref.watch(dioClientProvider));
+    });

@@ -11,38 +11,64 @@ class DuaDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(dua.title)),
       body: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(vertical: 24),
         children: [
-          Text(
-            dua.arabicText,
-            style: Theme.of(context).textTheme.headlineSmall,
-            textAlign: TextAlign.right,
-            textDirection: TextDirection.rtl,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'O\'qilishi:',
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            dua.transliteration,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontStyle: FontStyle.italic),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Ma\'nosi:',
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(dua.translation, style: Theme.of(context).textTheme.bodyMedium),
-          if (dua.source != null) ...[
-            const SizedBox(height: 24),
-            Text(
-              'Manba: ${dua.source}',
-              style: Theme.of(context).textTheme.bodySmall,
+          if (dua.imageUrl != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  dua.imageUrl!,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                dua.arabicText,
+                style: const TextStyle(
+                  fontFamily: 'NotoNaskhArabic',
+                  fontSize: 28,
+                  height: 2.0,
+                ),
+                textAlign: TextAlign.right,
+                textDirection: TextDirection.rtl,
+              ),
             ),
-          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (dua.translation.trim().isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  Text.rich(
+                    TextSpan(
+                      style: const TextStyle(fontSize: 16, height: 1.5),
+                      children: [
+                        const TextSpan(
+                          text: 'Ma\'nosi: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: dua.translation),
+                      ],
+                    ),
+                  ),
+                ],
+                if (dua.source != null) ...[
+                  const SizedBox(height: 24),
+                  Text(
+                    'Manba: ${dua.source}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
