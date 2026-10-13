@@ -14,11 +14,6 @@ class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }
 
-class AuthOtpSent extends AuthState {
-  const AuthOtpSent(this.phoneNumber);
-  final String phoneNumber;
-}
-
 class AuthAuthenticated extends AuthState {
   const AuthAuthenticated(this.user);
   final UserModel user;
@@ -34,19 +29,23 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     return hasSession ? const AuthInitial() : const AuthUnauthenticated();
   }
 
-  Future<void> requestOtp(String phoneNumber) async {
+  /// Runs Google sign-in. Closing the account chooser leaves the state as
+  /// [AuthUnauthenticated] without an error.
+  Future<void> signInWithGoogle() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      await _repository.requestOtp(phoneNumber);
-      return AuthOtpSent(phoneNumber);
+      final user = await _repository.signInWithGoogle();
+      return user == null
+          ? const AuthUnauthenticated()
+          : AuthAuthenticated(user);
     });
   }
 
-  Future<void> verifyOtp({required String phoneNumber, required String code}) async {
+  Future<void> deleteAccount() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final user = await _repository.verifyOtp(phoneNumber: phoneNumber, code: code);
-      return AuthAuthenticated(user);
+      await _repository.deleteAccount();
+      return const AuthUnauthenticated();
     });
   }
 

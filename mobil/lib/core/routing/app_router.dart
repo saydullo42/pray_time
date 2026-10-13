@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/dua/data/models/dua_model.dart';
 import '../../features/dua/presentation/screens/dua_categories_screen.dart';
 import '../../features/dua/presentation/screens/dua_detail_screen.dart';
@@ -35,11 +34,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: RouteNames.splash,
     routes: [
-      GoRoute(path: RouteNames.splash, builder: (context, state) => const SplashScreen()),
-      GoRoute(path: RouteNames.login, builder: (context, state) => const LoginScreen()),
       GoRoute(
-        path: RouteNames.otp,
-        builder: (context, state) => OtpScreen(phoneNumber: state.extra as String),
+        path: RouteNames.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.login,
+        builder: (context, state) => const LoginScreen(),
       ),
 
       // Main bottom-nav shell: Home / Yillik tracking / Qur'an / Duo / Profile
@@ -47,30 +48,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state, navigationShell) =>
             MainShellScreen(navigationShell: navigationShell),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(path: RouteNames.home, builder: (context, state) => const HomeScreen()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: RouteNames.trackingYearly,
-              builder: (context, state) => const YearlyTrackingScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: RouteNames.quranList,
-              builder: (context, state) => const QuranListScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: RouteNames.duaCategories,
-              builder: (context, state) => const DuaCategoriesScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(path: RouteNames.profile, builder: (context, state) => const ProfileScreen()),
-          ]),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.trackingYearly,
+                builder: (context, state) => const YearlyTrackingScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.quranList,
+                builder: (context, state) => const QuranListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.duaCategories,
+                builder: (context, state) => const DuaCategoriesScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.profile,
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -89,12 +106,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.quranBookList,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const SurahListScreen(mode: QuranListMode.book),
+        builder: (context, state) =>
+            const SurahListScreen(mode: QuranListMode.book),
       ),
       GoRoute(
         path: RouteNames.quranTranslationList,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const SurahListScreen(mode: QuranListMode.translation),
+        builder: (context, state) =>
+            const SurahListScreen(mode: QuranListMode.translation),
       ),
       GoRoute(
         path: RouteNames.quranTranslationReader,
@@ -122,17 +141,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.quranPdfReader,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => QuranMushafReaderScreen(surah: state.extra as SurahModel),
+        builder: (context, state) =>
+            QuranMushafReaderScreen(surah: state.extra as SurahModel),
       ),
       GoRoute(
         path: RouteNames.quranAudioPlayer,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => QuranAudioPlayerScreen(surah: state.extra as SurahModel),
+        builder: (context, state) =>
+            QuranAudioPlayerScreen(surah: state.extra as SurahModel),
       ),
       GoRoute(
         path: RouteNames.quranVideo,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => QuranVideoScreen(surah: state.extra as SurahModel),
+        builder: (context, state) =>
+            QuranVideoScreen(surah: state.extra as SurahModel),
       ),
       GoRoute(
         path: '${RouteNames.duaListByCategory}/:categoryId',
@@ -145,7 +167,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.duaDetail,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => DuaDetailScreen(dua: state.extra as DuaModel),
+        builder: (context, state) =>
+            DuaDetailScreen(dua: state.extra as DuaModel),
       ),
       GoRoute(
         path: RouteNames.editProfile,

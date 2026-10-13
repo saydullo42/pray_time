@@ -6,14 +6,9 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "phone_number", "full_name", "avatar_url", "is_profile_complete"]
-        read_only_fields = ["id", "phone_number", "is_profile_complete"]
+        fields = ["id", "email", "full_name", "avatar_url"]
+        read_only_fields = ["id", "email"]
 
 
-class RequestOtpSerializer(serializers.Serializer):
-    phone_number = serializers.RegexField(r"^\+998[0-9]{9}$")
-
-
-class VerifyOtpSerializer(serializers.Serializer):
-    phone_number = serializers.RegexField(r"^\+998[0-9]{9}$")
-    code = serializers.RegexField(r"^[0-9]{6}$")
+class GoogleSignInSerializer(serializers.Serializer):
+    id_token = serializers.CharField()

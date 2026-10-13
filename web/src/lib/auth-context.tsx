@@ -4,15 +4,16 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { useRouter } from "next/navigation";
 import { api } from "./api";
 import { tokenStorage } from "./token-storage";
-import type { User, VerifyOtpResponse } from "./types";
+import type { AuthResponse, User } from "./types";
 
 interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  requestOtp: (phoneNumber: string) => Promise<void>;
-  verifyOtp: (phoneNumber: string, code: string) => Promise<User>;
+  /** Exchanges a Google ID token (from "Continue with Google") for our own session. */
+  signInWithGoogle: (idToken: string) => Promise<User>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -46,16 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const requestOtp = useCallback(async (phoneNumber: string) => {
-    await api.post("/auth/otp/request/", { phone_number: phoneNumber }, false);
-  }, []);
-
-  const verifyOtp = useCallback(async (phoneNumber: string, code: string) => {
-    const data = await api.post<VerifyOtpResponse>(
-      "/auth/otp/verify/",
-      { phone_number: phoneNumber, code },
-      false
-    );
+  const signInWithGoogle = useCallback(async (idToken: string) => {
+    const data = await api.post<AuthResponse>("/auth/google/", { id_token: idToken }, false);
     tokenStorage.set(data.access_token, data.refresh_token);
     setUser(data.user);
     return data.user;
@@ -71,9 +64,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
+  /** Permanently deletes the signed-in account and all of its data, then signs out locally. */
+  const deleteAccount = useCallback(async () => {
+    await api.delete("/users/me/");
+    tokenStorage.clear();
+    setUser(null);
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, isAuthenticated: !!user, requestOtp, verifyOtp, logout, refreshUser }}
+      value={{
+        user,
+        isLoading,
+        isAuthenticated: !!user,
+        signInWithGoogle,
+        logout,
+        deleteAccount,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

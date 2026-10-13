@@ -49,7 +49,7 @@ function Content() {
     <div className="space-y-6 pt-6">
       <div className="flex flex-col items-center gap-2">
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-surface text-2xl font-semibold text-accent-light">
-          {(user.full_name || user.phone_number).charAt(0).toUpperCase()}
+          {(user.full_name || user.email).charAt(0).toUpperCase()}
         </div>
         {editing ? (
           <div className="flex w-full max-w-xs flex-col items-center gap-2">
@@ -73,7 +73,7 @@ function Content() {
             {user.full_name || "Ism kiritilmagan"}
           </button>
         )}
-        <p className="text-foreground-muted">{user.phone_number}</p>
+        <p className="text-foreground-muted">{user.email}</p>
       </div>
 
       <div className="mx-auto w-full max-w-xs">

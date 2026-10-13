@@ -1,12 +1,11 @@
 export interface User {
   id: number;
-  phone_number: string;
+  email: string;
   full_name: string | null;
   avatar_url: string | null;
-  is_profile_complete: boolean;
 }
 
-export interface VerifyOtpResponse {
+export interface AuthResponse {
   access_token: string;
   refresh_token: string;
   user: User;

@@ -172,6 +172,10 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:3000"])
 CORS_ALLOW_CREDENTIALS = True
 
+# "Continue with Google": OAuth client ids whose ID tokens we accept (the web
+# client id, which Android/iOS apps also use as serverClientId, plus iOS if separate).
+GOOGLE_CLIENT_IDS = env.list("GOOGLE_CLIENT_IDS", default=[])
+
 
 # Aladhan (public prayer-times computation API, proxied server-side so the
 # Flutter app only ever talks to our own backend)
@@ -179,7 +183,7 @@ CORS_ALLOW_CREDENTIALS = True
 ALADHAN_BASE_URL = env("ALADHAN_BASE_URL", default="https://api.aladhan.com/v1")
 
 
-# Logging (dev: surface app logs, e.g. generated OTP codes, on the console)
+# Logging (dev: surface app logs on the console)
 
 LOGGING = {
     "version": 1,

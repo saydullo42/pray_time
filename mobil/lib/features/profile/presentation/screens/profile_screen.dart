@@ -44,7 +44,7 @@ class ProfileScreen extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            Center(child: Text(user.phoneNumber)),
+            Center(child: Text(user.email)),
             const SizedBox(height: 16),
             const Divider(),
             ListTile(
@@ -80,6 +80,15 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              title: const Text(
+                "Akkauntni o'chirish",
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: () => _confirmDeleteAccount(context, ref),
+            ),
+            const Divider(),
+            ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text('Chiqish', style: TextStyle(color: Colors.red)),
               onTap: () async {
@@ -99,6 +108,53 @@ class ProfileScreen extends ConsumerWidget {
     foregroundColor: const Color(0xFF4CAF17),
     textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
   );
+
+  Future<void> _confirmDeleteAccount(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Akkauntni o'chirish"),
+        content: const Text(
+          "Akkauntingiz va unga bog'liq barcha ma'lumotlar (namoz belgilari, "
+          "eslatma sozlamalari) butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi.",
+        ),
+        actions: [
+          TextButton(
+            style: _contactButtonStyle,
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Bekor qilish'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+              textStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text("O'chirish"),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    await ref.read(authProvider.notifier).deleteAccount();
+    if (!context.mounted) return;
+    if (ref.read(authProvider).hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Akkauntni o'chirib bo'lmadi. Qayta urinib ko'ring."),
+        ),
+      );
+      return;
+    }
+    context.go(RouteNames.login);
+  }
 
   void _showContact(BuildContext context) {
     showDialog<void>(

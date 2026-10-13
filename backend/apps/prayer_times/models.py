@@ -11,4 +11,4 @@ class CustomPrayerTime(models.Model):
     isha = models.TimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.phone_number}'s custom prayer times"
+        return f"{self.user}'s custom prayer times"

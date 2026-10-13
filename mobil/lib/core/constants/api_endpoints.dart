@@ -7,9 +7,8 @@ class ApiEndpoints {
     defaultValue: 'http://10.0.2.2:8000/api/v1',
   );
 
-  // Auth (SMS OTP)
-  static const String requestOtp = '/auth/otp/request/';
-  static const String verifyOtp = '/auth/otp/verify/';
+  // Auth ("Continue with Google")
+  static const String googleSignIn = '/auth/google/';
   static const String refreshToken = '/auth/token/refresh/';
   static const String logout = '/auth/logout/';
 
@@ -31,7 +30,8 @@ class ApiEndpoints {
   static const String quranAudio = '/quran/audio/';
   static const String quranVideo = '/quran/video/';
   static const String quranPdf = '/quran/pdf/';
-  static String reciterSurahAudio(int reciterId) => '/quran/audio/$reciterId/surahs/';
+  static String reciterSurahAudio(int reciterId) =>
+      '/quran/audio/$reciterId/surahs/';
 
   // Dua
   static const String duaCategories = '/dua/categories/';

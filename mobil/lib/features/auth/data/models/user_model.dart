@@ -1,45 +1,36 @@
 class UserModel {
   const UserModel({
     required this.id,
-    required this.phoneNumber,
+    required this.email,
     this.fullName,
     this.avatarUrl,
-    this.isProfileComplete = false,
   });
 
   final String id;
-  final String phoneNumber;
+  final String email;
   final String? fullName;
   final String? avatarUrl;
-  final bool isProfileComplete;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        id: json['id'].toString(),
-        phoneNumber: json['phone_number'] as String,
-        fullName: json['full_name'] as String?,
-        avatarUrl: json['avatar_url'] as String?,
-        isProfileComplete: json['is_profile_complete'] as bool? ?? false,
-      );
+    id: json['id'].toString(),
+    email: json['email'] as String,
+    fullName: json['full_name'] as String?,
+    avatarUrl: json['avatar_url'] as String?,
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'phone_number': phoneNumber,
-        'full_name': fullName,
-        'avatar_url': avatarUrl,
-        'is_profile_complete': isProfileComplete,
-      };
+    'id': id,
+    'email': email,
+    'full_name': fullName,
+    'avatar_url': avatarUrl,
+  };
 
-  UserModel copyWith({
-    String? fullName,
-    String? avatarUrl,
-    bool? isProfileComplete,
-  }) {
+  UserModel copyWith({String? fullName, String? avatarUrl}) {
     return UserModel(
       id: id,
-      phoneNumber: phoneNumber,
+      email: email,
       fullName: fullName ?? this.fullName,
       avatarUrl: avatarUrl ?? this.avatarUrl,
-      isProfileComplete: isProfileComplete ?? this.isProfileComplete,
     );
   }
 }

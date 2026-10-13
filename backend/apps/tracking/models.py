@@ -15,4 +15,4 @@ class PrayerTrackingRecord(models.Model):
         ordering = ["date"]
 
     def __str__(self):
-        return f"{self.user.phone_number} - {self.date} - {self.prayer_name}: {'done' if self.done else 'not done'}"
+        return f"{self.user} - {self.date} - {self.prayer_name}: {'done' if self.done else 'not done'}"

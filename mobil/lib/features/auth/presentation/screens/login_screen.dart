@@ -1,121 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_names.dart';
-import '../../../../core/utils/validators.dart';
-import '../../../../core/widgets/custom_button.dart';
 import '../providers/auth_provider.dart';
-import '../widgets/phone_input_field.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController(text: '+998');
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    final normalized = _phoneController.text.replaceAll(' ', '');
-    await ref.read(authProvider.notifier).requestOtp(normalized);
-    final state = ref.read(authProvider).valueOrNull;
-    if (state is AuthOtpSent && mounted) {
-      context.push(RouteNames.otp, extra: state.phoneNumber);
-    }
-  }
-
-  void _appendDigit(String digit) {
-    final digits = extractUzPhoneDigits(_phoneController.text);
-    if (digits.length >= 9) return;
-    final formatted = formatUzPhoneNumber(digits + digit);
-    _phoneController.value = TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-
-  void _backspace() {
-    final digits = extractUzPhoneDigits(_phoneController.text);
-    if (digits.isEmpty) return;
-    final formatted = formatUzPhoneNumber(digits.substring(0, digits.length - 1));
-    _phoneController.value = TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     ref.listen(authProvider, (previous, next) {
       if (next.hasError) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(next.error.toString())));
+      } else if (next.valueOrNull is AuthAuthenticated) {
+        context.go(RouteNames.home);
       }
     });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Kirish')),
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Telefon raqamingizni kiriting. ',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 24),
-                      PhoneInputField(
-                        controller: _phoneController,
-                        validator: Validators.phoneNumber,
-                      ),
-                      const SizedBox(height: 24),
-                      CustomButton(
-                        label: 'Tasdiqlash',
-                        isLoading: authState.isLoading,
-                        onPressed: _submit,
-                        fontSize: 18,
-                        backgroundColor:
-                            isDark ? const Color(0xFF396E0D) : AppColors.lightSurfaceStrong,
-                        foregroundColor: Colors.black,
-                      ),
-                    ],
-                  ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Davom etish uchun Google akkauntingiz bilan kiring.',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 56),
-                child: NumericKeypad(
-                  onDigit: _appendDigit,
-                  onBackspace: _backspace,
-                  onSubmit: _submit,
+                const SizedBox(height: 32),
+                _GoogleButton(
+                  isLoading: authState.isLoading,
+                  onPressed: () =>
+                      ref.read(authProvider.notifier).signInWithGoogle(),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// "Continue with Google", following Google's light button style.
+class _GoogleButton extends StatelessWidget {
+  const _GoogleButton({required this.isLoading, required this.onPressed});
+
+  final bool isLoading;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 280,
+      height: 52,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF1F1F1F),
+          disabledBackgroundColor: Colors.white70,
+          shape: const StadiumBorder(
+            side: BorderSide(color: Color(0xFFDADCE0)),
+          ),
+          elevation: 0,
+        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 22,
+                width: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Color(0xFF396E0D),
+                ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/icons/google_g.png',
+                    width: 22,
+                    height: 22,
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Continue with Google',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
       ),
     );
   }

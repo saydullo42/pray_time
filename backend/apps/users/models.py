@@ -1,19 +1,14 @@
-import random
-from datetime import timedelta
-
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
-OTP_VALIDITY_MINUTES = 5
-
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone_number, password=None, **extra_fields):
-        if not phone_number:
-            raise ValueError("Phone number is required")
-        user = self.model(phone_number=phone_number, **extra_fields)
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Email is required")
+        user = self.model(email=self.normalize_email(email), **extra_fields)
         if password:
             user.set_password(password)
         else:
@@ -21,47 +16,28 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone_number, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
-        return self.create_user(phone_number, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    phone_number = models.CharField(max_length=20, unique=True)
+    # Nullable only so rows that predate email sign-in survive the migration;
+    # every account created through the API has one.
+    email = models.EmailField(unique=True, null=True)
+    # Google's stable account id ("sub" claim); the email can change, this can't.
+    google_sub = models.CharField(max_length=64, unique=True, null=True, blank=True)
     full_name = models.CharField(max_length=150, blank=True)
-    avatar_url = models.URLField(blank=True, null=True)
-    is_profile_complete = models.BooleanField(default=False)
+    avatar_url = models.URLField(max_length=500, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
 
-    USERNAME_FIELD = "phone_number"
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.phone_number
-
-
-class OTP(models.Model):
-    phone_number = models.CharField(max_length=20)
-    code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_used = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    @classmethod
-    def generate(cls, phone_number: str) -> "OTP":
-        code = f"{random.randint(0, 999999):06d}"
-        return cls.objects.create(phone_number=phone_number, code=code)
-
-    @property
-    def is_expired(self) -> bool:
-        return timezone.now() > self.created_at + timedelta(minutes=OTP_VALIDITY_MINUTES)
-
-    def __str__(self):
-        return f"{self.phone_number} - {self.code}"
+        return self.email or f"user-{self.pk}"

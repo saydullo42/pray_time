@@ -28,7 +28,7 @@ class NotificationSettings(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user.phone_number}'s notification settings"
+        return f"{self.user}'s notification settings"
 
 
 class DeviceToken(models.Model):
@@ -42,4 +42,4 @@ class DeviceToken(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.phone_number} - {self.platform}"
+        return f"{self.user} - {self.platform}"

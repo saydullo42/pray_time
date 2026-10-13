@@ -5,7 +5,6 @@ class RouteNames {
 
   // Auth
   static const String login = '/login';
-  static const String otp = '/otp';
 
   // Main shell
   static const String home = '/home';

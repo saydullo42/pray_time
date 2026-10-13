@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DeleteAccountPanel } from "@/components/DeleteAccountPanel";
 
 export const metadata: Metadata = {
   title: "Akkauntni o'chirish — Pray Time",
@@ -27,37 +28,33 @@ export default function DeleteAccountPage() {
       </p>
 
       <h2 className={h2Class}>Qanday o&apos;chiriladi</h2>
-      <ol className="list-decimal space-y-1 pl-6">
-        <li>
-          <a className={linkClass} href="mailto:support.praytime@gmail.com?subject=Akkauntni%20o%27chirish">
-            support.praytime@gmail.com
-          </a>{" "}
-          manziliga xat yuboring.
-        </li>
-        <li>
-          Mavzuga <strong>&quot;Akkauntni o&apos;chirish&quot;</strong> deb yozing.
-        </li>
-        <li>
-          Xatda akkauntga ulangan <strong>telefon raqamingizni</strong> ko&apos;rsating.
-        </li>
-        <li>
-          Raqam sizga tegishli ekanini tasdiqlash uchun bu raqamga SMS kod yuboriladi. Kodni javob xatida yuboring.
-        </li>
-      </ol>
-
-      <div className="my-4 rounded-xl border border-outline bg-surface px-4 py-3">
-        So&apos;rovingiz tasdiqlangach, akkaunt va ma&apos;lumotlar <strong>30 kun ichida</strong> o&apos;chiriladi va bu
-        haqda sizga xabar beriladi.
-      </div>
+      <p>
+        Tizimga kiring va quyidagi tugma orqali akkauntni o&apos;chiring. Akkaunt va uning ma&apos;lumotlari
+        darhol o&apos;chiriladi.
+      </p>
+      <DeleteAccountPanel />
 
       <h2 className={h2Class}>Nimalar o&apos;chiriladi</h2>
       <ul className="list-disc space-y-1 pl-5">
-        <li>Akkauntga ulangan telefon raqamingiz.</li>
+        <li>Akkauntga ulangan email manzilingiz, ismingiz va profil rasmingiz.</li>
+        <li>Namoz belgilari va kalendar ma&apos;lumotlari.</li>
+        <li>Eslatma sozlamalari va o&apos;zingiz kiritgan namoz vaqtlari.</li>
         <li>Akkaunt bilan bog&apos;liq boshqa barcha ma&apos;lumotlar.</li>
       </ul>
       <p>
-        O&apos;chirilgan akkauntni qayta tiklab bo&apos;lmaydi. Xizmatdan yana foydalanish uchun yangidan ro&apos;yxatdan
-        o&apos;tishingiz kerak bo&apos;ladi.
+        O&apos;chirilgan akkauntni qayta tiklab bo&apos;lmaydi. Xizmatdan yana foydalanish uchun yangidan
+        ro&apos;yxatdan o&apos;tishingiz kerak bo&apos;ladi.
+      </p>
+
+      <h2 className={h2Class}>Tizimga kira olmasangiz</h2>
+      <p>
+        Agar tizimga kira olmasangiz,{" "}
+        <a className={linkClass} href="mailto:support.praytime@gmail.com?subject=Akkauntni%20o%27chirish">
+          support.praytime@gmail.com
+        </a>{" "}
+        manziliga xat yuboring: mavzuga <strong>&quot;Akkauntni o&apos;chirish&quot;</strong> deb yozing.
+        Xatni akkauntga ulangan email manzilingizdan yuboring, shunda manzil sizga tegishli ekani tasdiqlanadi va
+        akkaunt o&apos;chiriladi.
       </p>
 
       <h2 className={h2Class}>Qo&apos;shimcha</h2>
