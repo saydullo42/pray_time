@@ -6,6 +6,7 @@ import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../data/repositories/tracking_repository.dart';
+import '../providers/roza_provider.dart';
 import '../providers/tracking_provider.dart';
 import '../utils/completion_color.dart';
 import '../utils/date_utils.dart';
@@ -19,22 +20,49 @@ class YearlyTrackingScreen extends ConsumerStatefulWidget {
   const YearlyTrackingScreen({super.key});
 
   @override
-  ConsumerState<YearlyTrackingScreen> createState() => _YearlyTrackingScreenState();
+  ConsumerState<YearlyTrackingScreen> createState() =>
+      _YearlyTrackingScreenState();
 }
 
+enum _TrackingMode { namoz, roza }
+
 class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
+  static const _oldestRozaYear = 1940;
+  static const _rozaYearsPerPage = 12;
+
   int _year = DateTime.now().year;
+  _TrackingMode _mode = _TrackingMode.namoz;
+
+  /// Ro'za view: 0 = the current year and the 11 before it, 1 = the next 12
+  /// older years, and so on back to [_oldestRozaYear].
+  int _rozaPage = 0;
+
+  int get _rozaTopYear => DateTime.now().year - _rozaPage * _rozaYearsPerPage;
+
+  bool get _canGoOlder => _rozaTopYear - _rozaYearsPerPage >= _oldestRozaYear;
+
+  void _openRozaYear(int year) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => _RozaYearDialog(year: year),
+    );
+  }
 
   void _openMonth(int month) {
     showDialog<void>(
       context: context,
-      builder: (context) => _MonthDetailDialog(initialYear: _year, initialMonth: month),
+      builder: (context) =>
+          _MonthDetailDialog(initialYear: _year, initialMonth: month),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final countsAsync = ref.watch(yearlyCalendarCountsProvider(_year));
+    final isNamoz = _mode == _TrackingMode.namoz;
+    final rozaBottomYear = (_rozaTopYear - _rozaYearsPerPage + 1).clamp(
+      _oldestRozaYear,
+      _rozaTopYear,
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -46,57 +74,399 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  _ModeButton(
+                    mode: _mode,
+                    onSelected: (mode) => setState(() => _mode = mode),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.chevron_left),
-                    onPressed: () => setState(() => _year--),
+                    onPressed: isNamoz
+                        ? () => setState(() => _year--)
+                        : (_canGoOlder
+                              ? () => setState(() => _rozaPage++)
+                              : null),
                   ),
-                  const SizedBox(width: 24),
-                  Text('$_year', style: Theme.of(context).textTheme.headlineSmall),
-                  const SizedBox(width: 24),
+                  // In Namoz mode the year is narrow, so the arrows sit close
+                  // to it; the trailing spacer below keeps the whole row as
+                  // wide as in Ro'za mode, so the mode button doesn't move.
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minWidth: 64),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          isNamoz
+                              ? '$_year'
+                              : '$rozaBottomYear - $_rozaTopYear',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.chevron_right),
-                    onPressed: () => setState(() => _year++),
+                    onPressed: isNamoz
+                        ? () => setState(() => _year++)
+                        : (_rozaPage > 0
+                              ? () => setState(() => _rozaPage--)
+                              : null),
                   ),
+                  if (isNamoz) const SizedBox(width: 76),
                 ],
               ),
               const SizedBox(height: 8),
-              Expanded(
-                child: countsAsync.when(
-                  loading: () => const LoadingIndicator(),
-                  error: (error, _) => ErrorView(
-                    message: error.toString(),
-                    onRetry: () => ref.invalidate(yearlyCalendarCountsProvider(_year)),
-                  ),
-                  data: (countsByMonth) => Column(
-                    children: [
-                      for (var row = 0; row < 4; row++)
-                        Expanded(
-                          child: Row(
-                            children: [
-                              for (var col = 0; col < 3; col++)
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3),
-                                    child: Builder(builder: (context) {
-                                      final month = row * 3 + col + 1;
-                                      return _MiniMonthCalendar(
-                                        year: _year,
-                                        month: month,
-                                        dayCounts: countsByMonth[month] ?? const {},
-                                        onTap: () => _openMonth(month),
-                                      );
-                                    }),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
+              Expanded(child: isNamoz ? _buildNamozGrid() : _buildRozaGrid()),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNamozGrid() {
+    final countsAsync = ref.watch(yearlyCalendarCountsProvider(_year));
+    return countsAsync.when(
+      loading: () => const LoadingIndicator(),
+      error: (error, _) => ErrorView(
+        message: error.toString(),
+        onRetry: () => ref.invalidate(yearlyCalendarCountsProvider(_year)),
+      ),
+      data: (countsByMonth) => Column(
+        children: [
+          for (var row = 0; row < 4; row++)
+            Expanded(
+              child: Row(
+                children: [
+                  for (var col = 0; col < 3; col++)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Builder(
+                          builder: (context) {
+                            final month = row * 3 + col + 1;
+                            return _MiniMonthCalendar(
+                              year: _year,
+                              month: month,
+                              dayCounts: countsByMonth[month] ?? const {},
+                              onTap: () => _openMonth(month),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// The twelve month slots hold years in reverse order: the last slot
+  /// (Dekabr) is the newest year of the page, the first (Yanvar) the oldest.
+  Widget _buildRozaGrid() {
+    return Column(
+      children: [
+        for (var row = 0; row < 4; row++)
+          Expanded(
+            child: Row(
+              children: [
+                for (var col = 0; col < 3; col++)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: Builder(
+                        builder: (context) {
+                          final slot =
+                              row * 3 + col; // 0 = Yanvar .. 11 = Dekabr
+                          final year =
+                              _rozaTopYear - (_rozaYearsPerPage - 1 - slot);
+                          if (year < _oldestRozaYear) {
+                            return const SizedBox.shrink();
+                          }
+                          return _RozaYearCard(
+                            year: year,
+                            onTap: () => _openRozaYear(year),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Dropdown-style button that switches between the Namoz and Ro'za views.
+class _ModeButton extends StatelessWidget {
+  const _ModeButton({required this.mode, required this.onSelected});
+
+  final _TrackingMode mode;
+  final ValueChanged<_TrackingMode> onSelected;
+
+  static String _label(_TrackingMode mode) =>
+      mode == _TrackingMode.namoz ? 'Namoz' : "Ro'za";
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // MenuAnchor (unlike PopupMenuButton) sizes the menu to its content
+    // instead of snapping to 56dp steps, so it can be narrow.
+    return MenuAnchor(
+      style: const MenuStyle(minimumSize: WidgetStatePropertyAll(Size(0, 0))),
+      menuChildren: [
+        for (var i = 0; i < _TrackingMode.values.length; i++) ...[
+          if (i > 0)
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.grey.withValues(alpha: 0.6),
+            ),
+          MenuItemButton(
+            onPressed: () => onSelected(_TrackingMode.values[i]),
+            style: ButtonStyle(
+              minimumSize: const WidgetStatePropertyAll(Size(0, 48)),
+              padding: const WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: 12),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                _TrackingMode.values[i] == mode
+                    ? Colors.grey.withValues(alpha: 0.28)
+                    : null,
+              ),
+            ),
+            trailingIcon: _TrackingMode.values[i] == mode
+                ? const Icon(Icons.check, size: 20, color: Colors.green)
+                : null,
+            child: Text(_label(_TrackingMode.values[i])),
+          ),
+        ],
+      ],
+      builder: (context, controller, child) => InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => controller.isOpen ? controller.close() : controller.open(),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: scheme.outline),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _label(mode),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              const Icon(Icons.arrow_drop_down, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One year in the Ro'za view: the year as a title and 30 plain day boxes
+/// (no weekday alignment) for the 30 days of fasting. Days marked as kept
+/// are green; tapping the card opens that year in a bigger dialog.
+class _RozaYearCard extends ConsumerWidget {
+  const _RozaYearCard({required this.year, required this.onTap});
+
+  final int year;
+  final VoidCallback onTap;
+
+  static const _days = 30;
+  static const _columns = 6;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final isCurrentYear = year == DateTime.now().year;
+    final doneDays = ref.watch(rozaProvider)[year] ?? const <int>{};
+    const rows = _days ~/ _columns;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isCurrentYear ? scheme.primary : scheme.outlineVariant,
+            width: isCurrentYear ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Text(
+              '$year',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: isCurrentYear ? scheme.primary : null,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Expanded(
+              child: Column(
+                children: [
+                  for (var row = 0; row < rows; row++)
+                    Expanded(
+                      child: Row(
+                        children: [
+                          for (var col = 0; col < _columns; col++)
+                            Expanded(
+                              child: _RozaDayBox(
+                                day: row * _columns + col + 1,
+                                done: doneDays.contains(
+                                  row * _columns + col + 1,
+                                ),
+                                fontSize: 10,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A single numbered day box, green when the day is marked as kept.
+class _RozaDayBox extends StatelessWidget {
+  const _RozaDayBox({
+    required this.day,
+    required this.done,
+    required this.fontSize,
+  });
+
+  final int day;
+  final bool done;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(0.75),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: done ? colorForCompletionCount(6) : null,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: FittedBox(
+        child: Text('$day', style: TextStyle(fontSize: fontSize)),
+      ),
+    );
+  }
+}
+
+/// A year's 30 fasting days in a bigger grid. Tapping a day opens a small
+/// dialog where it can be marked as kept.
+class _RozaYearDialog extends ConsumerWidget {
+  const _RozaYearDialog({required this.year});
+
+  final int year;
+
+  static const _days = 30;
+  static const _columns = 5;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final doneDays = ref.watch(rozaProvider)[year] ?? const <int>{};
+
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('$year', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: _columns,
+              mainAxisSpacing: 6,
+              crossAxisSpacing: 6,
+              children: [
+                for (var day = 1; day <= _days; day++)
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => showDialog<void>(
+                      context: context,
+                      builder: (context) =>
+                          _RozaDayDialog(year: year, day: day),
+                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: doneDays.contains(day)
+                            ? colorForCompletionCount(6)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: scheme.outlineVariant),
+                      ),
+                      child: Text('$day', style: const TextStyle(fontSize: 16)),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Marks one fasting day as kept: the year centered on top, and below it a
+/// right-aligned "day - kun" row with a checkbox.
+class _RozaDayDialog extends ConsumerWidget {
+  const _RozaDayDialog({required this.year, required this.day});
+
+  final int year;
+  final int day;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final done = ref.watch(rozaProvider)[year]?.contains(day) ?? false;
+
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('$year', style: Theme.of(context).textTheme.headlineMedium),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('$day - kun', style: const TextStyle(fontSize: 26)),
+                const SizedBox(width: 52),
+                Transform.scale(
+                  scale: 1.6,
+                  child: Checkbox(
+                    value: done,
+                    onChanged: (value) => ref
+                        .read(rozaProvider.notifier)
+                        .setDone(year, day, value ?? false),
+                  ),
+                ),
+                const SizedBox(width: 4),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -125,7 +495,8 @@ class _MiniMonthCalendar extends StatelessWidget {
     final isCurrentMonth = year == now.year && month == now.month;
 
     final daysInMonth = DateTime(year, month + 1, 0).day;
-    final firstWeekday = (DateTime(year, month, 1).weekday + 6) % 7; // 0=Mon..6=Sun
+    final firstWeekday =
+        (DateTime(year, month, 1).weekday + 6) % 7; // 0=Mon..6=Sun
     final totalCells = firstWeekday + daysInMonth;
     final rows = (totalCells / 7).ceil();
     final monthLabel = DateFormat.MMMM('uz').format(DateTime(year, month));
@@ -162,7 +533,13 @@ class _MiniMonthCalendar extends StatelessWidget {
                         children: [
                           for (var col = 0; col < 7; col++)
                             Expanded(
-                              child: _dayCell(row * 7 + col, firstWeekday, daysInMonth, isCurrentMonth, now),
+                              child: _dayCell(
+                                row * 7 + col,
+                                firstWeekday,
+                                daysInMonth,
+                                isCurrentMonth,
+                                now,
+                              ),
                             ),
                         ],
                       ),
@@ -176,7 +553,13 @@ class _MiniMonthCalendar extends StatelessWidget {
     );
   }
 
-  Widget _dayCell(int cellIndex, int firstWeekday, int daysInMonth, bool isCurrentMonth, DateTime now) {
+  Widget _dayCell(
+    int cellIndex,
+    int firstWeekday,
+    int daysInMonth,
+    bool isCurrentMonth,
+    DateTime now,
+  ) {
     final day = cellIndex - firstWeekday + 1;
     if (day < 1 || day > daysInMonth) {
       return const SizedBox.shrink();
@@ -190,7 +573,12 @@ class _MiniMonthCalendar extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorForCompletionCount(dayCounts[day]),
           borderRadius: BorderRadius.circular(3),
-          border: isToday ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1) : null,
+          border: isToday
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1,
+                )
+              : null,
         ),
         child: FittedBox(
           child: Text('$day', style: const TextStyle(fontSize: 10)),
@@ -203,7 +591,10 @@ class _MiniMonthCalendar extends StatelessWidget {
 /// Full-size calendar for a single month, opened from the year grid. Tapping
 /// a date opens the daily prayer checklist for it.
 class _MonthDetailDialog extends ConsumerStatefulWidget {
-  const _MonthDetailDialog({required this.initialYear, required this.initialMonth});
+  const _MonthDetailDialog({
+    required this.initialYear,
+    required this.initialMonth,
+  });
 
   final int initialYear;
   final int initialMonth;
@@ -213,7 +604,11 @@ class _MonthDetailDialog extends ConsumerStatefulWidget {
 }
 
 class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
-  late DateTime _focusedDay = DateTime(widget.initialYear, widget.initialMonth, 1);
+  late DateTime _focusedDay = DateTime(
+    widget.initialYear,
+    widget.initialMonth,
+    1,
+  );
   late DateTime _selectedDay = _focusedDay;
   bool _isBusy = false;
 
@@ -230,13 +625,18 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
   Future<void> _bulkSet(int upToDay, bool done) async {
     final year = _focusedDay.year;
     final month = _focusedDay.month;
-    final checklist = {for (final prayer in AppConstants.dailyChecklistPrayers) prayer: done};
+    final checklist = {
+      for (final prayer in AppConstants.dailyChecklistPrayers) prayer: done,
+    };
 
     setState(() => _isBusy = true);
     final repository = ref.read(trackingRepositoryProvider);
     await Future.wait([
       for (var day = 1; day <= upToDay; day++)
-        repository.saveDailyChecklist(date: DateTime(year, month, day), checklist: checklist),
+        repository.saveDailyChecklist(
+          date: DateTime(year, month, day),
+          checklist: checklist,
+        ),
     ]);
     ref.invalidate(dailyTrackingProvider);
     ref.invalidate(monthCalendarCountsProvider);
@@ -245,21 +645,40 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
   }
 
   Future<void> _clearAllForMonth() async {
-    final daysInMonth = DateTime(_focusedDay.year, _focusedDay.month + 1, 0).day;
-    final upToDay = _lastMarkableDay(_focusedDay.year, _focusedDay.month, daysInMonth);
+    final daysInMonth = DateTime(
+      _focusedDay.year,
+      _focusedDay.month + 1,
+      0,
+    ).day;
+    final upToDay = _lastMarkableDay(
+      _focusedDay.year,
+      _focusedDay.month,
+      daysInMonth,
+    );
     await _bulkSet(upToDay, false);
   }
 
   Future<void> _markAllForMonth() async {
-    final daysInMonth = DateTime(_focusedDay.year, _focusedDay.month + 1, 0).day;
-    final upToDay = _lastMarkableDay(_focusedDay.year, _focusedDay.month, daysInMonth);
+    final daysInMonth = DateTime(
+      _focusedDay.year,
+      _focusedDay.month + 1,
+      0,
+    ).day;
+    final upToDay = _lastMarkableDay(
+      _focusedDay.year,
+      _focusedDay.month,
+      daysInMonth,
+    );
     await _bulkSet(upToDay, true);
   }
 
   @override
   Widget build(BuildContext context) {
     final countsAsync = ref.watch(
-      monthCalendarCountsProvider((year: _focusedDay.year, month: _focusedDay.month)),
+      monthCalendarCountsProvider((
+        year: _focusedDay.year,
+        month: _focusedDay.month,
+      )),
     );
     final counts = countsAsync.valueOrNull ?? const {};
 
@@ -267,13 +686,25 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
     // adjacent months; fetch their counts too so those cells get colored.
     final prevMonthDate = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
     final nextMonthDate = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
-    final prevMonthCounts = ref.watch(
-          monthCalendarCountsProvider((year: prevMonthDate.year, month: prevMonthDate.month)),
-        ).valueOrNull ??
+    final prevMonthCounts =
+        ref
+            .watch(
+              monthCalendarCountsProvider((
+                year: prevMonthDate.year,
+                month: prevMonthDate.month,
+              )),
+            )
+            .valueOrNull ??
         const {};
-    final nextMonthCounts = ref.watch(
-          monthCalendarCountsProvider((year: nextMonthDate.year, month: nextMonthDate.month)),
-        ).valueOrNull ??
+    final nextMonthCounts =
+        ref
+            .watch(
+              monthCalendarCountsProvider((
+                year: nextMonthDate.year,
+                month: nextMonthDate.month,
+              )),
+            )
+            .valueOrNull ??
         const {};
 
     return Dialog(
@@ -289,7 +720,8 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
                 child: TrackingCalendar(
                   focusedDay: _focusedDay,
                   selectedDay: _selectedDay,
-                  onPageChanged: (focused) => setState(() => _focusedDay = focused),
+                  onPageChanged: (focused) =>
+                      setState(() => _focusedDay = focused),
                   onDaySelected: (selected, focused) {
                     setState(() {
                       _selectedDay = selected;
@@ -300,13 +732,16 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
                     }
                   },
                   dayColor: (day) {
-                    if (day.year == _focusedDay.year && day.month == _focusedDay.month) {
+                    if (day.year == _focusedDay.year &&
+                        day.month == _focusedDay.month) {
                       return colorForCompletionCount(counts[day.day]);
                     }
-                    if (day.year == prevMonthDate.year && day.month == prevMonthDate.month) {
+                    if (day.year == prevMonthDate.year &&
+                        day.month == prevMonthDate.month) {
                       return colorForCompletionCount(prevMonthCounts[day.day]);
                     }
-                    if (day.year == nextMonthDate.year && day.month == nextMonthDate.month) {
+                    if (day.year == nextMonthDate.year &&
+                        day.month == nextMonthDate.month) {
                       return colorForCompletionCount(nextMonthCounts[day.day]);
                     }
                     return null;

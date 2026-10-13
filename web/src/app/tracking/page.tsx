@@ -8,6 +8,8 @@ import { UZ_MONTHS, formatDateISO, isFutureDate, daysInMonth } from "@/lib/date-
 import { Loading, ErrorBox } from "@/components/Status";
 import { MonthCalendar } from "@/components/MonthCalendar";
 import { DailyChecklistModal } from "@/components/DailyChecklistModal";
+import { ModeSelect } from "@/components/ModeSelect";
+import { RozaView, rozaBottomYear, rozaCanGoOlder, rozaTopYear } from "@/components/RozaView";
 import type { MonthCalendarCounts } from "@/lib/types";
 
 export default function TrackingPage() {
@@ -21,8 +23,11 @@ export default function TrackingPage() {
 function TrackingContent() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [openMonth, setOpenMonth] = useState<number | null>(null);
+  const [mode, setMode] = useState<"namoz" | "roza">("namoz");
+  const [rozaPage, setRozaPage] = useState(0);
+  const isNamoz = mode === "namoz";
 
-  const { data, error, isLoading, mutate } = useSWR(["yearly-calendar", year], async () => {
+  const { data, error, isLoading, mutate } = useSWR(isNamoz ? ["yearly-calendar", year] : null, async () => {
     const months = await Promise.all(
       Array.from({ length: 12 }, (_, i) =>
         api.get<MonthCalendarCounts>("/tracking/calendar/", { year, month: i + 1 })
@@ -33,20 +38,41 @@ function TrackingContent() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-center gap-6">
-        <button onClick={() => setYear((y) => y - 1)} className="text-foreground-muted hover:text-foreground">
+      <div className="flex items-center justify-center gap-4">
+        <ModeSelect
+          value={mode}
+          onChange={setMode}
+          ariaLabel="Namoz yoki Ro'za"
+          options={[
+            { value: "namoz", label: "Namoz" },
+            { value: "roza", label: "Ro'za" },
+          ]}
+        />
+        <button
+          onClick={() => (isNamoz ? setYear((y) => y - 1) : setRozaPage((p) => p + 1))}
+          disabled={!isNamoz && !rozaCanGoOlder(rozaPage)}
+          className="text-foreground-muted hover:text-foreground disabled:opacity-30"
+        >
           ‹
         </button>
-        <span className="text-xl font-medium">{year}</span>
-        <button onClick={() => setYear((y) => y + 1)} className="text-foreground-muted hover:text-foreground">
+        <span className="min-w-24 text-center text-xl font-medium">
+          {isNamoz ? year : `${rozaBottomYear(rozaPage)} - ${rozaTopYear(rozaPage)}`}
+        </span>
+        <button
+          onClick={() => (isNamoz ? setYear((y) => y + 1) : setRozaPage((p) => p - 1))}
+          disabled={!isNamoz && rozaPage === 0}
+          className="text-foreground-muted hover:text-foreground disabled:opacity-30"
+        >
           ›
         </button>
       </div>
 
-      {isLoading && <Loading />}
-      {error && <ErrorBox message={error.message} onRetry={() => mutate()} />}
+      {!isNamoz && <RozaView page={rozaPage} />}
 
-      {data && (
+      {isNamoz && isLoading && <Loading />}
+      {isNamoz && error && <ErrorBox message={error.message} onRetry={() => mutate()} />}
+
+      {isNamoz && data && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => {
             const now = new Date();
