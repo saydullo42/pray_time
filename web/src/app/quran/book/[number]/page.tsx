@@ -3,7 +3,7 @@
 import { use, useState } from "react";
 import useSWR from "swr";
 import { RequireAuth } from "@/lib/auth-context";
-import { fetchArabicSurah } from "@/lib/alquran";
+import { BASMALA, fetchArabicSurah, surahShowsBasmala, withoutBasmala } from "@/lib/alquran";
 import { Loading, ErrorBox } from "@/components/Status";
 import { SurahReaderHeader } from "@/components/SurahReaderHeader";
 
@@ -26,8 +26,10 @@ function Content({ surahNumber }: { surahNumber: number }) {
   );
 
   const [page, setPage] = useState(1);
-  const totalPages = data ? Math.ceil(data.length / AYAHS_PER_PAGE) : 1;
-  const visible = data?.slice((page - 1) * AYAHS_PER_PAGE, page * AYAHS_PER_PAGE) ?? [];
+  const ayahs = data ? withoutBasmala(surahNumber, data) : undefined;
+  const totalPages = ayahs ? Math.ceil(ayahs.length / AYAHS_PER_PAGE) : 1;
+  const visible = ayahs?.slice((page - 1) * AYAHS_PER_PAGE, page * AYAHS_PER_PAGE) ?? [];
+  const showBasmala = page === 1 && surahShowsBasmala(surahNumber);
 
   const goTo = (p: number) => {
     setPage(p);
@@ -39,7 +41,12 @@ function Content({ surahNumber }: { surahNumber: number }) {
       <SurahReaderHeader surahNumber={surahNumber} />
       {isLoading && <Loading />}
       {error && <ErrorBox message={error.message} onRetry={() => mutate()} />}
-      {data && (
+      {ayahs && showBasmala && (
+        <p dir="rtl" lang="ar" className="mb-3 text-center text-3xl leading-[2.4] font-arabic">
+          {BASMALA}
+        </p>
+      )}
+      {ayahs && (
         <p
           dir="rtl"
           lang="ar"
@@ -55,7 +62,7 @@ function Content({ surahNumber }: { surahNumber: number }) {
           ))}
         </p>
       )}
-      {data && totalPages > 1 && (
+      {ayahs && totalPages > 1 && (
         <div className="mt-4 flex items-center justify-center gap-4">
           <button
             onClick={() => goTo(page + 1)}
