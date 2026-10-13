@@ -12,11 +12,13 @@ export function Footer() {
     <footer className="border-t border-outline pb-20 pt-6 text-center text-sm text-foreground-muted sm:pb-6">
       <p className="text-lg font-semibold text-foreground">Pray Time - namozlaringiz sarhisobi</p>
 
-      <p className="mt-3">
-        Bog&apos;lanish uchun{" "}
-        <a href="mailto:support.praytime@gmail.com" className="text-accent-light underline">
-          support.praytime@gmail.com
-        </a>
+      <p className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">
+        <Link href="/privacy" className="underline hover:text-foreground">
+          Maxfiylik siyosati
+        </Link>
+        <Link href="/delete-account" className="underline hover:text-foreground">
+          Akkauntni o&apos;chirish
+        </Link>
       </p>
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
@@ -44,13 +46,11 @@ export function Footer() {
         </a>
       </div>
 
-      <p className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-1 pt-4">
-        <Link href="/privacy" className="underline hover:text-foreground">
-          Maxfiylik siyosati
-        </Link>
-        <Link href="/delete-account" className="underline hover:text-foreground">
-          Akkauntni o&apos;chirish
-        </Link>
+      <p className="mt-4">
+        Bog&apos;lanish uchun{" "}
+        <a href="mailto:support.praytime@gmail.com" className="text-accent-light underline">
+          support.praytime@gmail.com
+        </a>
       </p>
       <p className="mt-3 text-xs">© {new Date().getFullYear()} Pray Time. Barcha huquqlar himoyalangan.</p>
     </footer>

@@ -118,8 +118,10 @@ export function RozaView({ page }: { page: number }) {
                 <button
                   key={day}
                   onClick={() => setOpenDay(day)}
-                  className={`flex aspect-square items-center justify-center rounded-lg border border-outline text-lg ${
-                    (days[openYear] ?? []).includes(day) ? "bg-green-600/45" : ""
+                  className={`flex aspect-square cursor-pointer items-center justify-center rounded-lg border border-outline text-lg transition-colors ${
+                    (days[openYear] ?? []).includes(day)
+                      ? "bg-green-600/45 hover:bg-green-600/65"
+                      : "hover:bg-foreground/15"
                   }`}
                 >
                   {day}

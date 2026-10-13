@@ -189,14 +189,14 @@ function MonthDetailModal({
           <button
             onClick={() => bulkSet(false)}
             disabled={busy}
-            className="flex-1 rounded-full border border-danger py-2 text-sm text-danger disabled:opacity-60"
+            className="flex-1 cursor-pointer rounded-full border border-danger py-2 text-sm text-danger transition-colors hover:bg-danger/15 disabled:cursor-default disabled:opacity-60 disabled:hover:bg-transparent"
           >
             Hammasini o&apos;chirish
           </button>
           <button
             onClick={() => bulkSet(true)}
             disabled={busy}
-            className="flex-1 rounded-full bg-accent py-2 text-sm font-semibold text-black disabled:opacity-60"
+            className="flex-1 cursor-pointer rounded-full bg-accent py-2 text-sm font-semibold text-black transition-colors hover:bg-accent-light disabled:cursor-default disabled:opacity-60 disabled:hover:bg-accent"
           >
             Hammasini belgilash
           </button>

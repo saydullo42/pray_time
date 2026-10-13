@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/route_names.dart';
@@ -29,12 +30,19 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             CircleAvatar(
               radius: 40,
-              backgroundImage: user.avatarUrl != null ? NetworkImage(user.avatarUrl!) : null,
-              child: user.avatarUrl == null ? const Icon(Icons.person, size: 40) : null,
+              backgroundImage: user.avatarUrl != null
+                  ? NetworkImage(user.avatarUrl!)
+                  : null,
+              child: user.avatarUrl == null
+                  ? const Icon(Icons.person, size: 40)
+                  : null,
             ),
             const SizedBox(height: 12),
             Center(
-              child: Text(user.fullName ?? '', style: Theme.of(context).textTheme.titleLarge),
+              child: Text(
+                user.fullName ?? '',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
             Center(child: Text(user.phoneNumber)),
             const SizedBox(height: 16),
@@ -60,6 +68,18 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.mail_outline),
+              title: const Text("Bog'lanish"),
+              onTap: () => _showContact(context),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Dastur haqida'),
+              onTap: () => _showAbout(context),
+            ),
+            const Divider(),
+            ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text('Chiqish', style: TextStyle(color: Colors.red)),
               onTap: () async {
@@ -70,6 +90,142 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  static const _supportEmail = 'support.praytime@gmail.com';
+
+  static final _contactButtonStyle = TextButton.styleFrom(
+    foregroundColor: const Color(0xFF4CAF17),
+    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+  );
+
+  void _showContact(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Bog'lanish"),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Bog'lanish uchun:"),
+            SizedBox(height: 8),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: SelectableText(
+                _supportEmail,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            style: _contactButtonStyle,
+            onPressed: () async {
+              await Clipboard.setData(const ClipboardData(text: _supportEmail));
+              if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Nusxalandi')));
+              }
+            },
+            child: const Text('Nusxalash'),
+          ),
+          TextButton(
+            style: _contactButtonStyle,
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Yopish'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAbout(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final textTheme = Theme.of(dialogContext).textTheme;
+        final body = textTheme.bodyLarge?.copyWith(fontSize: 17, height: 1.45);
+
+        Widget bullet(String text) => Padding(
+          padding: const EdgeInsets.only(left: 8, top: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('•  ', style: body),
+              Expanded(child: Text(text, style: body)),
+            ],
+          ),
+        );
+
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 40,
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 640),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Pray Time - namozlaringiz sarhisobi',
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Ushbu ilova yordamida siz:', style: body),
+                          bullet('kunlik namozlarni'),
+                          bullet("yillik ro'zalarni"),
+                          bullet('qazo namozlarni'),
+                          bullet("qazo ro'zalarni"),
+                          const SizedBox(height: 4),
+                          Text('belgilab borishingiz mumkin.', style: body),
+                          const SizedBox(height: 16),
+                          Text('Bundan tashqari:', style: body),
+                          bullet(
+                            "Duolar bo'limidagi ko'plab kerakli duolarni o'rganishingiz",
+                          ),
+                          bullet(
+                            "Qur'on bo'limidagi kitob, audio va tarjima sahifalaridan ham foydalanishingiz mumkin.",
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Ilova foydali bo'ladi degan umiddaman!",
+                            style: body?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      style: _contactButtonStyle,
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                      child: const Text('Yopish'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

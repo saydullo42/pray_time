@@ -57,7 +57,7 @@ export function MonthCalendar({ year, month, counts, onSelectDay, selectedDay, c
                   : isToday
                   ? "border-primary"
                   : "border-transparent"
-              } ${isFuture ? "opacity-35" : "hover:border-accent-light/60"}`}
+              } ${isFuture ? "cursor-default opacity-35" : "cursor-pointer hover:border-accent-light/60"}`}
             >
               {day}
             </button>
