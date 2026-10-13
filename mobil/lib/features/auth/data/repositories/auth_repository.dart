@@ -21,10 +21,8 @@ class AuthRepository {
     );
   }
 
-  /// Verifies the OTP. Returns the authenticated user; if [isNewUser] is
-  /// true on the response, the caller should route to the registration
-  /// screen to collect the full name.
-  Future<({UserModel user, bool isNewUser})> verifyOtp({
+  /// Verifies the OTP and returns the authenticated user.
+  Future<UserModel> verifyOtp({
     required String phoneNumber,
     required String code,
   }) async {
@@ -35,18 +33,7 @@ class AuthRepository {
     final data = response.data!;
     await _secureStorage.saveAuthToken(data['access_token'] as String);
     await _secureStorage.saveRefreshToken(data['refresh_token'] as String);
-    return (
-      user: UserModel.fromJson(data['user'] as Map<String, dynamic>),
-      isNewUser: data['is_new_user'] as bool? ?? false,
-    );
-  }
-
-  Future<UserModel> completeRegistration({required String fullName}) async {
-    final response = await _client.post<Map<String, dynamic>>(
-      ApiEndpoints.register,
-      data: {'full_name': fullName},
-    );
-    return UserModel.fromJson(response.data!);
+    return UserModel.fromJson(data['user'] as Map<String, dynamic>);
   }
 
   Future<void> logout() async {

@@ -51,7 +51,7 @@ function HomeContent() {
   );
 
   return (
-    <div className="-mt-4 space-y-6">
+    <div className="mt-2 space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <LocationSelector />
 
@@ -88,38 +88,38 @@ function HomeContent() {
               * Oylik kalendarga o&apos;qilgan namozlarni belgilab borishingiz mumkin.
             </p>
           </div>
-        </div>
-      </div>
 
-      <div className="mx-auto max-w-sm rounded-2xl border border-outline bg-surface p-3">
-        <div className="mb-3 flex items-center justify-center gap-6">
-          <button
-            onClick={() => setFocused(new Date(year, month - 2, 1))}
-            className="text-2xl font-bold text-foreground-muted hover:text-foreground"
-          >
-            ‹
-          </button>
-          <span className="font-medium">
-            {UZ_MONTHS[month - 1]} {year}
-          </span>
-          <button
-            onClick={() => setFocused(new Date(year, month, 1))}
-            className="text-2xl font-bold text-foreground-muted hover:text-foreground"
-          >
-            ›
-          </button>
+          <div className="max-w-sm rounded-2xl border border-outline bg-surface p-3">
+            <div className="mb-3 flex items-center justify-center gap-6">
+              <button
+                onClick={() => setFocused(new Date(year, month - 2, 1))}
+                className="text-2xl font-bold text-foreground-muted hover:text-foreground"
+              >
+                ‹
+              </button>
+              <span className="font-medium">
+                {UZ_MONTHS[month - 1]} {year}
+              </span>
+              <button
+                onClick={() => setFocused(new Date(year, month, 1))}
+                className="text-2xl font-bold text-foreground-muted hover:text-foreground"
+              >
+                ›
+              </button>
+            </div>
+            <MonthCalendar
+              year={year}
+              month={month}
+              counts={counts?.results ?? {}}
+              selectedDay={selectedDay}
+              onSelectDay={(day) => {
+                if (!isFutureDate(new Date(year, month - 1, day))) {
+                  setSelectedDay(day);
+                }
+              }}
+            />
+          </div>
         </div>
-        <MonthCalendar
-          year={year}
-          month={month}
-          counts={counts?.results ?? {}}
-          selectedDay={selectedDay}
-          onSelectDay={(day) => {
-            if (!isFutureDate(new Date(year, month - 1, day))) {
-              setSelectedDay(day);
-            }
-          }}
-        />
       </div>
 
       {selectedDay && (

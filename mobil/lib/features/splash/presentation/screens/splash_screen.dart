@@ -44,7 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: Image.asset(
-                'assets/icon/icon.png',
+                'assets/icon/splash_image.png',
                 width: 140,
                 height: 140,
                 fit: BoxFit.cover,

@@ -20,7 +20,7 @@ function HubButton({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="quran-hub-btn rounded-full py-4 text-center text-lg font-semibold"
+      className="mx-auto w-full max-w-xs rounded-full bg-surface py-4 text-center text-lg font-semibold"
     >
       {label}
     </Link>

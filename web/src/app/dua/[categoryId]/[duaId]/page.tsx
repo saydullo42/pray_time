@@ -36,20 +36,18 @@ function Content({ categoryId, duaId }: { categoryId: string; duaId: number }) {
     <div className="space-y-5">
       <BackLink href={`/dua/${categoryId}`} />
       <h1 className="text-center text-xl font-semibold">{dua.title}</h1>
-      <p dir="rtl" lang="ar" className="rounded-2xl bg-surface p-5 text-right text-2xl leading-loose font-arabic">
-        {dua.arabic_text}
-      </p>
+      {!dua.image_url && (
+        <p dir="rtl" lang="ar" className="rounded-2xl bg-surface p-5 text-right text-2xl leading-loose font-arabic">
+          {dua.arabic_text}
+        </p>
+      )}
       {dua.image_url && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={dua.image_url} alt={dua.title} className="w-full rounded-2xl" />
       )}
       <div>
-        <p className="mb-1 font-bold">O&apos;qilishi:</p>
-        <p className="italic leading-relaxed">{dua.transliteration}</p>
-      </div>
-      <div>
         <p className="mb-1 font-bold">Ma&apos;nosi:</p>
-        <p className="leading-relaxed">{dua.translation}</p>
+        <p className="text-lg leading-relaxed">{dua.translation}</p>
       </div>
       {dua.source && <p className="text-sm text-foreground-muted">Manba: {dua.source}</p>}
       {dua.audio_url && (

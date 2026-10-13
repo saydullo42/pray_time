@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
-import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/dua/data/models/dua_model.dart';
 import '../../features/dua/presentation/screens/dua_categories_screen.dart';
 import '../../features/dua/presentation/screens/dua_detail_screen.dart';
@@ -42,7 +41,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: RouteNames.otp,
         builder: (context, state) => OtpScreen(phoneNumber: state.extra as String),
       ),
-      GoRoute(path: RouteNames.register, builder: (context, state) => const RegisterScreen()),
 
       // Main bottom-nav shell: Home / Yillik tracking / Qur'an / Duo / Profile
       StatefulShellRoute.indexedStack(

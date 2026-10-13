@@ -19,11 +19,6 @@ class AuthOtpSent extends AuthState {
   final String phoneNumber;
 }
 
-class AuthNeedsRegistration extends AuthState {
-  const AuthNeedsRegistration(this.user);
-  final UserModel user;
-}
-
 class AuthAuthenticated extends AuthState {
   const AuthAuthenticated(this.user);
   final UserModel user;
@@ -50,17 +45,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   Future<void> verifyOtp({required String phoneNumber, required String code}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final result = await _repository.verifyOtp(phoneNumber: phoneNumber, code: code);
-      return result.isNewUser
-          ? AuthNeedsRegistration(result.user)
-          : AuthAuthenticated(result.user);
-    });
-  }
-
-  Future<void> completeRegistration(String fullName) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final user = await _repository.completeRegistration(fullName: fullName);
+      final user = await _repository.verifyOtp(phoneNumber: phoneNumber, code: code);
       return AuthAuthenticated(user);
     });
   }

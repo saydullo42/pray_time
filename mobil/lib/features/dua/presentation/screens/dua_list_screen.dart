@@ -44,7 +44,10 @@ class DuaListScreen extends ConsumerWidget {
               if (inline) {
                 return _InlineDua(
                   dua: dua,
-                  showDivider: dua.title.isNotEmpty || dua.imageUrl == null,
+                  showDivider:
+                      dua.title.isNotEmpty ||
+                      dua.imageUrl == null ||
+                      index == duas.length - 1,
                 );
               }
               return Padding(

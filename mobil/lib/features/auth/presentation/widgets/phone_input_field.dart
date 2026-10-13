@@ -50,7 +50,7 @@ class _UzPhoneNumberFormatter extends TextInputFormatter {
 }
 
 /// Phone input pre-filled with the Uzbekistan country code, used on the
-/// login/register screen before requesting an SMS OTP.
+/// login screen before requesting an SMS OTP.
 ///
 /// The field is read-only: digits are entered via [NumericKeypad] instead of
 /// the system keyboard, so the phone number can only ever contain digits,

@@ -10,7 +10,6 @@ export interface VerifyOtpResponse {
   access_token: string;
   refresh_token: string;
   user: User;
-  is_new_user: boolean;
 }
 
 export interface PrayerTime {
@@ -71,6 +70,7 @@ export interface DuaCategory {
   id: number;
   name: string;
   icon_name: string;
+  inline_images?: boolean;
 }
 
 export interface Dua {

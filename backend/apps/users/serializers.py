@@ -17,7 +17,3 @@ class RequestOtpSerializer(serializers.Serializer):
 class VerifyOtpSerializer(serializers.Serializer):
     phone_number = serializers.RegexField(r"^\+998[0-9]{9}$")
     code = serializers.RegexField(r"^[0-9]{6}$")
-
-
-class RegisterSerializer(serializers.Serializer):
-    full_name = serializers.CharField(max_length=150)

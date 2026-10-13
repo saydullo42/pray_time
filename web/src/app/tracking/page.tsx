@@ -62,7 +62,7 @@ function TrackingContent() {
                   isCurrent ? "border-primary" : "border-outline"
                 }`}
               >
-                <p className={`mb-1 text-center text-xs font-semibold ${isCurrent ? "text-primary" : ""}`}>
+                <p className={`mb-1 text-center text-sm font-semibold ${isCurrent ? "text-primary" : ""}`}>
                   {UZ_MONTHS[month - 1]}
                 </p>
                 <MonthCalendar

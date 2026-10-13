@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import useSWR from "swr";
 import { api } from "@/lib/api";
@@ -12,6 +13,13 @@ export function SurahReaderHeader({ surahNumber }: { surahNumber: number }) {
   const surah = data?.results.find((s) => s.number === surahNumber);
   const pathname = usePathname();
   const basePath = pathname.replace(/\/\d+$/, "");
+
+  // Remember the open surah so the list can scroll back to it on "Orqaga".
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(`lastSurah:${basePath}`, String(surahNumber));
+    } catch {}
+  }, [basePath, surahNumber]);
 
   return (
     <>

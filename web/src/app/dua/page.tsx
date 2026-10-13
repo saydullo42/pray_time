@@ -31,7 +31,7 @@ function Content() {
           <Link
             key={c.id}
             href={`/dua/${c.id}?name=${encodeURIComponent(c.name)}`}
-            className="flex items-center justify-between rounded-xl bg-surface px-4 py-4"
+            className="flex items-center justify-between rounded-xl bg-surface py-4 pl-12 pr-4"
           >
             <span className="font-medium">{c.name}</span>
             <span className="text-foreground-muted">›</span>

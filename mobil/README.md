@@ -11,7 +11,7 @@ Namoz vaqtlari, Qur'on, dua va ibodat tracking uchun Flutter ilovasi. Backend (D
 - Qur'oni Karim — PDF, audio (tilovat) va video formatlarda
 - Dua kategoriyalari va matnlari
 - Foydalanuvchi profili
-- SMS OTP orqali login/register (parolsiz), backend Eskiz.uz orqali SMS yuboradi
+- SMS OTP orqali login (parolsiz), backend Eskiz.uz orqali SMS yuboradi
 - Namoz vaqtidan 10/15/20 daqiqa oldin push-eslatmalar (`flutter_local_notifications`)
 - Dark/Light tema
 
@@ -38,7 +38,7 @@ lib/
     widgets/                # CustomButton, CustomTextField, LoadingIndicator, ErrorView
     routing/                # RouteNames, GoRouter konfiguratsiyasi
   features/
-    auth/                   # SMS OTP login/register
+    auth/                   # SMS OTP login
     prayer_times/           # Aladhan API + custom vaqtlar
     tracking/               # Kunlik/oylik/yillik tracking
     quran/                  # Surah ro'yxati, PDF/audio/video
@@ -67,7 +67,7 @@ flutter run --dart-define=BACKEND_BASE_URL=https://api.example.com/api/v1
 ```
 
 Backend quyidagi endpointlarni ta'minlashi kutiladi (barchasi `api_endpoints.dart` faylida sanab o'tilgan):
-`/auth/otp/request/`, `/auth/otp/verify/`, `/auth/register/`, `/users/me/`, `/prayer-times/custom/`, `/tracking/*`, `/quran/*`, `/dua/*`, `/notifications/settings/`.
+`/auth/otp/request/`, `/auth/otp/verify/`, `/users/me/`, `/prayer-times/custom/`, `/tracking/*`, `/quran/*`, `/dua/*`, `/notifications/settings/`.
 
 ## Ishga tushirish
 

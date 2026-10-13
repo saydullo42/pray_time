@@ -84,9 +84,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         );
     final state = ref.read(authProvider).valueOrNull;
     if (!mounted) return;
-    if (state is AuthNeedsRegistration) {
-      context.go(RouteNames.register);
-    } else if (state is AuthAuthenticated) {
+    if (state is AuthAuthenticated) {
       context.go(RouteNames.home);
     }
   }

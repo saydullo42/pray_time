@@ -67,15 +67,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   font-family: var(--font-arabic), serif;
 }
 
-/* Qur'on hub buttons: green bg / black text on dark theme, white bg / black text on light theme. */
-.quran-hub-btn {
-  background: var(--accent);
-  color: #000;
-}
-:root[data-theme="light"] .quran-hub-btn {
-  background: #fff;
-}
-
 .themed-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--outline) var(--surface-alt);

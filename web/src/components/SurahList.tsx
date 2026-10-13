@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 export interface SurahListEntry {
   number: number;
@@ -22,6 +22,17 @@ export function SurahList({
   hrefFor: (number: number) => string;
   icon: ReactNode;
 }) {
+  const basePath = hrefFor(1).replace(/\/1$/, "");
+
+  // Returning from a surah: scroll the list to the surah that was last open.
+  useEffect(() => {
+    if (surahs.length === 0) return;
+    try {
+      const last = sessionStorage.getItem(`lastSurah:${basePath}`);
+      if (last) document.getElementById(`surah-${last}`)?.scrollIntoView({ block: "center" });
+    } catch {}
+  }, [surahs.length, basePath]);
+
   return (
     <div>
       <h1 className="mb-4 text-center text-xl font-semibold">{title}</h1>
@@ -29,6 +40,7 @@ export function SurahList({
         {surahs.map((s) => (
           <Link
             key={s.number}
+            id={`surah-${s.number}`}
             href={hrefFor(s.number)}
             prefetch={false}
             className="flex items-center gap-3 rounded-xl bg-surface px-4 py-3"

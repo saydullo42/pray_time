@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/theme-context";
 import { LocationProvider } from "@/lib/location-context";
 import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,9 +43,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AuthProvider>
             <LocationProvider>
               <NavBar />
-              <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-20 pt-4 sm:pb-8">
+              <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-8 pt-4">
                 {children}
               </main>
+              <Footer />
             </LocationProvider>
           </AuthProvider>
         </ThemeProvider>
