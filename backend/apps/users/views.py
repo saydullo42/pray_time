@@ -6,7 +6,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .google import GoogleAuthError, verify_google_id_token
@@ -68,12 +68,15 @@ class GoogleSignInView(APIView):
 
 
 class LogoutView(APIView):
+    """Signs the user out everywhere by blacklisting all of their refresh tokens."""
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        tokens = OutstandingToken.objects.filter(user=request.user)
-        for token in tokens:
-            RefreshToken(token.token).blacklist()
+        pending = OutstandingToken.objects.filter(user=request.user, blacklistedtoken__isnull=True)
+        BlacklistedToken.objects.bulk_create(
+            [BlacklistedToken(token=token) for token in pending], ignore_conflicts=True
+        )
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
 

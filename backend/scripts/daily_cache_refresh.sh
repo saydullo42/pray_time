@@ -1,10 +1,13 @@
 #!/bin/sh
-# Refreshes the prayer-times file cache once right away, then every day at
-# 01:00 in the container's time zone (TZ=Asia/Tashkent in docker-compose.yml).
+# Daily housekeeping: refreshes the prayer-times file cache once right away,
+# then every day at 01:00 in the container's time zone (TZ=Asia/Tashkent in
+# docker-compose.yml), and deletes expired JWT refresh tokens so that table
+# doesn't grow forever.
 # Failures are logged and retried at the next run; the API falls back to
 # Aladhan when the cache for today is missing.
 
 python manage.py refresh_prayer_times_cache || true
+python manage.py flushexpiredtokens || true
 
 while true; do
   now=$(date +%s)
@@ -14,4 +17,5 @@ while true; do
   fi
   sleep $((target - now))
   python manage.py refresh_prayer_times_cache || true
+  python manage.py flushexpiredtokens || true
 done

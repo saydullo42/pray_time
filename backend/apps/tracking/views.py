@@ -2,6 +2,8 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.common.params import MAX_YEAR, MIN_YEAR, date_param, int_param
+
 from .models import PRAYER_NAMES, PrayerTrackingRecord
 from .serializers import DailyChecklistSerializer, DailyTrackingSerializer
 
@@ -21,9 +23,7 @@ class DailyTrackingView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        day = request.query_params.get("date")
-        if not day:
-            return Response({"detail": "date is required"}, status=status.HTTP_400_BAD_REQUEST)
+        day = date_param(request.query_params, "date")
 
         records = PrayerTrackingRecord.objects.filter(user=request.user, date=day)
         statuses = {name: False for name in PRAYER_NAMES}
@@ -61,8 +61,8 @@ class MonthCalendarView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        year = int(request.query_params.get("year"))
-        month = int(request.query_params.get("month"))
+        year = int_param(request.query_params, "year", minimum=MIN_YEAR, maximum=MAX_YEAR)
+        month = int_param(request.query_params, "month", minimum=1, maximum=12)
 
         records = PrayerTrackingRecord.objects.filter(
             user=request.user, date__year=year, date__month=month

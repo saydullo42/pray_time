@@ -94,7 +94,7 @@ function InlineDua({ dua, isLast }: { dua: Dua; isLast: boolean }) {
       {dua.title && <h2 className="mb-3 text-lg font-bold">{dua.title}</h2>}
       {dua.image_url && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={dua.image_url} alt={dua.title} className="mb-3 w-full rounded-xl" />
+        <img src={dua.image_url} alt={dua.title} loading="lazy" decoding="async" className="mb-3 w-full rounded-xl" />
       )}
       {dua.translation && (
         <div className="text-lg leading-relaxed">

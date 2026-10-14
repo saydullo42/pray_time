@@ -6,6 +6,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/theme-context";
 import { LocationProvider } from "@/lib/location-context";
 import { NavBar } from "@/components/NavBar";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
@@ -32,8 +33,18 @@ const amiri = Amiri({
 });
 
 export const metadata: Metadata = {
-  title: "Namoz Vaqtlari",
-  description: "Namoz vaqtlari, Qur'on va duolar",
+  metadataBase: new URL(SITE_URL),
+  title: `${SITE_NAME} - namozlaringiz sarhisobi`,
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "uz_UZ",
+    title: `${SITE_NAME} - namozlaringiz sarhisobi`,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

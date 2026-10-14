@@ -3,8 +3,8 @@ attrs==26.1.0
 django-cors-headers==4.9.0
 django-environ==0.14.0
 django-filter==26.1
-Django==6.0.7
-djangorestframework==3.17.1
+Django==6.0.8
+djangorestframework==3.17.2
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.30.0
 google-auth==2.62.0
@@ -16,11 +16,11 @@ pillow==12.3.0
 psycopg2-binary==2.9.12
 pyasn1==0.6.4
 pyasn1_modules==0.4.2
-PyJWT==2.13.0
+PyJWT==2.15.0
 PyYAML==6.0.3
 referencing==0.37.0
 requests==2.34.2
 rpds-py==2026.6.3
-sqlparse==0.5.5
+sqlparse==0.6.0
 typing_extensions==4.16.0
 uritemplate==4.2.0

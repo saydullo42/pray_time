@@ -219,6 +219,19 @@ GOOGLE_CLIENT_IDS = env.list("GOOGLE_CLIENT_IDS", default=[])
 ALADHAN_BASE_URL = env("ALADHAN_BASE_URL", default="https://api.aladhan.com/v1")
 
 
+# Cache (monthly/daily prayer times from Aladhan). File based so that all
+# gunicorn workers share it and it survives restarts (./cache is a Docker volume).
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache" / "django",
+        "TIMEOUT": 24 * 3600,
+        "OPTIONS": {"MAX_ENTRIES": 5000},
+    }
+}
+
+
 # Logging (dev: surface app logs on the console)
 
 LOGGING = {

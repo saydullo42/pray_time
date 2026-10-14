@@ -150,6 +150,16 @@ rm content.sql
 Hammasi ishlagach, `.env` da `DJANGO_HSTS_SECONDS=31536000` qo'ying va
 `docker compose up -d` qiling.
 
+## 8a. Xavfsizlik sarlavhalari (CSP)
+
+Sayt `Content-Security-Policy` bilan ishlaydi: brauzer faqat saytning o'ziga, API domeniga,
+Google (kirish tugmasi) va `api.alquran.cloud` ga ulanishi mumkin. Agar kelajakda boshqa tashqi
+manba qo'shilsa (rasm, shrift, API), uni `web/next.config.ts` dagi `contentSecurityPolicy` ro'yxatiga
+ham qo'shish kerak, aks holda brauzer uni to'sib qo'yadi.
+
+Kundalik tozalash (`scheduler` konteyneri o'zi bajaradi): har kuni soat 01:00 da namoz vaqtlari keshi
+yangilanadi va muddati o'tgan JWT tokenlar bazadan o'chiriladi (`flushexpiredtokens`).
+
 ## 9. Mobil ilovani production'ga ulash
 
 Ilovani yig'ishda API manzili va Google ID'ni bering:

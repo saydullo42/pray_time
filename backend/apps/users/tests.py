@@ -1,7 +1,12 @@
+from datetime import timedelta
 from unittest.mock import patch
 
+from django.core.management import call_command
 from django.test import SimpleTestCase, TestCase, override_settings
+from django.utils import timezone
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .google import GoogleAuthError, verify_google_id_token
 from .models import User
@@ -113,3 +118,49 @@ class VerifyGoogleIdTokenTests(SimpleTestCase):
     def test_rejects_everything_when_not_configured(self):
         with self.assertRaises(GoogleAuthError):
             self._verify(CLAIMS)
+
+
+class LogoutAndTokenCleanupTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def _sign_in(self):
+        with patch("apps.users.views.verify_google_id_token", return_value=CLAIMS):
+            return self.client.post(URL, {"id_token": "t"}, format="json").data
+
+    def test_logout_blacklists_every_refresh_token_of_the_user(self):
+        first = self._sign_in()
+        second = self._sign_in()  # a second device
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {second['access_token']}")
+        self.assertEqual(self.client.post("/api/v1/auth/logout/").status_code, 205)
+
+        self.client.credentials()
+        for tokens in (first, second):
+            response = self.client.post("/api/v1/auth/token/refresh/", {"refresh": tokens["refresh_token"]}, format="json")
+            self.assertEqual(response.status_code, 401)
+
+    def test_logging_out_twice_is_fine(self):
+        tokens = self._sign_in()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {tokens['access_token']}")
+        self.assertEqual(self.client.post("/api/v1/auth/logout/").status_code, 205)
+        self.assertEqual(self.client.post("/api/v1/auth/logout/").status_code, 205)
+
+    def test_logout_does_not_touch_other_users_tokens(self):
+        mine = self._sign_in()
+        other_user = User.objects.create_user(email="other@example.com")
+        other_refresh = str(RefreshToken.for_user(other_user))
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {mine['access_token']}")
+        self.client.post("/api/v1/auth/logout/")
+
+        self.client.credentials()
+        response = self.client.post("/api/v1/auth/token/refresh/", {"refresh": other_refresh}, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_flushexpiredtokens_removes_only_expired_tokens(self):
+        self._sign_in()
+        OutstandingToken.objects.update(expires_at=timezone.now() - timedelta(days=1))
+        fresh = RefreshToken.for_user(User.objects.get())
+        call_command("flushexpiredtokens")
+        remaining = list(OutstandingToken.objects.values_list("jti", flat=True))
+        self.assertEqual(remaining, [fresh["jti"]])

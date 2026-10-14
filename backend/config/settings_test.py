@@ -26,3 +26,4 @@ DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memor
 MIGRATION_MODULES = _NoMigrations()
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 GOOGLE_CLIENT_IDS = ["client-web"]
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
