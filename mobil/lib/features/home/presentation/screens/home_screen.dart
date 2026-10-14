@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../notifications/presentation/providers/reminder_sync_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/widgets/error_view.dart';
@@ -210,6 +211,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await ref.read(prayerTimesRepositoryProvider).saveCustomOverrides(updated);
     ref.invalidate(customPrayerTimeOverridesProvider);
     ref.invalidate(todayPrayerTimesProvider);
+    ref.read(reminderSyncProvider).sync();
   }
 
   @override

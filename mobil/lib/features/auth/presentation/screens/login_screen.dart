@@ -50,7 +50,7 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
-/// "Continue with Google", following Google's light button style.
+/// "Google orqali kirish", following Google's light button style.
 class _GoogleButton extends StatelessWidget {
   const _GoogleButton({required this.isLoading, required this.onPressed});
 
@@ -92,7 +92,7 @@ class _GoogleButton extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   const Text(
-                    'Continue with Google',
+                    'Google orqali kirish',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ],

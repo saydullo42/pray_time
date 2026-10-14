@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../notifications/presentation/providers/reminder_sync_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../data/models/custom_prayer_time_model.dart';
@@ -46,6 +47,7 @@ class _CustomPrayerTimeScreenState extends ConsumerState<CustomPrayerTimeScreen>
       isha: _fmt(_selected['Xufton']),
     );
     await ref.read(prayerTimesRepositoryProvider).saveCustomOverrides(overrides);
+    ref.read(reminderSyncProvider).sync();
     if (mounted) {
       setState(() => _isSaving = false);
       Navigator.of(context).pop();

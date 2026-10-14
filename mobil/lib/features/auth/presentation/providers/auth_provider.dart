@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../notifications/data/services/notification_scheduler.dart';
 import '../../data/models/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -45,6 +46,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await _repository.deleteAccount();
+      await ref.read(notificationSchedulerProvider).cancelAll();
       return const AuthUnauthenticated();
     });
   }
@@ -53,6 +55,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await _repository.logout();
+      await ref.read(notificationSchedulerProvider).cancelAll();
       return const AuthUnauthenticated();
     });
   }

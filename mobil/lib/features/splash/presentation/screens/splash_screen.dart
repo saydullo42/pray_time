@@ -27,7 +27,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ]);
     if (!mounted) return;
     final state = results[0] as AuthState;
-    if (state is AuthAuthenticated) {
+    // AuthInitial = a saved session from an earlier launch; it is checked (and
+    // refreshed if needed) by the first API call.
+    if (state is AuthAuthenticated || state is AuthInitial) {
       context.go(RouteNames.home);
     } else {
       context.go(RouteNames.login);

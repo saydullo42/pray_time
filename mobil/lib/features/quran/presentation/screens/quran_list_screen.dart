@@ -7,12 +7,11 @@ class QuranListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final buttonStyle = OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(64),
       side: BorderSide.none,
-      foregroundColor: theme.colorScheme.onSurface,
-      backgroundColor: theme.cardTheme.color,
+      foregroundColor: Colors.white,
+      backgroundColor: const Color(0xFF004225),
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     );
 

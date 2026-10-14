@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 import '../models/reminder_sound.dart';
@@ -48,12 +49,36 @@ class LocalNotificationService {
     }
   }
 
-  Future<bool> requestPermissions() async {
-    final androidGranted = await _plugin
+  AndroidFlutterLocalNotificationsPlugin? get _android => _plugin
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >();
+
+  /// Whether reminders are currently allowed to show.
+  Future<bool> areNotificationsEnabled() async {
+    final android = _android;
+    if (android != null) return await android.areNotificationsEnabled() ?? true;
+    final ios = _plugin
         .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+          IOSFlutterLocalNotificationsPlugin
+        >();
+    if (ios != null) return (await ios.checkPermissions())?.isEnabled ?? true;
+    return true;
+  }
+
+  /// True once the system won't show its permission dialog any more (it was
+  /// declined for good); the permission can then only be given in the app's
+  /// system settings.
+  Future<bool> isPermissionDeclinedForGood() async =>
+      (await Permission.notification.status).isPermanentlyDenied;
+
+  /// Opens this app's page in the system settings.
+  Future<void> openAppSettingsPage() => openAppSettings();
+
+  /// Asks for the notification permission (Android 13+ / iOS). Returns
+  /// whether reminders are allowed to show.
+  Future<bool> requestPermissions() async {
+    final androidGranted = await _android?.requestNotificationsPermission();
     final iosGranted = await _plugin
         .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin
@@ -62,12 +87,31 @@ class LocalNotificationService {
     return (androidGranted ?? true) && (iosGranted ?? true);
   }
 
+  /// Android 14+ doesn't grant exact alarms by default. Without them the
+  /// reminders still fire, but the system may delay them by several minutes.
+  /// Opens the system "Alarms & reminders" page when not yet allowed.
+  Future<void> requestExactAlarmsPermission() async {
+    final android = _android;
+    if (android == null) return;
+    if (await android.canScheduleExactNotifications() ?? true) return;
+    await android.requestExactAlarmsPermission();
+  }
+
+  /// Exact alarms when allowed, otherwise the closest thing Android permits.
+  Future<AndroidScheduleMode> scheduleMode() async {
+    final canExact = await _android?.canScheduleExactNotifications() ?? true;
+    return canExact
+        ? AndroidScheduleMode.exactAllowWhileIdle
+        : AndroidScheduleMode.inexactAllowWhileIdle;
+  }
+
   Future<void> scheduleAt({
     required int id,
     required String title,
     required String body,
     required DateTime scheduledTime,
     String reminderSoundId = defaultReminderSoundId,
+    AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle,
   }) async {
     if (scheduledTime.isBefore(DateTime.now())) return;
 
@@ -80,10 +124,12 @@ class LocalNotificationService {
         android: AndroidNotificationDetails(
           _channelId(reminderSoundId),
           _channelName,
+          importance: Importance.high,
+          priority: Priority.high,
         ),
         iOS: DarwinNotificationDetails(sound: '$reminderSoundId.wav'),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: scheduleMode,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
