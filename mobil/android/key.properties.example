@@ -1,0 +1,9 @@
+# Copy to "key.properties" (it is git-ignored) and fill in. Create the keystore once with:
+#   keytool -genkey -v -keystore ~/praytime-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+# Keep the .jks file and these passwords somewhere safe (a password manager + an offline copy):
+# if you lose the upload key you can only recover through Google Play support.
+storePassword=
+keyPassword=
+keyAlias=upload
+# Path relative to the android/ folder, or absolute
+storeFile=/home/YOU/praytime-upload.jks

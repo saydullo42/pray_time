@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../constants/api_endpoints.dart';
@@ -33,7 +34,7 @@ class DioClient {
           if (error.response?.statusCode == 401 &&
               !isAuthCall &&
               request.extra['retried'] != true &&
-              await _refreshAccessToken()) {
+              await _ensureFreshAccessToken(request.headers['Authorization'])) {
             request.extra['retried'] = true;
             request.headers['Authorization'] =
                 'Bearer ${await _secureStorage.readAuthToken()}';
@@ -46,12 +47,14 @@ class DioClient {
           handler.next(error);
         },
       ),
-      PrettyDioLogger(
-        requestHeader: false,
-        requestBody: true,
-        responseBody: true,
-        error: true,
-      ),
+      // Request/response bodies include sign-in tokens, so log them in debug builds only.
+      if (kDebugMode)
+        PrettyDioLogger(
+          requestHeader: false,
+          requestBody: true,
+          responseBody: true,
+          error: true,
+        ),
     ]);
   }
 
@@ -60,6 +63,27 @@ class DioClient {
 
   Dio get raw => _dio;
 
+  Future<bool>? _refreshing;
+
+  /// Makes sure a valid access token is stored after a request with
+  /// [failedAuthorization] was rejected with 401. Returns false if the person
+  /// has to sign in again.
+  ///
+  /// Several requests often fail at once (e.g. the yearly view loads 12 months
+  /// in parallel). The backend rotates refresh tokens and blacklists the old
+  /// one, so refreshing once per request would make all but the first fail and
+  /// sign the person out; they all wait for a single refresh instead.
+  Future<bool> _ensureFreshAccessToken(Object? failedAuthorization) async {
+    final current = await _secureStorage.readAuthToken();
+    if (current != null && failedAuthorization != 'Bearer $current') {
+      // Another request has already refreshed the token since this one was sent.
+      return true;
+    }
+    return _refreshing ??= _refreshAccessToken().whenComplete(
+      () => _refreshing = null,
+    );
+  }
+
   /// Exchanges the stored refresh token for a new access token (the backend
   /// also rotates the refresh token). Returns false, and drops the stored
   /// session, if the refresh token is missing or no longer valid.
@@ -67,11 +91,13 @@ class DioClient {
     final refresh = await _secureStorage.readRefreshToken();
     if (refresh == null) return false;
     try {
-      final response = await Dio(BaseOptions(baseUrl: _dio.options.baseUrl))
-          .post<Map<String, dynamic>>(
-            ApiEndpoints.tokenRefresh,
-            data: {'refresh': refresh},
-          );
+      // A separate Dio (no interceptors, so no refresh loop) on the same transport.
+      final refreshDio = Dio(BaseOptions(baseUrl: _dio.options.baseUrl))
+        ..httpClientAdapter = _dio.httpClientAdapter;
+      final response = await refreshDio.post<Map<String, dynamic>>(
+        ApiEndpoints.tokenRefresh,
+        data: {'refresh': refresh},
+      );
       final data = response.data!;
       await _secureStorage.saveAuthToken(data['access'] as String);
       final rotated = data['refresh'] as String?;

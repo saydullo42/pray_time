@@ -27,12 +27,12 @@ class PrayerTimeModel {
   /// Ordered list of (name, time) pairs matching AppConstants.prayerNames,
   /// i.e. Bomdod, Peshin, Asr, Shom, Xufton (sunrise is shown separately).
   List<MapEntry<String, DateTime>> get orderedPrayers => [
-        MapEntry('Bomdod', fajr),
-        MapEntry('Peshin', dhuhr),
-        MapEntry('Asr', asr),
-        MapEntry('Shom', maghrib),
-        MapEntry('Xufton', isha),
-      ];
+    MapEntry('Bomdod', fajr),
+    MapEntry('Peshin', dhuhr),
+    MapEntry('Asr', asr),
+    MapEntry('Shom', maghrib),
+    MapEntry('Xufton', isha),
+  ];
 
   /// Returns the next upcoming prayer relative to [now], or null if all of
   /// today's prayers have passed.
@@ -51,7 +51,13 @@ class PrayerTimeModel {
 
     DateTime parseTime(String hhmm) {
       final parts = hhmm.split(':');
-      return DateTime(date.year, date.month, date.day, int.parse(parts[0]), int.parse(parts[1]));
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
     }
 
     return PrayerTimeModel(
@@ -62,7 +68,8 @@ class PrayerTimeModel {
       asr: parseTime(json['asr'] as String),
       maghrib: parseTime(json['maghrib'] as String),
       isha: parseTime(json['isha'] as String),
-      hijriDate: '${json['hijri_day']} ${json['hijri_month']} ${json['hijri_year']}',
+      hijriDate:
+          '${json['hijri_day']} ${json['hijri_month']} ${json['hijri_year']}',
     );
   }
 

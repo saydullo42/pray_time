@@ -34,10 +34,8 @@ class QuranReciterListScreen extends ConsumerWidget {
               for (final reciter in reciters) ...[
                 ElevatedButton(
                   style: buttonStyle,
-                  onPressed: () => context.push(
-                    RouteNames.quranAudioList,
-                    extra: reciter,
-                  ),
+                  onPressed: () =>
+                      context.push(RouteNames.quranAudioList, extra: reciter),
                   child: Text(reciter.name),
                 ),
                 const SizedBox(height: 28),

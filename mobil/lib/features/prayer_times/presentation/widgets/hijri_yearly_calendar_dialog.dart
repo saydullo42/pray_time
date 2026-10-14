@@ -8,7 +8,8 @@ class HijriYearlyCalendarDialog extends StatefulWidget {
   const HijriYearlyCalendarDialog({super.key});
 
   @override
-  State<HijriYearlyCalendarDialog> createState() => _HijriYearlyCalendarDialogState();
+  State<HijriYearlyCalendarDialog> createState() =>
+      _HijriYearlyCalendarDialogState();
 }
 
 class _HijriYearlyCalendarDialogState extends State<HijriYearlyCalendarDialog> {
@@ -35,7 +36,10 @@ class _HijriYearlyCalendarDialogState extends State<HijriYearlyCalendarDialog> {
                     onPressed: () => setState(() => _year--),
                   ),
                   const SizedBox(width: 24),
-                  Text('$_year h.', style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    '$_year h.',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(width: 24),
                   IconButton(
                     icon: const Icon(Icons.chevron_right),
@@ -55,15 +59,19 @@ class _HijriYearlyCalendarDialogState extends State<HijriYearlyCalendarDialog> {
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(3),
-                                  child: Builder(builder: (context) {
-                                    final month = row * 3 + col + 1;
-                                    return _HijriMiniMonth(
-                                      year: _year,
-                                      month: month,
-                                      isCurrentMonth: _year == _today.hYear && month == _today.hMonth,
-                                      currentDay: _today.hDay,
-                                    );
-                                  }),
+                                  child: Builder(
+                                    builder: (context) {
+                                      final month = row * 3 + col + 1;
+                                      return _HijriMiniMonth(
+                                        year: _year,
+                                        month: month,
+                                        isCurrentMonth:
+                                            _year == _today.hYear &&
+                                            month == _today.hMonth,
+                                        currentDay: _today.hDay,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                           ],
@@ -140,7 +148,12 @@ class _HijriMiniMonth extends StatelessWidget {
                       children: [
                         for (var col = 0; col < 7; col++)
                           Expanded(
-                            child: _dayCell(row * 7 + col, firstWeekday, daysInMonth, scheme),
+                            child: _dayCell(
+                              row * 7 + col,
+                              firstWeekday,
+                              daysInMonth,
+                              scheme,
+                            ),
                           ),
                       ],
                     ),
@@ -153,7 +166,12 @@ class _HijriMiniMonth extends StatelessWidget {
     );
   }
 
-  Widget _dayCell(int cellIndex, int firstWeekday, int daysInMonth, ColorScheme scheme) {
+  Widget _dayCell(
+    int cellIndex,
+    int firstWeekday,
+    int daysInMonth,
+    ColorScheme scheme,
+  ) {
     final day = cellIndex - firstWeekday + 1;
     if (day < 1 || day > daysInMonth) {
       return const SizedBox.shrink();

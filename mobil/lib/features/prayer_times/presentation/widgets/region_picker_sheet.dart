@@ -14,12 +14,17 @@ Future<String?> showRegionPickerSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
-    builder: (context) => _RegionPickerSheet(title: title, items: items, selected: selected),
+    builder: (context) =>
+        _RegionPickerSheet(title: title, items: items, selected: selected),
   );
 }
 
 class _RegionPickerSheet extends StatelessWidget {
-  const _RegionPickerSheet({required this.title, required this.items, required this.selected});
+  const _RegionPickerSheet({
+    required this.title,
+    required this.items,
+    required this.selected,
+  });
 
   final String title;
   final List<String> items;
@@ -35,7 +40,10 @@ class _RegionPickerSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Center(
-              child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             const SizedBox(height: 8),
             Expanded(
@@ -48,7 +56,9 @@ class _RegionPickerSheet extends StatelessWidget {
                     title: Text(
                       name,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.normal,
                         color: isSelected ? const Color(0xFF396E0D) : null,
                       ),
                     ),

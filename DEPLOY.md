@@ -165,13 +165,13 @@ yangilanadi va muddati o'tgan JWT tokenlar bazadan o'chiriladi (`flushexpiredtok
 Ilovani yig'ishda API manzili va Google ID'ni bering:
 
 ```bash
-flutter build apk --release \
+flutter build appbundle --release \
   --dart-define=BACKEND_BASE_URL=https://api.pray-time.uz/api/v1 \
   --dart-define=GOOGLE_SERVER_CLIENT_ID=<web-client-id>.apps.googleusercontent.com
 ```
 
-Google Play uchun: `com.example.mobil` paket nomini o'zgartirish, o'z kalitingiz bilan imzolash
-va shu kalitning SHA-1 ini Google Console'dagi Android client'ga qo'shish kerak.
+Google Play uchun `.aab` yig'ish, kalit yaratish va Google Console'dagi Android client'lar (paket nomi
+`uz.praytime.app`, har bir kalit uchun SHA-1) haqida `mobil/README.md` dagi "Release build" bo'limiga qarang.
 
 ## 10. Kundalik ishlar
 

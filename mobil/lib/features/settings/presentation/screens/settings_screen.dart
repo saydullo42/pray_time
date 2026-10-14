@@ -27,12 +27,23 @@ class SettingsScreen extends ConsumerWidget {
             trailing: DropdownButton<ThemeMode>(
               value: themeMode,
               onChanged: (mode) {
-                if (mode != null) ref.read(themeModeProvider.notifier).setThemeMode(mode);
+                if (mode != null) {
+                  ref.read(themeModeProvider.notifier).setThemeMode(mode);
+                }
               },
               items: const [
-                DropdownMenuItem(value: ThemeMode.system, child: Text('Tizim bo\'yicha')),
-                DropdownMenuItem(value: ThemeMode.light, child: Text('Yorug\'')),
-                DropdownMenuItem(value: ThemeMode.dark, child: Text('Qorong\'i')),
+                DropdownMenuItem(
+                  value: ThemeMode.system,
+                  child: Text('Tizim bo\'yicha'),
+                ),
+                DropdownMenuItem(
+                  value: ThemeMode.light,
+                  child: Text('Yorug\''),
+                ),
+                DropdownMenuItem(
+                  value: ThemeMode.dark,
+                  child: Text('Qorong\'i'),
+                ),
               ],
             ),
           ),

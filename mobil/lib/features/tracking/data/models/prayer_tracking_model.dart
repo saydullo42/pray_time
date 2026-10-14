@@ -16,7 +16,7 @@ class DailyTrackingModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'date': date.toIso8601String().split('T').first,
-        'statuses': statuses,
-      };
+    'date': date.toIso8601String().split('T').first,
+    'statuses': statuses,
+  };
 }

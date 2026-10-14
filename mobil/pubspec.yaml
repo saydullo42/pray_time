@@ -37,7 +37,6 @@ dependencies:
 
   # State management
   flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.6.1
 
   # Networking
   dio: ^5.7.0
@@ -57,31 +56,19 @@ dependencies:
   # Notifications & scheduling
   flutter_local_notifications: ^18.0.1
   timezone: ^0.9.4
-  workmanager: ^0.9.0+3
 
   # Tracking UI
   table_calendar: ^3.1.3
-  fl_chart: ^0.69.2
 
-  # Qur'an: audio / video
+  # Qur'an: audio
   just_audio: ^0.9.42
-  audio_service: ^0.18.15
-  video_player: ^2.9.2
-  chewie: ^1.11.1
 
   # Auth (SMS OTP) UI
-  pinput: ^5.0.1
 
   # Location for prayer times
-  geolocator: ^13.0.2
-  geocoding: ^4.0.0
   permission_handler: ^11.3.1
 
   # Models & misc
-  freezed_annotation: ^2.4.4
-  json_annotation: ^4.9.0
-  cached_network_image: ^3.4.1
-  equatable: ^2.0.7
   google_sign_in: ^6.3.0
 
 dev_dependencies:
@@ -94,10 +81,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  build_runner: ^2.4.13
-  freezed: ^2.5.7
-  json_serializable: ^6.9.0
-  riverpod_generator: ^2.6.3
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.3
 
@@ -133,7 +116,6 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/sounds/
-    - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

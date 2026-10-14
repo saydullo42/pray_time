@@ -31,7 +31,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    await ref.read(profileProvider.notifier).updateProfile(fullName: _nameController.text);
+    await ref
+        .read(profileProvider.notifier)
+        .updateProfile(fullName: _nameController.text);
     if (mounted) Navigator.of(context).pop();
   }
 

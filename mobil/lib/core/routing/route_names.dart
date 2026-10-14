@@ -1,7 +1,7 @@
 class RouteNames {
   RouteNames._();
 
-  static const String splash = '/splash';
+  static const String startup = '/startup';
 
   // Auth
   static const String login = '/login';
@@ -23,7 +23,6 @@ class RouteNames {
   static const String quranPdfReader = '/quran/pdf';
   static const String quranTranslationReader = '/quran/translation';
   static const String quranAudioPlayer = '/quran/audio';
-  static const String quranVideo = '/quran/video';
 
   // Dua
   static const String duaCategories = '/dua';

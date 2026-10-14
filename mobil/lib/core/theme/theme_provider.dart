@@ -7,9 +7,9 @@ import '../storage/local_storage_service.dart';
 class ThemeModeNotifier extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
-    final stored = ref.read(localStorageServiceProvider).getString(
-          AppConstants.keyThemeMode,
-        );
+    final stored = ref
+        .read(localStorageServiceProvider)
+        .getString(AppConstants.keyThemeMode);
     return switch (stored) {
       'light' => ThemeMode.light,
       'dark' => ThemeMode.dark,
@@ -30,5 +30,6 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   }
 }
 
-final themeModeProvider =
-    NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
+  ThemeModeNotifier.new,
+);

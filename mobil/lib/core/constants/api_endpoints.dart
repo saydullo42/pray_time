@@ -29,7 +29,6 @@ class ApiEndpoints {
   // Qur'an
   static const String quranSurahs = '/quran/surahs/';
   static const String quranAudio = '/quran/audio/';
-  static const String quranVideo = '/quran/video/';
   static const String quranPdf = '/quran/pdf/';
   static String reciterSurahAudio(int reciterId) =>
       '/quran/audio/$reciterId/surahs/';

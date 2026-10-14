@@ -94,8 +94,13 @@ Android/iOS manifest fayllariga tegishli ruxsat yozuvlarini (`ACCESS_FINE_LOCATI
 1. Google Cloud Console'da OAuth ruxsatnomalarini yarating (bitta loyiha ichida):
    - **Web application** turidagi client ID. Bu ID backendga (`GOOGLE_CLIENT_IDS`), veb saytga
      (`NEXT_PUBLIC_GOOGLE_CLIENT_ID`) va mobil ilovaga (`GOOGLE_SERVER_CLIENT_ID`) beriladi.
-   - **Android** turidagi client ID: paket nomi (`applicationId`, hozir `com.example.mobil`) va
-     ilovani imzolagan kalitning SHA-1 barmoq izi bilan. Debug uchun: `cd android && ./gradlew signingReport`.
+   - **Android** turidagi client ID: paket nomi **`uz.praytime.app`** va ilovani imzolagan kalitning
+     SHA-1 barmoq izi. Har bir kalit uchun alohida client yaratiladi:
+     - **debug** (`flutter run`): `cd android && ./gradlew signingReport` yoki
+       `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android`;
+     - **upload/release** (Play'ga yuklash uchun): o'z `.jks` kalitingizniki;
+     - Play **App Signing** yoqilgan bo'lsa, Play Console → App integrity bo'limidagi "App signing key"
+       SHA-1 ham alohida client sifatida qo'shiladi (foydalanuvchilarga yetib boradigan ilova shu kalit bilan imzolanadi).
 2. Ilovani ishga tushirish:
 
 ```bash
@@ -106,3 +111,29 @@ flutter run --dart-define=BACKEND_BASE_URL=http://localhost:8000/api/v1 \
 Veb sayt uchun `web/.env.local` ga `NEXT_PUBLIC_GOOGLE_CLIENT_ID=<web-client-id>` yoziladi (va "Authorized
 JavaScript origins" ga `http://localhost:3000` qo'shiladi). Backend uchun `backend/.env` ga
 `GOOGLE_CLIENT_IDS=<web-client-id>` yoziladi.
+
+## Release build (Google Play)
+
+1. Yuklash kalitini bir marta yarating va xavfsiz joyda saqlang (yo'qotsangiz, faqat Play yordami orqali tiklanadi):
+
+```bash
+keytool -genkey -v -keystore ~/praytime-upload.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+cp android/key.properties.example android/key.properties   # va to'ldiring (git'ga kirmaydi)
+```
+
+2. Play'ga yuklanadigan `.aab` ni yig'ing:
+
+```bash
+flutter build appbundle --release \
+  --dart-define=BACKEND_BASE_URL=https://api.pray-time.uz/api/v1 \
+  --dart-define=GOOGLE_SERVER_CLIENT_ID=<web-client-id>.apps.googleusercontent.com
+```
+
+`android/key.properties` bo'lmasa, build sinov (debug) kaliti bilan imzolanadi va Play uni rad etadi.
+
+**Eski paket nomida sinash.** `applicationId` hozir `uz.praytime.app`. Google Console'da shu nom uchun Android
+client hali yaratilmagan bo'lsa, Google bilan kirish ishlamaydi. Vaqtincha eski nomda ishga tushirish:
+
+```bash
+ORG_GRADLE_PROJECT_appId=com.example.mobil flutter run --dart-define=...
+```

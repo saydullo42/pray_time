@@ -11,11 +11,15 @@ class QuranTranslationRepository {
 
   final Dio _dio;
 
-  Future<Map<int, List<QuranTranslationAyah>>> getSurahPages(int surahNumber) async {
+  Future<Map<int, List<QuranTranslationAyah>>> getSurahPages(
+    int surahNumber,
+  ) async {
     final response = await _dio.get<Map<String, dynamic>>(
       'https://api.alquran.cloud/v1/surah/$surahNumber/uz.sodik',
     );
-    final ayahs = (response.data!['data'] as Map<String, dynamic>)['ayahs'] as List<dynamic>;
+    final ayahs =
+        (response.data!['data'] as Map<String, dynamic>)['ayahs']
+            as List<dynamic>;
 
     final pages = <int, List<QuranTranslationAyah>>{};
     for (final raw in ayahs) {
@@ -26,6 +30,8 @@ class QuranTranslationRepository {
   }
 }
 
-final quranTranslationRepositoryProvider = Provider<QuranTranslationRepository>((ref) {
-  return QuranTranslationRepository(Dio());
-});
+final quranTranslationRepositoryProvider = Provider<QuranTranslationRepository>(
+  (ref) {
+    return QuranTranslationRepository(Dio());
+  },
+);

@@ -23,10 +23,14 @@ class RegionSelectionNotifier extends Notifier<RegionSelection> {
   @override
   RegionSelection build() {
     final storage = ref.read(localStorageServiceProvider);
-    final regionName = storage.getString(AppConstants.keySelectedRegion) ?? defaultRegionName;
-    final districtName = storage.getString(AppConstants.keySelectedDistrict) ?? defaultDistrictName;
+    final regionName =
+        storage.getString(AppConstants.keySelectedRegion) ?? defaultRegionName;
+    final districtName =
+        storage.getString(AppConstants.keySelectedDistrict) ??
+        defaultDistrictName;
 
-    final district = findDistrict(regionName, districtName) ??
+    final district =
+        findDistrict(regionName, districtName) ??
         findRegion(regionName)?.districts.first ??
         findDistrict(defaultRegionName, defaultDistrictName)!;
 
@@ -44,7 +48,10 @@ class RegionSelectionNotifier extends Notifier<RegionSelection> {
 
     final storage = ref.read(localStorageServiceProvider);
     await storage.setString(AppConstants.keySelectedRegion, regionName);
-    await storage.setString(AppConstants.keySelectedDistrict, firstDistrict.name);
+    await storage.setString(
+      AppConstants.keySelectedDistrict,
+      firstDistrict.name,
+    );
 
     state = RegionSelection(
       regionName: regionName,
@@ -71,4 +78,6 @@ class RegionSelectionNotifier extends Notifier<RegionSelection> {
 }
 
 final regionSelectionProvider =
-    NotifierProvider<RegionSelectionNotifier, RegionSelection>(RegionSelectionNotifier.new);
+    NotifierProvider<RegionSelectionNotifier, RegionSelection>(
+      RegionSelectionNotifier.new,
+    );

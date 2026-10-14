@@ -12,15 +12,23 @@ class QuranRepository {
   final DioClient _client;
 
   Future<List<SurahModel>> getSurahs() async {
-    final response = await _client.get<Map<String, dynamic>>(ApiEndpoints.quranSurahs);
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiEndpoints.quranSurahs,
+    );
     final list = response.data!['results'] as List<dynamic>;
-    return list.map((e) => SurahModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => SurahModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<ReciterModel>> getReciters() async {
-    final response = await _client.get<Map<String, dynamic>>(ApiEndpoints.quranAudio);
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiEndpoints.quranAudio,
+    );
     final list = response.data!['reciters'] as List<dynamic>;
-    return list.map((e) => ReciterModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => ReciterModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Surahs with that specific reciter's audio URL (empty until the
@@ -30,7 +38,9 @@ class QuranRepository {
       ApiEndpoints.reciterSurahAudio(reciterId),
     );
     final list = response.data!['results'] as List<dynamic>;
-    return list.map((e) => SurahModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => SurahModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
 

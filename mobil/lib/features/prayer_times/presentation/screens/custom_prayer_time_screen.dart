@@ -15,7 +15,8 @@ class CustomPrayerTimeScreen extends ConsumerStatefulWidget {
       _CustomPrayerTimeScreenState();
 }
 
-class _CustomPrayerTimeScreenState extends ConsumerState<CustomPrayerTimeScreen> {
+class _CustomPrayerTimeScreenState
+    extends ConsumerState<CustomPrayerTimeScreen> {
   final Map<String, TimeOfDay?> _selected = {
     'Bomdod': null,
     'Peshin': null,
@@ -46,7 +47,9 @@ class _CustomPrayerTimeScreenState extends ConsumerState<CustomPrayerTimeScreen>
       maghrib: _fmt(_selected['Shom']),
       isha: _fmt(_selected['Xufton']),
     );
-    await ref.read(prayerTimesRepositoryProvider).saveCustomOverrides(overrides);
+    await ref
+        .read(prayerTimesRepositoryProvider)
+        .saveCustomOverrides(overrides);
     ref.read(reminderSyncProvider).sync();
     if (mounted) {
       setState(() => _isSaving = false);
@@ -70,7 +73,11 @@ class _CustomPrayerTimeScreenState extends ConsumerState<CustomPrayerTimeScreen>
               ),
             ),
           const SizedBox(height: 24),
-          CustomButton(label: 'Saqlash', isLoading: _isSaving, onPressed: _save),
+          CustomButton(
+            label: 'Saqlash',
+            isLoading: _isSaving,
+            onPressed: _save,
+          ),
         ],
       ),
     );

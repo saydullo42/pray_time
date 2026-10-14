@@ -25,7 +25,8 @@ class DailyChecklistSheet extends ConsumerStatefulWidget {
   final DateTime date;
 
   @override
-  ConsumerState<DailyChecklistSheet> createState() => _DailyChecklistSheetState();
+  ConsumerState<DailyChecklistSheet> createState() =>
+      _DailyChecklistSheetState();
 }
 
 class _DailyChecklistSheetState extends ConsumerState<DailyChecklistSheet> {
@@ -39,7 +40,9 @@ class _DailyChecklistSheetState extends ConsumerState<DailyChecklistSheet> {
   }
 
   Future<void> _loadExisting() async {
-    final checked = {for (final prayer in AppConstants.dailyChecklistPrayers) prayer: false};
+    final checked = {
+      for (final prayer in AppConstants.dailyChecklistPrayers) prayer: false,
+    };
     try {
       final daily = await ref.read(dailyTrackingProvider(widget.date).future);
       daily.statuses.forEach((prayer, done) {
@@ -58,10 +61,9 @@ class _DailyChecklistSheetState extends ConsumerState<DailyChecklistSheet> {
     final checked = _checked;
     if (checked == null) return;
     setState(() => _isSaving = true);
-    await ref.read(trackingActionsProvider).saveDailyChecklist(
-          date: widget.date,
-          checklist: checked,
-        );
+    await ref
+        .read(trackingActionsProvider)
+        .saveDailyChecklist(date: widget.date, checklist: checked);
     ref.invalidate(dailyTrackingProvider(widget.date));
     if (mounted) Navigator.of(context).pop();
   }
@@ -98,20 +100,28 @@ class _DailyChecklistSheetState extends ConsumerState<DailyChecklistSheet> {
                           ListTile(
                             dense: true,
                             contentPadding: EdgeInsets.zero,
-                            title: Text(prayer, style: const TextStyle(fontSize: 20)),
+                            title: Text(
+                              prayer,
+                              style: const TextStyle(fontSize: 20),
+                            ),
                             trailing: Transform.scale(
                               scale: 1.4,
                               child: Checkbox(
                                 value: checked[prayer],
                                 activeColor: const Color(0xFF396E0D),
                                 checkColor: Colors.white,
-                                overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                onChanged: (value) =>
-                                    setState(() => checked[prayer] = value ?? false),
+                                overlayColor: WidgetStateProperty.all(
+                                  Colors.transparent,
+                                ),
+                                onChanged: (value) => setState(
+                                  () => checked[prayer] = value ?? false,
+                                ),
                               ),
                             ),
-                            onTap: () =>
-                                setState(() => checked[prayer] = !(checked[prayer] ?? false)),
+                            onTap: () => setState(
+                              () =>
+                                  checked[prayer] = !(checked[prayer] ?? false),
+                            ),
                           ),
                       ],
                     ),

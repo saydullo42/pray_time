@@ -11,10 +11,9 @@ class ProfileNotifier extends AsyncNotifier<UserModel> {
   Future<void> updateProfile({String? fullName, String? avatarUrl}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() {
-      return ref.read(profileRepositoryProvider).updateProfile(
-            fullName: fullName,
-            avatarUrl: avatarUrl,
-          );
+      return ref
+          .read(profileRepositoryProvider)
+          .updateProfile(fullName: fullName, avatarUrl: avatarUrl);
     });
   }
 }

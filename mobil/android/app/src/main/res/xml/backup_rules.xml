@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android Auto Backup (Android 11 and lower). Keeps the app's settings (theme, region,
+     ro'za marks) when the person moves to a new phone, but not the sign-in tokens: they are
+     tied to the old device's keystore and would not decrypt on the new one. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="FlutterSecureStorage.xml"/>
+</full-backup-content>

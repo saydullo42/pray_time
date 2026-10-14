@@ -17,7 +17,11 @@ class CustomPrayerTimeModel {
   final String? isha;
 
   bool get hasAnyOverride =>
-      fajr != null || dhuhr != null || asr != null || maghrib != null || isha != null;
+      fajr != null ||
+      dhuhr != null ||
+      asr != null ||
+      maghrib != null ||
+      isha != null;
 
   factory CustomPrayerTimeModel.fromJson(Map<String, dynamic> json) {
     return CustomPrayerTimeModel(
@@ -30,12 +34,12 @@ class CustomPrayerTimeModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'fajr': fajr,
-        'dhuhr': dhuhr,
-        'asr': asr,
-        'maghrib': maghrib,
-        'isha': isha,
-      };
+    'fajr': fajr,
+    'dhuhr': dhuhr,
+    'asr': asr,
+    'maghrib': maghrib,
+    'isha': isha,
+  };
 
   CustomPrayerTimeModel copyWith({
     String? fajr,

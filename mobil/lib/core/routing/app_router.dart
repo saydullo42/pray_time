@@ -20,23 +20,22 @@ import '../../features/quran/presentation/screens/quran_list_screen.dart';
 import '../../features/quran/presentation/screens/quran_mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_reciter_list_screen.dart';
 import '../../features/quran/presentation/screens/quran_translation_reader_screen.dart';
-import '../../features/quran/presentation/screens/quran_video_screen.dart';
 import '../../features/quran/presentation/screens/surah_list_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
-import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/tracking/presentation/screens/yearly_tracking_screen.dart';
 import 'route_names.dart';
+import 'startup_gate.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: RouteNames.splash,
+    initialLocation: RouteNames.startup,
     routes: [
       GoRoute(
-        path: RouteNames.splash,
-        builder: (context, state) => const SplashScreen(),
+        path: RouteNames.startup,
+        builder: (context, state) => const StartupGate(),
       ),
       GoRoute(
         path: RouteNames.login,
@@ -149,12 +148,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) =>
             QuranAudioPlayerScreen(surah: state.extra as SurahModel),
-      ),
-      GoRoute(
-        path: RouteNames.quranVideo,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) =>
-            QuranVideoScreen(surah: state.extra as SurahModel),
       ),
       GoRoute(
         path: '${RouteNames.duaListByCategory}/:categoryId',

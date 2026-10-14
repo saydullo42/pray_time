@@ -31,7 +31,10 @@ class CustomButton extends StatelessWidget {
               color: Color(0xFF396E0D),
             ),
           )
-        : Text(label, style: fontSize == null ? null : TextStyle(fontSize: fontSize));
+        : Text(
+            label,
+            style: fontSize == null ? null : TextStyle(fontSize: fontSize),
+          );
 
     if (outlined) {
       return OutlinedButton(

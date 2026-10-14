@@ -11,7 +11,8 @@ class QuranTranslationAyah {
   final String text;
   final int page;
 
-  factory QuranTranslationAyah.fromJson(Map<String, dynamic> json) => QuranTranslationAyah(
+  factory QuranTranslationAyah.fromJson(Map<String, dynamic> json) =>
+      QuranTranslationAyah(
         numberInSurah: json['numberInSurah'] as int,
         text: json['text'] as String,
         page: json['page'] as int,

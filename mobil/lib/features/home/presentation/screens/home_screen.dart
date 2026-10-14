@@ -57,7 +57,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  CustomPrayerTimeModel _withFieldValue(CustomPrayerTimeModel overrides, String prayer, String value) {
+  CustomPrayerTimeModel _withFieldValue(
+    CustomPrayerTimeModel overrides,
+    String prayer,
+    String value,
+  ) {
     switch (_overrideFieldByPrayer[prayer]) {
       case 'fajr':
         return overrides.copyWith(fajr: value);
@@ -117,11 +121,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               style: TextStyle(fontSize: 18, height: 1.4),
             ),
             const SizedBox(height: 12),
-            _LegendRow(color: Colors.green, label: 'Yashil - barcha namoz o\'qilgan'),
+            _LegendRow(
+              color: Colors.green,
+              label: 'Yashil - barcha namoz o\'qilgan',
+            ),
             const SizedBox(height: 6),
             _LegendRow(color: Colors.amber, label: 'Sariq - qisman o\'qilgan'),
             const SizedBox(height: 6),
-            _LegendRow(color: Colors.red, label: 'Qizil - kam yoki umuman o\'qilmagan'),
+            _LegendRow(
+              color: Colors.red,
+              label: 'Qizil - kam yoki umuman o\'qilmagan',
+            ),
           ],
         ),
         actions: [
@@ -149,7 +159,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final existing = _fieldValue(overrides, prayer);
     if (existing != null) {
       final parts = existing.split(':');
-      initial = TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      initial = TimeOfDay(
+        hour: int.parse(parts[0]),
+        minute: int.parse(parts[1]),
+      );
     }
 
     if (!mounted) return;
@@ -164,11 +177,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             timePickerTheme: theme.timePickerTheme.copyWith(
               cancelButtonStyle: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF4CAF17),
-                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                textStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               confirmButtonStyle: TextButton.styleFrom(
                 foregroundColor: const Color(0xFF4CAF17),
-                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                textStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               dialHandColor: const Color(0xFF396E0D),
               hourMinuteColor: WidgetStateColor.resolveWith((states) {
@@ -218,7 +237,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final prayerTimesAsync = ref.watch(todayPrayerTimesProvider);
     final monthCountsAsync = ref.watch(
-      monthCalendarCountsProvider((year: _focusedDay.year, month: _focusedDay.month)),
+      monthCalendarCountsProvider((
+        year: _focusedDay.year,
+        month: _focusedDay.month,
+      )),
     );
     final monthCounts = monthCountsAsync.valueOrNull ?? const {};
 
@@ -226,13 +248,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // adjacent months; fetch their counts too so those cells get colored.
     final prevMonthDate = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
     final nextMonthDate = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
-    final prevMonthCounts = ref.watch(
-          monthCalendarCountsProvider((year: prevMonthDate.year, month: prevMonthDate.month)),
-        ).valueOrNull ??
+    final prevMonthCounts =
+        ref
+            .watch(
+              monthCalendarCountsProvider((
+                year: prevMonthDate.year,
+                month: prevMonthDate.month,
+              )),
+            )
+            .valueOrNull ??
         const {};
-    final nextMonthCounts = ref.watch(
-          monthCalendarCountsProvider((year: nextMonthDate.year, month: nextMonthDate.month)),
-        ).valueOrNull ??
+    final nextMonthCounts =
+        ref
+            .watch(
+              monthCalendarCountsProvider((
+                year: nextMonthDate.year,
+                month: nextMonthDate.month,
+              )),
+            )
+            .valueOrNull ??
         const {};
 
     return Scaffold(
@@ -287,9 +321,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(
                     'Ko\'proq o\'qish',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF4CAF17),
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: const Color(0xFF4CAF17),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -310,9 +344,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(
                     'Ko\'proq o\'qish',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF4CAF17),
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: const Color(0xFF4CAF17),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
@@ -335,15 +369,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       showDailyChecklistSheet(context, selected);
                     }
                   },
-                  onPageChanged: (focused) => setState(() => _focusedDay = focused),
+                  onPageChanged: (focused) =>
+                      setState(() => _focusedDay = focused),
                   dayColor: (day) {
-                    if (day.year == _focusedDay.year && day.month == _focusedDay.month) {
+                    if (day.year == _focusedDay.year &&
+                        day.month == _focusedDay.month) {
                       return colorForCompletionCount(monthCounts[day.day]);
                     }
-                    if (day.year == prevMonthDate.year && day.month == prevMonthDate.month) {
+                    if (day.year == prevMonthDate.year &&
+                        day.month == prevMonthDate.month) {
                       return colorForCompletionCount(prevMonthCounts[day.day]);
                     }
-                    if (day.year == nextMonthDate.year && day.month == nextMonthDate.month) {
+                    if (day.year == nextMonthDate.year &&
+                        day.month == nextMonthDate.month) {
                       return colorForCompletionCount(nextMonthCounts[day.day]);
                     }
                     return null;
@@ -375,7 +413,9 @@ class _LegendRow extends StatelessWidget {
           decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         const SizedBox(width: 8),
-        Expanded(child: Text(label, style: const TextStyle(fontSize: 18, height: 1.4))),
+        Expanded(
+          child: Text(label, style: const TextStyle(fontSize: 18, height: 1.4)),
+        ),
       ],
     );
   }
@@ -444,7 +484,10 @@ class _PrayerTimesBar extends StatelessWidget {
 /// override; the displayed value falls back to the computed time when no
 /// override has been saved yet.
 class _ManualPrayerTimesBar extends ConsumerWidget {
-  const _ManualPrayerTimesBar({required this.computedTimes, required this.onTapPrayer});
+  const _ManualPrayerTimesBar({
+    required this.computedTimes,
+    required this.onTapPrayer,
+  });
 
   final PrayerTimeModel? computedTimes;
   final ValueChanged<String> onTapPrayer;
@@ -452,7 +495,8 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final overrides = ref.watch(customPrayerTimeOverridesProvider).valueOrNull ??
+    final overrides =
+        ref.watch(customPrayerTimeOverridesProvider).valueOrNull ??
         const CustomPrayerTimeModel();
 
     String displayValue(String? override, DateTime? computed) {

@@ -91,9 +91,15 @@ class _GoogleButton extends StatelessWidget {
                     height: 22,
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Google orqali kirish',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  const Flexible(
+                    child: Text(
+                      'Google orqali kirish',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ],
               ),

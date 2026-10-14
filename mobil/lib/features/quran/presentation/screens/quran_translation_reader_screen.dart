@@ -23,7 +23,8 @@ class QuranTranslationReaderScreen extends ConsumerStatefulWidget {
       _QuranTranslationReaderScreenState();
 }
 
-class _QuranTranslationReaderScreenState extends ConsumerState<QuranTranslationReaderScreen> {
+class _QuranTranslationReaderScreenState
+    extends ConsumerState<QuranTranslationReaderScreen> {
   final _pageController = PageController();
 
   @override
@@ -34,7 +35,9 @@ class _QuranTranslationReaderScreenState extends ConsumerState<QuranTranslationR
 
   @override
   Widget build(BuildContext context) {
-    final pagesAsync = ref.watch(surahTranslationPagesProvider(widget.surah.number));
+    final pagesAsync = ref.watch(
+      surahTranslationPagesProvider(widget.surah.number),
+    );
 
     return Scaffold(
       backgroundColor: _mushafBackground,
@@ -48,7 +51,9 @@ class _QuranTranslationReaderScreenState extends ConsumerState<QuranTranslationR
         loading: () => const LoadingIndicator(),
         error: (error, _) => ErrorView(
           message: error.toString(),
-          onRetry: () => ref.invalidate(surahTranslationPagesProvider(widget.surah.number)),
+          onRetry: () => ref.invalidate(
+            surahTranslationPagesProvider(widget.surah.number),
+          ),
         ),
         data: (pages) {
           final pageNumbers = pages.keys.toList()..sort();
@@ -115,19 +120,20 @@ class _TranslationPageState extends State<_TranslationPage> {
   }
 
   int _lineCountAt(double fontSize, double maxWidth) {
-    final painter = TextPainter(
-      text: _buildSpan(fontSize),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.justify,
-    )..setPlaceholderDimensions(
-        List.generate(
-          ayahs.length,
-          (_) => PlaceholderDimensions(
-            size: Size.square(fontSize * _markerSizeRatio),
-            alignment: PlaceholderAlignment.middle,
+    final painter =
+        TextPainter(
+          text: _buildSpan(fontSize),
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.justify,
+        )..setPlaceholderDimensions(
+          List.generate(
+            ayahs.length,
+            (_) => PlaceholderDimensions(
+              size: Size.square(fontSize * _markerSizeRatio),
+              alignment: PlaceholderAlignment.middle,
+            ),
           ),
-        ),
-      );
+        );
     painter.layout(maxWidth: maxWidth);
     return painter.computeLineMetrics().length;
   }
@@ -209,11 +215,17 @@ class _AyahMarker extends StatelessWidget {
       alignment: Alignment.center,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.fromBorderSide(BorderSide(color: Colors.black, width: 0.8)),
+        border: Border.fromBorderSide(
+          BorderSide(color: Colors.black, width: 0.8),
+        ),
       ),
       child: Text(
         '$number',
-        style: TextStyle(fontSize: size * 0.52, fontWeight: FontWeight.w600, color: Colors.black),
+        style: TextStyle(
+          fontSize: size * 0.52,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
       ),
     );
   }

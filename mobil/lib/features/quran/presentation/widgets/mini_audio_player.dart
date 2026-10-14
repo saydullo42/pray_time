@@ -29,7 +29,8 @@ class MiniAudioPlayer extends StatelessWidget {
             StreamBuilder<Duration?>(
               stream: player.durationStream,
               builder: (context, durationSnapshot) {
-                final total = durationSnapshot.data ?? player.duration ?? Duration.zero;
+                final total =
+                    durationSnapshot.data ?? player.duration ?? Duration.zero;
                 return StreamBuilder<Duration>(
                   stream: player.positionStream,
                   builder: (context, positionSnapshot) {
@@ -43,11 +44,19 @@ class MiniAudioPlayer extends StatelessWidget {
                           ),
                           child: Slider(
                             value: position.inMilliseconds
-                                .clamp(0, total.inMilliseconds == 0 ? 1 : total.inMilliseconds)
+                                .clamp(
+                                  0,
+                                  total.inMilliseconds == 0
+                                      ? 1
+                                      : total.inMilliseconds,
+                                )
                                 .toDouble(),
-                            max: total.inMilliseconds == 0 ? 1 : total.inMilliseconds.toDouble(),
-                            onChanged: (value) =>
-                                player.seek(Duration(milliseconds: value.toInt())),
+                            max: total.inMilliseconds == 0
+                                ? 1
+                                : total.inMilliseconds.toDouble(),
+                            onChanged: (value) => player.seek(
+                              Duration(milliseconds: value.toInt()),
+                            ),
                           ),
                         ),
                         Padding(
@@ -74,13 +83,17 @@ class MiniAudioPlayer extends StatelessWidget {
                   forward: false,
                   onPressed: () {
                     final target = player.position - const Duration(seconds: 5);
-                    player.seek(target < Duration.zero ? Duration.zero : target);
+                    player.seek(
+                      target < Duration.zero ? Duration.zero : target,
+                    );
                   },
                 ),
                 const SizedBox(width: 20),
                 IconButton(
                   icon: Icon(
-                    playing ? Icons.pause_circle_filled : Icons.play_circle_fill,
+                    playing
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_fill,
                     size: 96,
                     color: _accentColor,
                   ),
@@ -117,8 +130,16 @@ class _SeekButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const arrow = TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black);
-    const digit = TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black);
+    const arrow = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+      color: Colors.black,
+    );
+    const digit = TextStyle(
+      fontWeight: FontWeight.w700,
+      fontSize: 20,
+      color: Colors.black,
+    );
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: _accentColor,
@@ -130,8 +151,14 @@ class _SeekButton extends StatelessWidget {
       child: Text.rich(
         TextSpan(
           children: forward
-              ? const [TextSpan(text: '5 ', style: digit), TextSpan(text: '>>', style: arrow)]
-              : const [TextSpan(text: '<< ', style: arrow), TextSpan(text: '5', style: digit)],
+              ? const [
+                  TextSpan(text: '5 ', style: digit),
+                  TextSpan(text: '>>', style: arrow),
+                ]
+              : const [
+                  TextSpan(text: '<< ', style: arrow),
+                  TextSpan(text: '5', style: digit),
+                ],
         ),
       ),
     );

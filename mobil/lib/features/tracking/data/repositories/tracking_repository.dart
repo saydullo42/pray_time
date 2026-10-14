@@ -30,13 +30,18 @@ class TrackingRepository {
   }
 
   /// Day-of-month -> number of prayers marked done, for calendar coloring.
-  Future<Map<int, int>> getMonthCalendarCounts({required int year, required int month}) async {
+  Future<Map<int, int>> getMonthCalendarCounts({
+    required int year,
+    required int month,
+  }) async {
     final response = await _client.get<Map<String, dynamic>>(
       ApiEndpoints.trackingCalendar,
       query: {'year': year, 'month': month},
     );
     final results = response.data!['results'] as Map<String, dynamic>;
-    return results.map((key, value) => MapEntry(DateTime.parse(key).day, value as int));
+    return results.map(
+      (key, value) => MapEntry(DateTime.parse(key).day, value as int),
+    );
   }
 }
 

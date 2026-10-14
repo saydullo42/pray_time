@@ -13,7 +13,12 @@ enum QuranListMode { book, audio, translation }
 /// tapping one of the buttons on the Qur'on tab (audio goes via the
 /// reciter picker). Tapping a surah opens its reader, matching the mode.
 class SurahListScreen extends ConsumerWidget {
-  const SurahListScreen({super.key, required this.mode, this.reciterId, this.reciterName});
+  const SurahListScreen({
+    super.key,
+    required this.mode,
+    this.reciterId,
+    this.reciterName,
+  });
 
   final QuranListMode mode;
 
@@ -31,8 +36,8 @@ class SurahListScreen extends ConsumerWidget {
     final title = isAudio
         ? reciterName ?? 'Qur\'on audio'
         : isTranslation
-            ? 'Qur\'on tarjimasi'
-            : 'Qur\'on kitob';
+        ? 'Qur\'on tarjimasi'
+        : 'Qur\'on kitob';
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -56,25 +61,29 @@ class SurahListScreen extends ConsumerWidget {
                   return Card(
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: isDark ? null : AppColors.lightSurfaceStrong,
+                        backgroundColor: isDark
+                            ? null
+                            : AppColors.lightSurfaceStrong,
                         foregroundColor: isDark ? null : Colors.white,
                         child: Text('${surah.number}'),
                       ),
                       title: Text('${surah.nameLatin} (${surah.nameArabic})'),
-                      subtitle: Text('${surah.nameTranslation} · ${surah.ayahCount} oyat'),
+                      subtitle: Text(
+                        '${surah.nameTranslation} · ${surah.ayahCount} oyat',
+                      ),
                       trailing: Icon(
                         isAudio
                             ? Icons.headphones_outlined
                             : isTranslation
-                                ? Icons.translate_outlined
-                                : Icons.picture_as_pdf_outlined,
+                            ? Icons.translate_outlined
+                            : Icons.picture_as_pdf_outlined,
                       ),
                       onTap: () => context.push(
                         isAudio
                             ? RouteNames.quranAudioPlayer
                             : isTranslation
-                                ? RouteNames.quranTranslationReader
-                                : RouteNames.quranPdfReader,
+                            ? RouteNames.quranTranslationReader
+                            : RouteNames.quranPdfReader,
                         extra: surah,
                       ),
                     ),

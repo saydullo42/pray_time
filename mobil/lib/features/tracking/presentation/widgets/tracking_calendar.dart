@@ -42,14 +42,21 @@ class TrackingCalendar extends StatelessWidget {
       headerStyle: HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
-        titleTextFormatter: (date, locale) => '${DateFormat.MMMM('uz').format(date)} ${date.year}',
+        titleTextFormatter: (date, locale) =>
+            '${DateFormat.MMMM('uz').format(date)} ${date.year}',
       ),
       calendarBuilders: CalendarBuilders(
-        defaultBuilder: (context, day, focusedDay) => _DayCell(day: day, background: dayColor?.call(day)),
-        outsideBuilder: (context, day, focusedDay) =>
-            _DayCell(day: day, isOutside: true, background: dayColor?.call(day)),
-        todayBuilder: (context, day, focusedDay) => _DayCell(day: day, background: dayColor?.call(day)),
-        selectedBuilder: (context, day, focusedDay) => _DayCell(day: day, background: dayColor?.call(day)),
+        defaultBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, background: dayColor?.call(day)),
+        outsideBuilder: (context, day, focusedDay) => _DayCell(
+          day: day,
+          isOutside: true,
+          background: dayColor?.call(day),
+        ),
+        todayBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, background: dayColor?.call(day)),
+        selectedBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, background: dayColor?.call(day)),
       ),
     );
   }
@@ -69,7 +76,9 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isToday = isSameDay(day, DateTime.now());
-    final dotColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+    final dotColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white
+        : Colors.black;
 
     return Container(
       margin: const EdgeInsets.all(3),
@@ -77,7 +86,9 @@ class _DayCell extends StatelessWidget {
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(6),
         color: background,
-        border: Border.all(color: isToday ? scheme.primary : scheme.outlineVariant),
+        border: Border.all(
+          color: isToday ? scheme.primary : scheme.outlineVariant,
+        ),
       ),
       alignment: Alignment.center,
       child: Column(
@@ -86,9 +97,7 @@ class _DayCell extends StatelessWidget {
         children: [
           Text(
             '${day.day}',
-            style: TextStyle(
-              color: isOutside ? scheme.outline : null,
-            ),
+            style: TextStyle(color: isOutside ? scheme.outline : null),
           ),
           SizedBox(
             height: 6,
@@ -97,7 +106,10 @@ class _DayCell extends StatelessWidget {
                     child: Container(
                       width: 4,
                       height: 4,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: dotColor,
+                      ),
                     ),
                   )
                 : null,

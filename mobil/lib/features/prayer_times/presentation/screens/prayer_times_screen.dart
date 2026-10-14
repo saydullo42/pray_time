@@ -29,7 +29,8 @@ class PrayerTimesScreen extends ConsumerWidget {
         ],
       ),
       body: prayerTimesAsync.when(
-        loading: () => const LoadingIndicator(message: 'Vaqtlar hisoblanmoqda...'),
+        loading: () =>
+            const LoadingIndicator(message: 'Vaqtlar hisoblanmoqda...'),
         error: (error, _) => ErrorView(
           message: error.toString(),
           onRetry: () => ref.invalidate(todayPrayerTimesProvider),

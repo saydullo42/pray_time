@@ -15,15 +15,17 @@ class HijriGregorianDateHeader extends StatelessWidget {
     final d = date ?? DateTime.now();
     final hijriText = Text(
       DateConverter.formatHijri(d),
-      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF4CAF17),
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.bodyMedium?.copyWith(color: const Color(0xFF4CAF17)),
     );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        onHijriTap == null ? hijriText : GestureDetector(onTap: onHijriTap, child: hijriText),
+        onHijriTap == null
+            ? hijriText
+            : GestureDetector(onTap: onHijriTap, child: hijriText),
         Text(
           DateConverter.formatGregorian(d),
           style: Theme.of(context).textTheme.titleMedium,
