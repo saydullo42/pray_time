@@ -1,2 +1,6 @@
 # Claude Code session/tooling data (not project source)
 .claude/
+
+# Production secrets and runtime data
+/.env
+/data/

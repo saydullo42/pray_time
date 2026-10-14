@@ -1,0 +1,5 @@
+NotoEmoji-Hands.ttf is the Google Fonts "Noto Emoji" (monochrome) font subset to a
+single glyph, U+1F932 (🤲 palms up together), used for the Duo icon in the navbar.
+
+Noto Emoji: Copyright 2013 Google LLC, licensed under the SIL Open Font License 1.1
+(https://openfontlicense.org). Source: https://fonts.google.com/noto/specimen/Noto+Emoji

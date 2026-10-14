@@ -115,7 +115,9 @@ export default function PrivacyPage() {
 
       <h2 className={h2Class}>5. Ma&apos;lumotlar qayerda va qancha saqlanadi</h2>
       <ul className="list-disc space-y-1 pl-5">
-        <li>Ma&apos;lumotlar O&apos;zbekiston Respublikasi hududidagi serverda saqlanadi.</li>
+        <li>
+          Ma&apos;lumotlar Germaniyadagi (Yevropa Ittifoqi) ma&apos;lumotlar markazida joylashgan serverda saqlanadi.
+        </li>
         <li>
           Ma&apos;lumotlaringiz akkauntingiz faol ekan saqlanadi. Akkauntni o&apos;chirsangiz, ular darhol
           o&apos;chiriladi (6-bo&apos;limga qarang).

@@ -114,13 +114,17 @@ function BookIcon({ active }: { active: boolean }) {
     </svg>
   );
 }
-function DuaIcon({ active }: { active: boolean }) {
+// The 🤲 emoji (two open palms), drawn from a monochrome emoji font so it is a
+// flat icon in the current text colour, like the Duo icon in the mobile app.
+function DuaIcon() {
   return (
-    <svg {...iconProps(active)}>
-      <path d="M7 11c0-3 2-5 5-5s5 2 5 5" />
-      <path d="M4 15c0 3 3.5 6 8 6s8-3 8-6" />
-      <path d="M4 15c0-2 1-3 3-3M20 15c0-2-1-3-3-3" />
-    </svg>
+    <span
+      aria-hidden="true"
+      style={{ fontFamily: "var(--font-hands)" }}
+      className="inline-flex h-[22px] w-[22px] items-center justify-center text-[19px] leading-none"
+    >
+      🤲
+    </span>
   );
 }
 function ProfileIcon({ active }: { active: boolean }) {

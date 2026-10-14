@@ -90,14 +90,14 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
                 }`}
               >
                 <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs ${
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm ${
                     active ? "border-black/40" : "border-outline"
                   }`}
                 >
                   {s.number}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{s.name_latin}</p>
+                  <p className="truncate text-base font-medium">{s.name_latin}</p>
                 </div>
                 {active && <PlayingIcon />}
               </Link>

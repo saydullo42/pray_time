@@ -12,10 +12,14 @@ urlpatterns = [
     path("api/v1/quran/", include("apps.quran.urls")),
     path("api/v1/dua/", include("apps.dua.urls")),
     path("api/v1/notifications/", include("apps.notifications.urls")),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
-    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+
 ]
 
 if settings.DEBUG:
+    # API docs are for development only; they would expose the whole API surface.
+    urlpatterns += [
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+        path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

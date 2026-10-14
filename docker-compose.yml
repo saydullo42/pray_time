@@ -1,0 +1,89 @@
+# Production stack: PostgreSQL, Django (gunicorn), Next.js, Caddy (HTTPS).
+#
+#   cp .env.production.example .env   # then fill it in
+#   docker compose up -d --build
+#
+# See DEPLOY.md for the full server setup.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: praytime
+      POSTGRES_USER: praytime
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U praytime -d praytime"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: praytime-backend
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: &backend-env
+      TZ: Asia/Tashkent
+      DJANGO_DEBUG: "False"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?set DJANGO_SECRET_KEY in .env}
+      DJANGO_ALLOWED_HOSTS: ${API_DOMAIN:?set API_DOMAIN in .env}
+      DJANGO_NUM_PROXIES: "1"
+      DJANGO_HSTS_SECONDS: ${DJANGO_HSTS_SECONDS:-0}
+      CSRF_TRUSTED_ORIGINS: https://${API_DOMAIN}
+      CORS_ALLOWED_ORIGINS: https://${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      GOOGLE_CLIENT_IDS: ${GOOGLE_CLIENT_ID:?set GOOGLE_CLIENT_ID in .env}
+      DATABASE_URL: postgres://praytime:${POSTGRES_PASSWORD}@db:5432/praytime
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60 --access-logfile -"
+    volumes:
+      - ./data/media:/app/media
+      - ./data/static:/app/staticfiles
+      - ./data/cache:/app/cache
+
+  # Fills the prayer-times file cache now and then every day at 01:00 (Tashkent).
+  scheduler:
+    image: praytime-backend
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment: *backend-env
+    command: ["sh", "scripts/daily_cache_refresh.sh"]
+    volumes:
+      - ./data/cache:/app/cache
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: https://${API_DOMAIN}/api/v1
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data/media:/srv/media:ro
+      - ./data/static:/srv/static:ro
+      - ./data/caddy:/data
+      - ./data/caddy-config:/config

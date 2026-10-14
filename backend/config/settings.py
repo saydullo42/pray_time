@@ -6,6 +6,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,9 +15,14 @@ env = environ.Env(
 )
 environ.Env.read_env(BASE_DIR / ".env")
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="django-insecure-4$+d#ng$qv6-bsc9_(38y1!s&$$j3c^&6ya-5w($^nun@%cwi4")
+# Production safe by default: DEBUG is off unless DJANGO_DEBUG=True is set
+# (backend/.env does this for local development).
+DEBUG = env.bool("DJANGO_DEBUG", default=False)
 
-DEBUG = env("DJANGO_DEBUG", default=True)
+_INSECURE_DEV_KEY = "django-insecure-dev-only-key-do-not-use-in-production"
+SECRET_KEY = env("DJANGO_SECRET_KEY", default=_INSECURE_DEV_KEY if DEBUG else "")
+if not DEBUG and (not SECRET_KEY or SECRET_KEY == _INSECURE_DEV_KEY):
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY must be set to a long random value when DEBUG is off.")
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
@@ -141,6 +147,19 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/min",
+        "user": "300/min",
+        # Google sign-in: each attempt makes the server verify a token with Google.
+        "sign_in": "20/min",
+    },
+    # Number of reverse proxies in front of Django (Caddy), so throttling sees
+    # the client's real IP from X-Forwarded-For instead of the proxy's.
+    "NUM_PROXIES": env.int("DJANGO_NUM_PROXIES", default=0),
 }
 
 
@@ -165,6 +184,23 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+
+# HTTPS / proxy settings (production only). Django sits behind Caddy, which
+# terminates TLS and forwards X-Forwarded-Proto / X-Forwarded-Host.
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    USE_X_FORWARDED_HOST = True
+    SECURE_SSL_REDIRECT = env.bool("DJANGO_SSL_REDIRECT", default=True)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = env.int("DJANGO_HSTS_SECONDS", default=0)  # raise once HTTPS is verified
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
 
 
 # CORS (Flutter web build lives under mobil/web)

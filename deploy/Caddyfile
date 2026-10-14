@@ -1,0 +1,46 @@
+# Caddy terminates HTTPS (certificates from Let's Encrypt are obtained and
+# renewed automatically) and routes by domain. SITE_DOMAIN / API_DOMAIN come
+# from the .env next to docker-compose.yml.
+
+{$SITE_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	reverse_proxy web:3000
+}
+
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# Uploaded images and Qur'on audio. file_server supports Range requests, so
+	# the players can seek in the long recitations.
+	handle /media/* {
+		root * /srv
+		header Cache-Control "public, max-age=604800"
+		file_server
+	}
+
+	# Django admin static files (collected by `collectstatic`).
+	handle /static/* {
+		root * /srv
+		header Cache-Control "public, max-age=604800"
+		file_server
+	}
+
+	handle {
+		reverse_proxy backend:8000
+	}
+}

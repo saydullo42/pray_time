@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Amiri } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/theme-context";
@@ -15,6 +16,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Monochrome 🤲 (subset of Noto Emoji) for the Duo navbar icon; it takes the text colour.
+const handsEmoji = localFont({
+  src: "./fonts/NotoEmoji-Hands.ttf",
+  variable: "--font-hands",
+  display: "block",
 });
 
 const amiri = Amiri({
@@ -33,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="uz"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${amiri.variable} ${handsEmoji.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />

@@ -4,6 +4,7 @@ from django.db import transaction
 
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -23,6 +24,8 @@ class GoogleSignInView(APIView):
     # previous session must never block signing in again.
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "sign_in"
 
     def post(self, request):
         serializer = GoogleSignInSerializer(data=request.data)
