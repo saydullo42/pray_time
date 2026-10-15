@@ -35,6 +35,7 @@ const contentSecurityPolicy = [
   .replace(/\s+/g, " ");
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   agentRules: false,
   devIndicators: false,
   // Self-contained server (server.js + only the needed node_modules) for the Docker image.
