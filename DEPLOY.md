@@ -89,8 +89,22 @@ chown -R 1000:1000 data/media data/static data/cache
 
 ## 6. Ishga tushirish
 
+Backend `uid 1000` bilan ishlaydi, Docker esa `data/` papkalarini `root` egasi qilib yaratadi.
+Birinchi ishga tushirishdan **oldin** egalikni to'g'rilang (aks holda backend `Permission denied` bilan yiqiladi),
+va zaxira papkasini yarating:
+
 ```bash
-cd /opt/praytime
+cd ~/pray_time
+mkdir -p data && docker run --rm -v $PWD/data:/d alpine sh -c \
+  "mkdir -p /d/media /d/cache /d/static /d/backups && chown -R 1000:1000 /d/media /d/cache /d/static /d/backups"
+```
+
+Zaxira (har kuni 03:00): `crontab -e` ga
+`0 3 * * * cd $HOME/pray_time && ./deploy/backup.sh >> data/backups/backup.log 2>&1` qo'shing.
+Zaxira shu serverning o'zida turadi, shuning uchun uni Hetzner "Backups" yoki snapshot bilan ham to'ldiring.
+
+```bash
+cd ~/pray_time
 docker compose up -d --build
 docker compose ps
 docker compose logs -f caddy backend
