@@ -6,7 +6,7 @@ import { RequireAuth } from "@/lib/auth-context";
 export default function QuranHubPage() {
   return (
     <RequireAuth>
-      <div className="flex flex-col gap-4 pt-16">
+      <div className="flex flex-col gap-4 pb-80 pt-16 sm:pb-12">
         <h1 className="mb-4 text-center text-2xl font-semibold">Qur&apos;oni Karim</h1>
         <HubButton href="/quran/book" label="Qur'on kitob" />
         <HubButton href="/quran/audio" label="Qur'on audio" />

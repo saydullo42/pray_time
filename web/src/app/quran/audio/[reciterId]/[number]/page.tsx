@@ -41,14 +41,24 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
   if (!surah) return <ErrorBox message="Sura topilmadi" />;
 
   return (
-    <div>
-      <BackLink href={`/quran/audio/${reciterId}`} />
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-        <div className="flex flex-1 flex-col items-center gap-6">
-          <p className="text-4xl" lang="ar" dir="rtl">
+    // Phones: the page fits one screen (100dvh minus the bottom menu and the page
+    // padding) and only the surah list scrolls. Larger screens: the usual layout.
+    <div className="flex h-[calc(100dvh-7rem)] flex-col sm:block sm:h-auto">
+      <div className="relative mb-3 flex shrink-0 items-center justify-center sm:hidden">
+        <BackLink href={`/quran/audio/${reciterId}`} className="absolute left-0 mb-0!" />
+        <h1 className="text-xl font-semibold">
+          {surah.number}. {surah.name_latin}
+        </h1>
+      </div>
+      <div className="hidden sm:block">
+        <BackLink href={`/quran/audio/${reciterId}`} />
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col gap-3 sm:flex-none sm:flex-row sm:items-start sm:gap-6">
+        <div className="flex shrink-0 flex-col items-center gap-3 sm:flex-1 sm:gap-6">
+          <p className="text-3xl sm:text-4xl" lang="ar" dir="rtl">
             {surah.name_arabic}
           </p>
-          <h1 className="text-xl font-semibold">
+          <h1 className="hidden text-xl font-semibold sm:block">
             {surah.number}. {surah.name_latin}
           </h1>
           <p className="text-sm text-foreground-muted">
@@ -76,7 +86,7 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
           />
         </div>
 
-        <div className="themed-scrollbar max-h-[50vh] w-full shrink-0 overflow-y-auto rounded-2xl bg-surface p-2 sm:w-72 sm:max-h-[75vh]">
+        <div className="themed-scrollbar min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-surface p-2 sm:max-h-[75vh] sm:w-72 sm:flex-none sm:shrink-0">
           {surahs.map((s) => {
             const active = s.number === surahNumber;
             return (
