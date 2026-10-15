@@ -74,7 +74,7 @@ export function AudioPlayer({
         <button
           onClick={togglePlay}
           aria-label={isPlaying ? "Pauza" : "Ijro etish"}
-          className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-accent text-black transition-colors hover:bg-accent-light sm:h-9 sm:w-9"
+          className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#E5E4E2] text-black transition-colors hover:bg-[#d3d2d0] sm:h-9 sm:w-9"
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
@@ -98,14 +98,14 @@ export function AudioPlayer({
         {prevSlot}
         <button
           onClick={() => skip(-SKIP_SECONDS)}
-          className="flex cursor-pointer items-center gap-1 rounded-full bg-accent px-4 py-1.5 font-semibold text-black"
+          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#E5E4E2] px-4 py-1.5 font-semibold text-black"
         >
           <span>‹</span>
           <span className="text-base">{SKIP_SECONDS}</span>
         </button>
         <button
           onClick={() => skip(SKIP_SECONDS)}
-          className="flex cursor-pointer items-center gap-1 rounded-full bg-accent px-4 py-1.5 font-semibold text-black"
+          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#E5E4E2] px-4 py-1.5 font-semibold text-black"
         >
           <span className="text-base">{SKIP_SECONDS}</span>
           <span>›</span>

@@ -86,7 +86,7 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
                 href={`/quran/audio/${reciterId}/${s.number}`}
                 prefetch={false}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
-                  active ? "bg-accent text-black" : "hover:bg-surface-alt"
+                  active ? "bg-[#E5E4E2] text-black" : "hover:bg-surface-alt"
                 }`}
               >
                 <span
