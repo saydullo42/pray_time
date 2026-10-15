@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 // TODO: replace "#" with the real store URLs once the app is published.
 const GOOGLE_PLAY_URL = "#";
@@ -7,7 +10,14 @@ const APP_STORE_URL = "#";
 const badgeClass =
   "flex h-12 w-40 items-center justify-center gap-2.5 rounded-lg border-2 border-foreground-muted/60 text-foreground transition-colors hover:border-foreground hover:bg-surface";
 
+// The footer shows on the bottom-menu pages (and login, privacy, ...) but not on
+// the pages inside them, e.g. /quran/book/36 or /dua/3/12.
+const MENU_SECTIONS = ["tracking", "quran", "dua", "profile"];
+
 export function Footer() {
+  const segments = usePathname().split("/").filter(Boolean);
+  if (segments.length >= 2 && MENU_SECTIONS.includes(segments[0])) return null;
+
   return (
     <footer className="border-t border-outline pb-6 pt-6 text-center text-sm text-foreground-muted">
       <p className="text-lg font-semibold text-foreground">Pray Time - namozlaringiz sarhisobi</p>
