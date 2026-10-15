@@ -66,20 +66,6 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
             src={surah.audio_url}
             autoPlay
             className="w-full max-w-sm"
-            prevSlot={
-              surahNumber > 1 ? (
-                <a href={`/quran/audio/${reciterId}/${surahNumber - 1}`} className="text-accent-light">
-                  ‹ Oldingi
-                </a>
-              ) : undefined
-            }
-            nextSlot={
-              surahNumber < 114 ? (
-                <a href={`/quran/audio/${reciterId}/${surahNumber + 1}`} className="text-accent-light">
-                  Keyingi ›
-                </a>
-              ) : undefined
-            }
           />
         </div>
 
