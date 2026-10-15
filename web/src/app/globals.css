@@ -15,8 +15,6 @@
   /* Daily prayer checklist window */
   --checklist-bg: var(--surface);
   --checklist-save-bg: var(--accent);
-  /* Surah buttons in Qur'on kitob */
-  --book-item-bg: var(--surface);
 }
 
 :root[data-theme="light"] {
@@ -33,7 +31,6 @@
   --danger: #c62828;
   --checklist-bg: #e5e4e2;
   --checklist-save-bg: #7ba05b;
-  --book-item-bg: #f2f3f4;
 }
 
 @theme inline {

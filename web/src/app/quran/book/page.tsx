@@ -29,7 +29,6 @@ function Content() {
       <BackLink href="/quran" />
       <SurahList
         title="Qur'on kitob"
-        itemClassName="bg-[var(--book-item-bg)]"
         surahs={(data?.results ?? []).map((s) => ({
           number: s.number,
           nameLatin: s.name_latin,
