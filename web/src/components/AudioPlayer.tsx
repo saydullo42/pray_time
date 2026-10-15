@@ -98,14 +98,14 @@ export function AudioPlayer({
         {prevSlot}
         <button
           onClick={() => skip(-SKIP_SECONDS)}
-          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#E5E4E2] px-4 py-1.5 font-semibold text-black"
+          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#DBD7D2] px-4 py-1.5 font-semibold text-black"
         >
           <span>‹</span>
           <span className="text-base">{SKIP_SECONDS}</span>
         </button>
         <button
           onClick={() => skip(SKIP_SECONDS)}
-          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#E5E4E2] px-4 py-1.5 font-semibold text-black"
+          className="flex cursor-pointer items-center gap-1 rounded-full bg-[#DBD7D2] px-4 py-1.5 font-semibold text-black"
         >
           <span className="text-base">{SKIP_SECONDS}</span>
           <span>›</span>
