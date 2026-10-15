@@ -111,7 +111,7 @@ export function DailyChecklistModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-t-2xl bg-surface p-6 sm:rounded-2xl"
+        className="w-full max-w-sm rounded-t-2xl bg-[var(--checklist-bg)] p-6 sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="mb-4 text-center text-lg font-medium">{formatGregorianUz(date)}</p>
@@ -145,7 +145,7 @@ export function DailyChecklistModal({
             <button
               onClick={save}
               disabled={saving}
-              className="mx-auto mt-6 block w-3/5 rounded-full bg-accent py-2.5 font-semibold text-black disabled:opacity-60"
+              className="mx-auto mt-6 block w-3/5 rounded-full bg-[var(--checklist-save-bg)] py-2.5 font-semibold text-black disabled:opacity-60"
             >
               {saving ? "..." : "Saqlash"}
             </button>

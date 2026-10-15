@@ -12,6 +12,9 @@
   --outline: #2b372f;
   --warning: #ef6c00;
   --danger: #c62828;
+  /* Daily prayer checklist window */
+  --checklist-bg: var(--surface);
+  --checklist-save-bg: var(--accent);
 }
 
 :root[data-theme="light"] {
@@ -26,6 +29,8 @@
   --outline: #d7ddd4;
   --warning: #ef6c00;
   --danger: #c62828;
+  --checklist-bg: #e5e4e2;
+  --checklist-save-bg: #f7f7f7;
 }
 
 @theme inline {
