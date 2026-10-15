@@ -55,9 +55,6 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-3 sm:flex-none sm:flex-row sm:items-start sm:gap-6">
         <div className="flex shrink-0 flex-col items-center gap-3 sm:flex-1 sm:gap-6">
-          <p className="text-3xl sm:text-4xl" lang="ar" dir="rtl">
-            {surah.name_arabic}
-          </p>
           <h1 className="hidden text-xl font-semibold sm:block">
             {surah.number}. {surah.name_latin}
           </h1>
@@ -86,7 +83,7 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
           />
         </div>
 
-        <div className="themed-scrollbar min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-surface p-2 sm:max-h-[75vh] sm:w-72 sm:flex-none sm:shrink-0">
+        <div className="themed-scrollbar min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-surface p-2 sm:max-h-[85vh] sm:w-72 sm:flex-none sm:shrink-0">
           {surahs.map((s) => {
             const active = s.number === surahNumber;
             return (
