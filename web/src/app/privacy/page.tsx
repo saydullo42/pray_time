@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 
       <h2 className={h2Class}>1. Ma&apos;lumotlar egasi</h2>
       <p>
-        Xizmat dasturchisi: Saydullo. Aloqa:{" "}
+        Xizmat egasi: Pray Time (dasturchi: Saydullo Abduraxmonov). Aloqa:{" "}
         <a className={linkClass} href="mailto:support.praytime@gmail.com">
           support.praytime@gmail.com
         </a>
