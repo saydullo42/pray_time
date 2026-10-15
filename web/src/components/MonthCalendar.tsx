@@ -51,7 +51,7 @@ export function MonthCalendar({ year, month, counts, onSelectDay, selectedDay, c
               key={i}
               onClick={() => onSelectDay(day)}
               style={{ background: colorForCompletionCount(counts[key]) }}
-              className={`aspect-square rounded-md ${compact ? "text-[9px]" : "text-xs"} flex items-center justify-center border ${
+              className={`aspect-square rounded-md ${compact ? "text-xs sm:text-sm" : "text-xs"} flex items-center justify-center border ${
                 isSelected
                   ? "border-accent-light"
                   : isToday
