@@ -16,11 +16,14 @@ export function SurahList({
   surahs,
   hrefFor,
   icon,
+  itemClassName = "bg-surface",
 }: {
   title: string;
   surahs: SurahListEntry[];
   hrefFor: (number: number) => string;
   icon: ReactNode;
+  /** Background class of each surah button. */
+  itemClassName?: string;
 }) {
   const basePath = hrefFor(1).replace(/\/1$/, "");
 
@@ -43,7 +46,7 @@ export function SurahList({
             id={`surah-${s.number}`}
             href={hrefFor(s.number)}
             prefetch={false}
-            className="flex items-center gap-3 rounded-xl bg-surface px-4 py-3"
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 ${itemClassName}`}
           >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-outline text-sm">
               {s.number}
