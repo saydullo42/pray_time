@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         </a>{" "}
         sayti
         <br />
-        Oxirgi yangilanish: 2026-yil 13-oktabr
+        Oxirgi yangilanish: 2026-yil 15-oktabr
       </p>
 
       <p>
@@ -42,7 +42,8 @@ export default function PrivacyPage() {
       <ul className="list-disc space-y-1 pl-5">
         <li>
           <strong>Email manzili.</strong> Google akkauntingiz bilan kirganingizda Google bizga email manzilingizni
-          beradi. Ro&apos;yxatdan o&apos;tish va tizimga kirish uchun shu manzil ishlatiladi.
+          beradi. Ro&apos;yxatdan o&apos;tish va tizimga kirish uchun shu manzil ishlatiladi. Shuningdek, Google akkauntingizning
+          doimiy identifikatori saqlanadi: email manzilingiz o&apos;zgarsa ham akkauntingizni aniqlash uchun kerak.
         </li>
         <li>
           <strong>Ism va profil rasmi.</strong> Google akkauntingizdagi ism va rasm havolasi. Ismni keyin profilingizda
@@ -55,6 +56,11 @@ export default function PrivacyPage() {
         <li>
           <strong>Eslatma sozlamalari va namoz vaqtlari.</strong> Eslatma sozlamalaringiz hamda 2-jadvalga o&apos;zingiz
           kiritgan namoz vaqtlari.
+        </li>
+        <li>
+          <strong>Texnik jurnallar.</strong> Server so&apos;rovlarni jurnalga yozadi (so&apos;rov vaqti, manzili va
+          qurilmangizning IP manzili). Jurnallar xatolarni topish va xizmatni suiiste&apos;moldan himoyalash uchun
+          ishlatiladi va qisqa muddat saqlanadi.
         </li>
       </ul>
       <p>
@@ -119,8 +125,10 @@ export default function PrivacyPage() {
           Ma&apos;lumotlar Germaniyadagi (Yevropa Ittifoqi) ma&apos;lumotlar markazida joylashgan serverda saqlanadi.
         </li>
         <li>
-          Ma&apos;lumotlaringiz akkauntingiz faol ekan saqlanadi. Akkauntni o&apos;chirsangiz, ular darhol
-          o&apos;chiriladi (6-bo&apos;limga qarang).
+          Ma&apos;lumotlaringiz akkauntingiz faol ekan saqlanadi. Akkauntni o&apos;chirsangiz, ular bazadan darhol
+          o&apos;chiriladi (6-bo&apos;limga qarang). Xavfsizlik uchun bazaning zaxira nusxalari 14 kun saqlanadi;
+          o&apos;chirilgan akkaunt ma&apos;lumotlari ularda eng ko&apos;pi bilan shu muddatgacha qoladi va keyin
+          avtomatik yo&apos;qoladi.
         </li>
         <li>
           Ma&apos;lumotlar ruxsatsiz kirishdan himoyalash uchun zarur texnik choralar ko&apos;riladi, jumladan, HTTPS

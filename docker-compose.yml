@@ -5,8 +5,17 @@
 #
 # See DEPLOY.md for the full server setup.
 
+# Container logs (they include client IPs) are rotated so they stay small and
+# short-lived, as the privacy policy says.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   db:
+    logging: *default-logging
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
@@ -22,6 +31,7 @@ services:
       retries: 10
 
   backend:
+    logging: *default-logging
     image: praytime-backend
     build: ./backend
     restart: unless-stopped
@@ -50,6 +60,7 @@ services:
 
   # Fills the prayer-times file cache now and then every day at 01:00 (Tashkent).
   scheduler:
+    logging: *default-logging
     image: praytime-backend
     build: ./backend
     restart: unless-stopped
@@ -61,6 +72,7 @@ services:
       - ./data/cache:/app/cache
 
   web:
+    logging: *default-logging
     build:
       context: ./web
       args:
@@ -69,6 +81,7 @@ services:
     restart: unless-stopped
 
   caddy:
+    logging: *default-logging
     image: caddy:2-alpine
     restart: unless-stopped
     depends_on:
