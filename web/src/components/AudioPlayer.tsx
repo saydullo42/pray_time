@@ -74,12 +74,12 @@ export function AudioPlayer({
         <button
           onClick={togglePlay}
           aria-label={isPlaying ? "Pauza" : "Ijro etish"}
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-accent text-black transition-colors hover:bg-accent-light"
+          className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-accent text-black transition-colors hover:bg-accent-light sm:h-9 sm:w-9"
         >
           {isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
 
-        <span className="shrink-0 text-xs tabular-nums text-foreground-muted">
+        <span className="shrink-0 text-sm tabular-nums text-foreground-muted sm:text-xs">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
 
@@ -118,14 +118,14 @@ export function AudioPlayer({
 
 function PlayIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 sm:h-[18px] sm:w-[18px]">
       <path d="M8 5v14l11-7z" />
     </svg>
   );
 }
 function PauseIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 sm:h-[18px] sm:w-[18px]">
       <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
     </svg>
   );

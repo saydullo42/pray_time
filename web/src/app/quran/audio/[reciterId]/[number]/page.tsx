@@ -58,7 +58,7 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
             key={surah.audio_url}
             src={surah.audio_url}
             autoPlay
-            className="max-w-sm"
+            className="w-full max-w-sm"
             prevSlot={
               surahNumber > 1 ? (
                 <a href={`/quran/audio/${reciterId}/${surahNumber - 1}`} className="text-accent-light">
