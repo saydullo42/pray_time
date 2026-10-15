@@ -138,7 +138,7 @@ function PrayerTimesBar({ entries }: { entries: [string, string][] }) {
     <div className="grid grid-cols-3 gap-y-3 rounded-2xl border border-outline bg-surface py-5 sm:grid-cols-6">
       {entries.map(([label, time]) => (
         <div key={label} className="flex flex-col items-center gap-1">
-          <span className="text-xs font-bold text-foreground-muted">{label}</span>
+          <span className="text-sm font-bold text-foreground-muted sm:text-xs">{label}</span>
           <span className="font-medium">{time}</span>
         </div>
       ))}
