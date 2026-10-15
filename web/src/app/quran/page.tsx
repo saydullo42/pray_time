@@ -20,7 +20,7 @@ function HubButton({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="mx-auto w-full max-w-xs rounded-full bg-[#004225] py-4 text-center text-lg font-semibold text-white transition-colors hover:bg-[#005a31]"
+      className="mx-auto w-full max-w-xs rounded-full bg-[#29AB87] py-4 text-center text-lg font-semibold text-white transition-colors hover:bg-[#23917a]"
     >
       {label}
     </Link>
