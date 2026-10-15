@@ -15,6 +15,10 @@
   /* Daily prayer checklist window */
   --checklist-bg: var(--surface);
   --checklist-save-bg: var(--accent);
+  /* Big buttons in the Qur'on and Qur'on audio sections */
+  --hub-btn-bg: #004225;
+  --hub-btn-hover: #005a31;
+  --hub-btn-text: #ffffff;
 }
 
 :root[data-theme="light"] {
@@ -31,6 +35,9 @@
   --danger: #c62828;
   --checklist-bg: #e5e4e2;
   --checklist-save-bg: #7ba05b;
+  --hub-btn-bg: #c0c0c0;
+  --hub-btn-hover: #adadad;
+  --hub-btn-text: #000000;
 }
 
 @theme inline {
