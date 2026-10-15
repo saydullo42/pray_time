@@ -8,7 +8,7 @@ const GOOGLE_PLAY_URL = "#";
 const APP_STORE_URL = "#";
 
 const badgeClass =
-  "flex h-12 w-40 items-center justify-center gap-2.5 rounded-lg border-2 border-foreground-muted/60 text-foreground transition-colors hover:border-foreground hover:bg-surface";
+  "flex h-12 w-40 items-center justify-center gap-2.5 rounded-lg border-2 border-white/60 text-white transition-colors hover:border-white hover:bg-white/10";
 
 // The footer shows on the bottom-menu pages (and login, privacy, ...) but not on
 // the pages inside them, e.g. /quran/book/36 or /dua/3/12.
@@ -19,14 +19,14 @@ export function Footer() {
   if (segments.length >= 2 && MENU_SECTIONS.includes(segments[0])) return null;
 
   return (
-    <footer className="border-t border-outline pb-6 pt-6 text-center text-sm text-foreground-muted">
-      <p className="text-lg font-semibold text-foreground">Pray Time - namozlaringiz sarhisobi</p>
+    <footer className="border-t border-white/10 bg-[#1B4D3E] pb-6 pt-6 text-center text-sm text-white/75">
+      <p className="text-lg font-semibold text-white">Pray Time - namozlaringiz sarhisobi</p>
 
       <p className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">
-        <Link href="/privacy" className="underline hover:text-foreground">
+        <Link href="/privacy" className="underline hover:text-white">
           Maxfiylik siyosati
         </Link>
-        <Link href="/delete-account" className="underline hover:text-foreground">
+        <Link href="/delete-account" className="underline hover:text-white">
           Akkauntni o&apos;chirish
         </Link>
       </p>
@@ -58,7 +58,7 @@ export function Footer() {
 
       <p className="mt-4">
         Bog&apos;lanish uchun{" "}
-        <a href="mailto:support.praytime@gmail.com" className="text-accent-light underline">
+        <a href="mailto:support.praytime@gmail.com" className="text-white underline">
           support.praytime@gmail.com
         </a>
       </p>
