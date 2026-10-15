@@ -109,8 +109,9 @@ export default function PrivacyPage() {
           yuborilmaydi.
         </li>
         <li>
-          <strong>alquran.cloud</strong> (Qur&apos;on matni va tarjimasi). Ilova va sayt Qur&apos;on matnini shu
-          xizmatdan to&apos;g&apos;ridan-to&apos;g&apos;ri oladi. Shuning uchun u xizmat serveri odatdagidek
+          <strong>alquran.cloud</strong> va <strong>cdn.islamic.network</strong> (Qur&apos;on matni, tarjimasi va
+          ba&apos;zi qorilarning audiosi). Ilova va sayt shu xizmatlardan Qur&apos;on matnini va audioni
+          to&apos;g&apos;ridan-to&apos;g&apos;ri oladi. Shuning uchun ularning serverlari odatdagidek
           qurilmangizning IP manzilini ko&apos;rishi mumkin. Akkaunt ma&apos;lumotlaringiz u yerga yuborilmaydi.
         </li>
       </ul>

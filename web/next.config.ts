@@ -21,7 +21,8 @@ const contentSecurityPolicy = [
   "script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client",
   "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
   `img-src 'self' data: blob: ${apiOrigin} https://*.googleusercontent.com https://accounts.google.com`,
-  `media-src 'self' ${apiOrigin}`,
+  // cdn.islamic.network hosts the Alafasy recitations (the URLs are stored in the database).
+  `media-src 'self' ${apiOrigin} https://cdn.islamic.network`,
   "font-src 'self' data:",
   `connect-src 'self' ${apiOrigin} https://api.alquran.cloud https://accounts.google.com/gsi/`,
   "frame-src https://accounts.google.com/gsi/",
