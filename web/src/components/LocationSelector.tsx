@@ -11,8 +11,8 @@ export function LocationSelector() {
   const districts = findRegion(regionName)?.districts ?? [];
 
   return (
-    <div className="-ml-4 flex w-36 shrink-0 flex-col gap-1.5 sm:w-48">
-      <div>
+    <div className="flex w-full shrink-0 gap-2 sm:-ml-4 sm:w-48 sm:flex-col sm:gap-1.5">
+      <div className="min-w-0 flex-1">
         <p className="mb-0.5 text-xs font-bold text-foreground-muted">Viloyatni tanlang:</p>
         <button
           onClick={() => setPicker("region")}
@@ -22,7 +22,7 @@ export function LocationSelector() {
           <ChevronDown />
         </button>
       </div>
-      <div className="mt-3">
+      <div className="min-w-0 flex-1 sm:mt-3">
         <p className="mb-0.5 text-xs font-bold text-foreground-muted">Tumanni tanlang:</p>
         <button
           onClick={() => setPicker("district")}
