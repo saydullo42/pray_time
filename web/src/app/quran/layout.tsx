@@ -1,4 +1,4 @@
 // Extra space under the Qur'on pages, so the footer sits a little lower.
 export default function QuranLayout({ children }: { children: React.ReactNode }) {
-  return <div className="pb-12">{children}</div>;
+  return <div className="pb-20 sm:pb-12">{children}</div>;
 }
