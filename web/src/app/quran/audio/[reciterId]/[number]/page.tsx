@@ -69,7 +69,7 @@ function Content({ reciterId, surahNumber }: { reciterId: number; surahNumber: n
           />
         </div>
 
-        <div className="themed-scrollbar min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-surface p-2 sm:max-h-[85vh] sm:w-72 sm:flex-none sm:shrink-0">
+        <div className="themed-scrollbar min-h-0 w-full flex-1 divide-y divide-outline overflow-y-auto rounded-2xl bg-surface p-2 sm:max-h-[85vh] sm:w-72 sm:flex-none sm:shrink-0">
           {surahs.map((s) => {
             const active = s.number === surahNumber;
             return (
