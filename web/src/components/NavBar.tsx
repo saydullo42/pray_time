@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme, type ThemeMode } from "@/lib/theme-context";
 
 const ITEMS = [
-  { href: "/", label: "Bosh sahifa", icon: HomeIcon },
+  { href: "/", label: "Asosiy", icon: HomeIcon },
   { href: "/tracking", label: "Yillik", icon: ChartIcon },
   { href: "/quran", label: "Qur'on", icon: BookIcon },
   { href: "/dua", label: "Duo", icon: DuaIcon },
@@ -51,7 +51,7 @@ export function NavBar() {
         <button
           onClick={() => setMode(NEXT_MODE[mode])}
           title={`Mavzu: ${MODE_LABEL[mode]}`}
-          className="flex flex-1 flex-col items-center gap-1 py-2 text-xs font-semibold text-foreground-muted sm:flex-none sm:flex-row sm:gap-2 sm:py-3 sm:text-sm"
+          className="hidden flex-none items-center gap-2 py-3 text-sm font-semibold text-foreground-muted sm:flex"
         >
           <ThemeIcon mode={mode} />
           <span>{MODE_LABEL[mode]}</span>
