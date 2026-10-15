@@ -19,7 +19,7 @@ export function Footer() {
   if (segments.length >= 2 && MENU_SECTIONS.includes(segments[0])) return null;
 
   return (
-    <footer className="border-t border-white/10 bg-[#1B4D3E] pb-6 pt-6 text-center text-sm text-white/75">
+    <footer className="border-t border-white/10 bg-[#013220] pb-6 pt-6 text-center text-sm text-white/75">
       <p className="text-lg font-semibold text-white">Pray Time - namozlaringiz sarhisobi</p>
 
       <p className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">
