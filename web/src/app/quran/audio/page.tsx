@@ -32,7 +32,7 @@ function Content() {
         <Link
           key={r.id}
           href={`/quran/audio/${r.id}`}
-          className="mx-auto w-full max-w-xs rounded-full bg-[#004225] py-4 text-center text-lg font-semibold text-white transition-colors hover:bg-[#005a31]"
+          className="mx-auto w-full max-w-xs rounded-full bg-[#C0C0C0] py-4 text-center text-lg font-semibold text-black transition-colors hover:bg-[#adadad]"
         >
           {r.name}
         </Link>
