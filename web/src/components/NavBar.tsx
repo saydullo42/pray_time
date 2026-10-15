@@ -31,7 +31,7 @@ export function NavBar() {
   if (!isAuthenticated) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline bg-surface/95 backdrop-blur sm:sticky sm:top-0 sm:bottom-auto sm:border-t-0 sm:border-b">
+    <nav className="order-last shrink-0 border-t border-outline bg-surface/95 backdrop-blur sm:sticky sm:top-0 sm:z-40 sm:order-none sm:border-t-0 sm:border-b">
       <div className="mx-auto flex max-w-3xl items-stretch justify-between px-2 sm:justify-center sm:gap-10">
         {ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

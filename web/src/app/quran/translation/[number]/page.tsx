@@ -6,6 +6,7 @@ import { RequireAuth } from "@/lib/auth-context";
 import { fetchTranslationSurah } from "@/lib/alquran";
 import { Loading, ErrorBox } from "@/components/Status";
 import { SurahReaderHeader } from "@/components/SurahReaderHeader";
+import { scrollPageToTop } from "@/lib/scroll";
 
 export default function QuranTranslationReaderPage({
   params,
@@ -35,7 +36,7 @@ function Content({ surahNumber }: { surahNumber: number }) {
 
   const goTo = (p: number) => {
     setPage(p);
-    window.scrollTo({ top: 0 });
+    scrollPageToTop();
   };
 
   return (

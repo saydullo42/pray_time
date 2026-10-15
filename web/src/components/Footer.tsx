@@ -9,7 +9,7 @@ const badgeClass =
 
 export function Footer() {
   return (
-    <footer className="border-t border-outline pb-20 pt-6 text-center text-sm text-foreground-muted sm:pb-6">
+    <footer className="border-t border-outline pb-6 pt-6 text-center text-sm text-foreground-muted">
       <p className="text-lg font-semibold text-foreground">Pray Time - namozlaringiz sarhisobi</p>
 
       <p className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">

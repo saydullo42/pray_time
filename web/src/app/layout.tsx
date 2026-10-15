@@ -61,11 +61,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <AuthProvider>
             <LocationProvider>
-              <NavBar />
-              <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-8 pt-4">
-                {children}
-              </main>
-              <Footer />
+              {/* Phones: the page scrolls inside #app-scroll and the menu sits below it,
+                  so it does not move when the browser's address bar shows/hides.
+                  Larger screens: `contents` removes these wrappers (window scroll). */}
+              <div className="flex h-dvh flex-col sm:contents">
+                <NavBar />
+                <div id="app-scroll" className="flex min-h-0 flex-1 flex-col overflow-y-auto sm:contents">
+                  <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-8 pt-4">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+              </div>
             </LocationProvider>
           </AuthProvider>
         </ThemeProvider>
