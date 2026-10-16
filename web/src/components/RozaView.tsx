@@ -90,7 +90,7 @@ export function RozaView({ page }: { page: number }) {
                 {Array.from({ length: DAYS }, (_, i) => i + 1).map((day) => (
                   <span
                     key={day}
-                    className={`flex aspect-square items-center justify-center rounded text-[11px] ${
+                    className={`flex aspect-square items-center justify-center rounded text-[13px] sm:text-sm ${
                       done.has(day) ? "bg-green-600/45" : ""
                     }`}
                   >
