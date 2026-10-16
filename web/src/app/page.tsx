@@ -85,7 +85,7 @@ function HomeContent() {
 
           <div className="grid grid-cols-3 sm:grid-cols-6">
             <p className="col-span-3 whitespace-nowrap text-left text-[11px] font-semibold text-foreground-muted sm:col-span-6 sm:text-sm">
-              * Oylik kalendarga o&apos;qilgan namozlarni belgilab borishingiz mumkin.
+              * Kalendarga o&apos;qilgan namozlarni belgilab boring.
             </p>
           </div>
 
