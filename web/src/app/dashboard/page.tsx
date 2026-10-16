@@ -114,10 +114,6 @@ function Stats({ data }: { data: DashboardStats }) {
         <BarChart data={users.signups} color="var(--primary)" />
       </Section>
 
-      <Section title={`Belgilangan namozlar (${data.days} kun)`}>
-        <BarChart data={features.prayers_marked} color="var(--accent)" />
-      </Section>
-
       <Section title="Qaysi qurilmadan kirishadi (30 kun)">
         <div className="space-y-3">
           <Bar label="Mobil ilova" value={activity.platforms_30d.mobile} total={platformTotal} />

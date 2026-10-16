@@ -179,9 +179,7 @@ class DashboardNumbersTests(TestCase):
         self.assertEqual(features["users_marking_7d"], 1)
         self.assertEqual(features["users_with_reminder_settings"], 2)
         self.assertEqual(features["users_with_custom_times"], 1)
-        marked = {day["date"]: day["count"] for day in features["prayers_marked"]}
-        self.assertEqual(marked[self.today.isoformat()], 2)
-        self.assertEqual(marked[(self.today - timedelta(days=20)).isoformat()], 1)
+        self.assertNotIn("prayers_marked", features)
 
     def test_recent_signups_are_newest_first_and_limited_to_ten(self):
         for i in range(12):

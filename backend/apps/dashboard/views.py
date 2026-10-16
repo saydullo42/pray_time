@@ -93,15 +93,11 @@ class DashboardView(APIView):
 
         # --- feature use -----------------------------------------------------
         marks = PrayerTrackingRecord.objects.filter(done=True)
-        marked_per_day = {
-            row["date"]: row["n"] for row in marks.filter(date__gte=start).values("date").annotate(n=Count("id"))
-        }
         features = {
             "users_who_marked_prayers": marks.values("user").distinct().count(),
             "users_marking_7d": marks.filter(date__gte=week_ago).values("user").distinct().count(),
             "users_with_reminder_settings": NotificationSettings.objects.count(),
             "users_with_custom_times": NotificationSettings.objects.filter(use_custom_times=True).count(),
-            "prayers_marked": _daily_series(start, today, marked_per_day),
         }
 
         recent = [
