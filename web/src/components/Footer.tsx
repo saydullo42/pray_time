@@ -13,10 +13,13 @@ const badgeClass =
 // The footer shows on the bottom-menu pages (and login, privacy, ...) but not on
 // the pages inside them, e.g. /quran/book/36 or /dua/3/12.
 const MENU_SECTIONS = ["tracking", "quran", "dua", "profile"];
+// Pages without a footer at all.
+const NO_FOOTER = ["dashboard"];
 
 export function Footer() {
   const segments = usePathname().split("/").filter(Boolean);
   if (segments.length >= 2 && MENU_SECTIONS.includes(segments[0])) return null;
+  if (NO_FOOTER.includes(segments[0])) return null;
 
   return (
     <footer className="border-t border-white/10 bg-[#013220] pb-6 pt-6 text-center text-sm text-white/75">

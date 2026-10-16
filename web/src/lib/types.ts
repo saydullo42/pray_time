@@ -3,6 +3,7 @@ export interface User {
   email: string;
   full_name: string | null;
   avatar_url: string | null;
+  is_staff?: boolean;
 }
 
 export interface AuthResponse {
@@ -87,4 +88,40 @@ export interface QuranAyah {
   numberInSurah: number;
   text: string;
   page: number;
+}
+
+export interface DailyCount {
+  date: string; // YYYY-MM-DD
+  count: number;
+}
+
+export interface DashboardStats {
+  generated_at: string;
+  days: number;
+  users: {
+    total: number;
+    new_today: number;
+    new_7d: number;
+    new_30d: number;
+    signups: DailyCount[];
+  };
+  activity: {
+    dau: number;
+    dau_yesterday: number;
+    wau: number;
+    mau: number;
+    stickiness: number;
+    returning_7d: number;
+    platforms_30d: { mobile: number; web: number };
+    daily: DailyCount[];
+    tracked_since: string | null;
+  };
+  features: {
+    users_who_marked_prayers: number;
+    users_marking_7d: number;
+    users_with_reminder_settings: number;
+    users_with_custom_times: number;
+    prayers_marked: DailyCount[];
+  };
+  recent_signups: { email: string; full_name: string; date_joined: string }[];
 }

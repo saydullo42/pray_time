@@ -12,6 +12,7 @@ urlpatterns = [
     path("api/v1/quran/", include("apps.quran.urls")),
     path("api/v1/dua/", include("apps.dua.urls")),
     path("api/v1/notifications/", include("apps.notifications.urls")),
+    path("api/v1/dashboard/", include("apps.dashboard.urls")),
 
 ]
 

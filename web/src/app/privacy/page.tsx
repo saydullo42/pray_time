@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         </a>{" "}
         sayti
         <br />
-        Oxirgi yangilanish: 2026-yil 15-oktabr
+        Oxirgi yangilanish: 2026-yil 16-oktabr
       </p>
 
       <p>
@@ -58,6 +58,11 @@ export default function PrivacyPage() {
           kiritgan namoz vaqtlari.
         </li>
         <li>
+          <strong>Foydalanish sanalari.</strong> Akkauntingiz qaysi kunlari ishlatilgani (faqat sana va mobil ilova
+          yoki veb sayt ekani) saqlanadi. Bu Xizmatdan nechta kishi foydalanayotganini bilish uchun kerak. Ular
+          faqat umumiy hisob sifatida ko&apos;riladi.
+        </li>
+        <li>
           <strong>Texnik jurnallar.</strong> Server so&apos;rovlarni jurnalga yozadi (so&apos;rov vaqti, manzili va
           qurilmangizning IP manzili). Jurnallar xatolarni topish va xizmatni suiiste&apos;moldan himoyalash uchun
           ishlatiladi va qisqa muddat saqlanadi.
@@ -81,6 +86,10 @@ export default function PrivacyPage() {
         <li>Sizni ro&apos;yxatdan o&apos;tkazish va akkauntingizga kirishni ta&apos;minlash.</li>
         <li>
           Akkauntingiz sizga tegishli ekanini Google orqali tasdiqlash (parol yoki SMS kod kerak emas).
+        </li>
+        <li>
+          Xizmatdan foydalanish statistikasini yuritish (masalan, kuniga nechta kishi kirgani) va Xizmatni
+          yaxshilash.
         </li>
         <li>Namoz belgilaringizni kalendarda ko&apos;rsatish va eslatmalarni o&apos;zingiz sozlaganingizdek ishlatish.</li>
         <li>
@@ -158,8 +167,8 @@ export default function PrivacyPage() {
         </li>
       </ul>
       <p>
-        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, eslatma sozlamalaringiz va namoz
-        vaqtlaringiz o&apos;chiriladi. Bu amalni qaytarib bo&apos;lmaydi. Tizimga kira olmasangiz,{" "}
+        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, eslatma sozlamalaringiz, namoz
+        vaqtlaringiz va foydalanish sanalaringiz o&apos;chiriladi. Bu amalni qaytarib bo&apos;lmaydi. Tizimga kira olmasangiz,{" "}
         <a className={linkClass} href="mailto:support.praytime@gmail.com">
           support.praytime@gmail.com
         </a>{" "}

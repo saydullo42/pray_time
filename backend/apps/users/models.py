@@ -41,3 +41,25 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email or f"user-{self.pk}"
+
+
+class UserActivity(models.Model):
+    """One row per user, calendar day and kind of client on which the account was
+    used. Only used for the owner's dashboard (daily/weekly/monthly active users);
+    it holds no content and is deleted together with the account."""
+
+    class Platform(models.TextChoices):
+        MOBILE = "mobile", "Mobil ilova"
+        WEB = "web", "Veb sayt"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="activity")
+    date = models.DateField()
+    platform = models.CharField(max_length=10, choices=Platform.choices)
+
+    class Meta:
+        unique_together = ("user", "date", "platform")
+        indexes = [models.Index(fields=["date"])]
+        verbose_name_plural = "user activity"
+
+    def __str__(self):
+        return f"{self.user} - {self.date} - {self.platform}"

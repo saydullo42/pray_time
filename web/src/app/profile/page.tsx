@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RequireAuth, useAuth } from "@/lib/auth-context";
 import { useTheme, type ThemeMode } from "@/lib/theme-context";
@@ -92,6 +93,15 @@ function Content() {
           ))}
         </div>
       </div>
+
+      {user.is_staff && (
+        <Link
+          href="/dashboard"
+          className="mx-auto block w-full max-w-xs rounded-full border border-outline py-3 text-center font-medium"
+        >
+          Dashboard
+        </Link>
+      )}
 
       <button
         onClick={handleLogout}
