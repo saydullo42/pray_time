@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,23 +36,30 @@ class DailyTrackingView(APIView):
 
 
 class DailyChecklistView(APIView):
-    """Bulk-saves a single day's Bomdod/Peshin/Asr/Shom/Xufton/Vitr checkboxes."""
+    """Bulk-saves a single day's Bomdod/Peshin/Asr/Shom/Xufton/Vitr checkboxes.
+
+    Only prayers that are marked done are stored; unchecking one deletes its row.
+    A prayer without a row simply reads as "not done"."""
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @transaction.atomic
     def post(self, request):
         serializer = DailyChecklistSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         day = data.pop("date")
 
+        not_done = [CHECKLIST_FIELD_TO_PRAYER[field] for field, done in data.items() if not done]
+        PrayerTrackingRecord.objects.filter(user=request.user, date=day, prayer_name__in=not_done).delete()
         for field, done in data.items():
-            PrayerTrackingRecord.objects.update_or_create(
-                user=request.user,
-                date=day,
-                prayer_name=CHECKLIST_FIELD_TO_PRAYER[field],
-                defaults={"done": done},
-            )
+            if done:
+                PrayerTrackingRecord.objects.update_or_create(
+                    user=request.user,
+                    date=day,
+                    prayer_name=CHECKLIST_FIELD_TO_PRAYER[field],
+                    defaults={"done": True},
+                )
         return Response(status=status.HTTP_200_OK)
 
 

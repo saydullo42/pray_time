@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
 
+from apps.tracking.models import PrayerTrackingRecord
 from apps.users.models import User
 
 
@@ -37,3 +38,64 @@ class TrackingParamValidationTests(APITestCase):
     def test_requires_authentication(self):
         self.client.force_authenticate(None)
         self.assertEqual(self.client.get("/api/v1/tracking/daily/?date=2026-10-14").status_code, 401)
+
+
+class StoreOnlyMarkedPrayersTests(APITestCase):
+    URL = "/api/v1/tracking/daily-checklist/"
+    DAY = "2026-10-14"
+    ALL_OFF = {"bomdod": False, "peshin": False, "asr": False, "shom": False, "xufton": False, "vitr": False}
+
+    def setUp(self):
+        self.user = User.objects.create_user(email="t@example.com")
+        self.client.force_authenticate(self.user)
+
+    def save(self, **marked):
+        return self.client.post(self.URL, {"date": self.DAY, **{**self.ALL_OFF, **marked}}, format="json")
+
+    def stored(self):
+        return set(
+            PrayerTrackingRecord.objects.filter(user=self.user, date=self.DAY).values_list("prayer_name", "done")
+        )
+
+    def test_only_marked_prayers_are_stored(self):
+        self.assertEqual(self.save(bomdod=True, asr=True).status_code, 200)
+        self.assertEqual(self.stored(), {("Bomdod", True), ("Asr", True)})
+
+    def test_nothing_is_stored_when_nothing_is_marked(self):
+        self.assertEqual(self.save().status_code, 200)
+        self.assertEqual(PrayerTrackingRecord.objects.count(), 0)
+
+    def test_unchecking_a_prayer_deletes_its_row(self):
+        self.save(bomdod=True, asr=True)
+        self.save(bomdod=True)
+        self.assertEqual(self.stored(), {("Bomdod", True)})
+
+    def test_saving_twice_does_not_duplicate(self):
+        self.save(shom=True)
+        self.save(shom=True)
+        self.assertEqual(PrayerTrackingRecord.objects.count(), 1)
+
+    def test_a_legacy_not_done_row_is_replaced_when_marked(self):
+        PrayerTrackingRecord.objects.create(user=self.user, date=self.DAY, prayer_name="Asr", done=False)
+        self.save(asr=True)
+        self.assertEqual(self.stored(), {("Asr", True)})
+
+    def test_other_days_and_users_are_untouched(self):
+        other = User.objects.create_user(email="o@example.com")
+        PrayerTrackingRecord.objects.create(user=other, date=self.DAY, prayer_name="Asr", done=True)
+        PrayerTrackingRecord.objects.create(user=self.user, date="2026-10-13", prayer_name="Asr", done=True)
+        self.save()
+        self.assertEqual(PrayerTrackingRecord.objects.count(), 2)
+
+    def test_reading_still_returns_every_prayer(self):
+        self.save(bomdod=True)
+        statuses = self.client.get(f"/api/v1/tracking/daily/?date={self.DAY}").data["statuses"]
+        self.assertEqual(statuses["Bomdod"], True)
+        self.assertEqual([name for name, done in statuses.items() if done], ["Bomdod"])
+        self.assertEqual(len(statuses), 6)
+
+    def test_calendar_counts_only_marked_prayers_and_skips_empty_days(self):
+        self.save(bomdod=True, asr=True, shom=True)
+        self.client.post(self.URL, {"date": "2026-10-13", **self.ALL_OFF}, format="json")
+        results = self.client.get("/api/v1/tracking/calendar/?year=2026&month=10").data["results"]
+        self.assertEqual(results, {self.DAY: 3})
