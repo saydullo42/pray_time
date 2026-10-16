@@ -12,7 +12,6 @@ from rest_framework.views import APIView
 
 from apps.common.params import int_param
 from apps.notifications.models import NotificationSettings
-from apps.tracking.models import PrayerTrackingRecord
 from apps.users.models import User, UserActivity
 
 
@@ -92,10 +91,7 @@ class DashboardView(APIView):
         }
 
         # --- feature use -----------------------------------------------------
-        marks = PrayerTrackingRecord.objects.filter(done=True)
         features = {
-            "users_who_marked_prayers": marks.values("user").distinct().count(),
-            "users_marking_7d": marks.filter(date__gte=week_ago).values("user").distinct().count(),
             "users_with_reminder_settings": NotificationSettings.objects.count(),
             "users_with_custom_times": NotificationSettings.objects.filter(use_custom_times=True).count(),
         }

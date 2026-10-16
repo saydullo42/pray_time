@@ -126,8 +126,6 @@ function Stats({ data }: { data: DashboardStats }) {
 
       <Section title="Funksiyalardan foydalanish">
         <div className="space-y-3">
-          <Bar label="Namoz belgilagan" value={features.users_who_marked_prayers} total={users.total} />
-          <Bar label="So'nggi 7 kunda belgilagan" value={features.users_marking_7d} total={users.total} />
           <Bar label="Eslatma sozlagan" value={features.users_with_reminder_settings} total={users.total} />
           <Bar label="2-jadvalni (o'z vaqtlari) ishlatadi" value={features.users_with_custom_times} total={users.total} />
         </div>

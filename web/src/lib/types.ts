@@ -117,8 +117,6 @@ export interface DashboardStats {
     tracked_since: string | null;
   };
   features: {
-    users_who_marked_prayers: number;
-    users_marking_7d: number;
     users_with_reminder_settings: number;
     users_with_custom_times: number;
   };

@@ -6,7 +6,6 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.tracking.models import PrayerTrackingRecord
 from apps.users.authentication import reset_activity_memory
 from apps.users.models import User, UserActivity
 
@@ -164,22 +163,12 @@ class DashboardNumbersTests(TestCase):
         self.assertIsNone(activity["tracked_since"])
 
     def test_feature_use(self):
-        a = self.make_user("a@example.com")
-        b = self.make_user("b@example.com")
-        PrayerTrackingRecord.objects.create(user=a, date=self.today, prayer_name="Bomdod", done=True)
-        PrayerTrackingRecord.objects.create(user=a, date=self.today, prayer_name="Asr", done=True)
-        PrayerTrackingRecord.objects.create(user=b, date=self.today - timedelta(days=20), prayer_name="Asr", done=True)
-        PrayerTrackingRecord.objects.create(user=b, date=self.today, prayer_name="Shom", done=False)
         # NotificationSettings uses a PostgreSQL ArrayField, which the SQLite test database lacks
         with patch("apps.dashboard.views.NotificationSettings") as settings:
             settings.objects.count.return_value = 2
             settings.objects.filter.return_value.count.return_value = 1
             features = self.stats()["features"]
-        self.assertEqual(features["users_who_marked_prayers"], 2)
-        self.assertEqual(features["users_marking_7d"], 1)
-        self.assertEqual(features["users_with_reminder_settings"], 2)
-        self.assertEqual(features["users_with_custom_times"], 1)
-        self.assertNotIn("prayers_marked", features)
+        self.assertEqual(features, {"users_with_reminder_settings": 2, "users_with_custom_times": 1})
 
     def test_recent_signups_are_newest_first_and_limited_to_ten(self):
         for i in range(12):
