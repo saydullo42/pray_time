@@ -19,6 +19,11 @@
   --hub-btn-bg: #004225;
   --hub-btn-hover: #005a31;
   --hub-btn-text: #ffffff;
+  /* Surah audio player page */
+  --player-play-bg: var(--accent);
+  --player-play-hover: var(--accent-light);
+  --player-skip-bg: var(--accent);
+  --player-active-bg: var(--accent);
 }
 
 :root[data-theme="light"] {
@@ -38,6 +43,10 @@
   --hub-btn-bg: #c0c0c0;
   --hub-btn-hover: #adadad;
   --hub-btn-text: #000000;
+  --player-play-bg: #e5e4e2;
+  --player-play-hover: #d3d2d0;
+  --player-skip-bg: #dbd7d2;
+  --player-active-bg: #e5e4e2;
 }
 
 @theme inline {
