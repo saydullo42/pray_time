@@ -301,10 +301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: _ManualPrayerTimesBar(
-              computedTimes: prayerTimesAsync.valueOrNull,
-              onTapPrayer: _pickManualTime,
-            ),
+            child: _ManualPrayerTimesBar(onTapPrayer: _pickManualTime),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
@@ -481,15 +478,10 @@ class _PrayerTimesBar extends StatelessWidget {
 
 /// Full-width bar of manually-editable prayer times (Bomdod/Peshin/Asr/
 /// Shom/Xufton). Tapping a prayer opens a time picker to set/edit its
-/// override; the displayed value falls back to the computed time when no
-/// override has been saved yet.
+/// override; a prayer without a saved override shows 00:00.
 class _ManualPrayerTimesBar extends ConsumerWidget {
-  const _ManualPrayerTimesBar({
-    required this.computedTimes,
-    required this.onTapPrayer,
-  });
+  const _ManualPrayerTimesBar({required this.onTapPrayer});
 
-  final PrayerTimeModel? computedTimes;
   final ValueChanged<String> onTapPrayer;
 
   @override
@@ -499,18 +491,14 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
         ref.watch(customPrayerTimeOverridesProvider).valueOrNull ??
         const CustomPrayerTimeModel();
 
-    String displayValue(String? override, DateTime? computed) {
-      if (override != null) return override;
-      if (computed != null) return DateFormat.Hm().format(computed);
-      return '--:--';
-    }
+    String displayValue(String? override) => override ?? '00:00';
 
     final entries = <(String, String)>[
-      ('Bomdod', displayValue(overrides.fajr, computedTimes?.fajr)),
-      ('Peshin', displayValue(overrides.dhuhr, computedTimes?.dhuhr)),
-      ('Asr', displayValue(overrides.asr, computedTimes?.asr)),
-      ('Shom', displayValue(overrides.maghrib, computedTimes?.maghrib)),
-      ('Xufton', displayValue(overrides.isha, computedTimes?.isha)),
+      ('Bomdod', displayValue(overrides.fajr)),
+      ('Peshin', displayValue(overrides.dhuhr)),
+      ('Asr', displayValue(overrides.asr)),
+      ('Shom', displayValue(overrides.maghrib)),
+      ('Xufton', displayValue(overrides.isha)),
     ];
 
     return Container(
