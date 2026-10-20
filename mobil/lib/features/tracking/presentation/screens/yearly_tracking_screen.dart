@@ -761,6 +761,7 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
             children: [
               Expanded(
                 child: TrackingCalendar(
+                  framed: false,
                   focusedDay: _focusedDay,
                   selectedDay: _selectedDay,
                   onPageChanged: (focused) =>
