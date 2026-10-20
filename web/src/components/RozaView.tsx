@@ -131,32 +131,66 @@ export function RozaView({ page }: { page: number }) {
           </div>
 
           {openDay !== null && (
-            <div
-              className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
-              onClick={(e) => {
-                e.stopPropagation();
+            <DayDialog
+              key={`${openYear}-${openDay}`}
+              year={openYear}
+              day={openDay}
+              initiallyDone={(days[openYear] ?? []).includes(openDay)}
+              onSave={(done) => {
+                setDone(openYear, openDay, done);
                 setOpenDay(null);
               }}
-            >
-              <div
-                className="w-full max-w-xs rounded-2xl bg-surface px-6 py-7"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <p className="text-center text-2xl">{openYear}</p>
-                <label className="mt-6 flex cursor-pointer items-center justify-end gap-20 pr-1">
-                  <span className="text-2xl">{openDay} - kun</span>
-                  <input
-                    type="checkbox"
-                    checked={(days[openYear] ?? []).includes(openDay)}
-                    onChange={(e) => setDone(openYear, openDay, e.target.checked)}
-                    className="h-7 w-7 cursor-pointer accent-accent-light"
-                  />
-                </label>
-              </div>
-            </div>
+              onClose={() => setOpenDay(null)}
+            />
           )}
         </div>
       )}
     </>
+  );
+}
+
+/** The day's check box only takes effect when "Saqlash" is pressed. */
+function DayDialog({
+  year,
+  day,
+  initiallyDone,
+  onSave,
+  onClose,
+}: {
+  year: number;
+  day: number;
+  initiallyDone: boolean;
+  onSave: (done: boolean) => void;
+  onClose: () => void;
+}) {
+  const [done, setDone] = useState(initiallyDone);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div className="w-full max-w-xs rounded-2xl bg-surface px-6 py-7" onClick={(e) => e.stopPropagation()}>
+        <p className="text-center text-2xl">{year}</p>
+        <label className="mt-6 flex cursor-pointer items-center justify-end gap-20 pr-1">
+          <span className="text-2xl">{day} - kun</span>
+          <input
+            type="checkbox"
+            checked={done}
+            onChange={(e) => setDone(e.target.checked)}
+            className="h-7 w-7 cursor-pointer accent-accent-light"
+          />
+        </label>
+        <button
+          onClick={() => onSave(done)}
+          className="mx-auto mt-6 block w-3/5 cursor-pointer rounded-full bg-[var(--checklist-save-bg)] py-2.5 font-semibold text-black"
+        >
+          Saqlash
+        </button>
+      </div>
+    </div>
   );
 }
