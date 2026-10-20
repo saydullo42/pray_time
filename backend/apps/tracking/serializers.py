@@ -21,3 +21,14 @@ class DailyChecklistSerializer(serializers.Serializer):
     shom = serializers.BooleanField()
     xufton = serializers.BooleanField()
     vitr = serializers.BooleanField()
+
+
+ROZA_DAYS = 30
+
+
+class RozaYearSerializer(serializers.Serializer):
+    days = serializers.ListField(
+        child=serializers.IntegerField(min_value=1, max_value=ROZA_DAYS),
+        max_length=ROZA_DAYS,
+        allow_empty=True,
+    )

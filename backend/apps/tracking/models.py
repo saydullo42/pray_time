@@ -16,3 +16,18 @@ class PrayerTrackingRecord(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.date} - {self.prayer_name}: {'done' if self.done else 'not done'}"
+
+
+class RozaDay(models.Model):
+    """A day of fasting (ro'za) the user marked as kept: day 1-30 of a year."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="roza_days")
+    year = models.PositiveSmallIntegerField()
+    day = models.PositiveSmallIntegerField()
+
+    class Meta:
+        unique_together = ("user", "year", "day")
+        ordering = ["year", "day"]
+
+    def __str__(self):
+        return f"{self.user} - {self.year} - kun {self.day}"

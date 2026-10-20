@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         </a>{" "}
         sayti
         <br />
-        Oxirgi yangilanish: 2026-yil 16-oktabr
+        Oxirgi yangilanish: 2026-yil 20-oktabr
       </p>
 
       <p>
@@ -54,6 +54,10 @@ export default function PrivacyPage() {
           namozlar saqlanadi.
         </li>
         <li>
+          <strong>Ro&apos;za kunlari.</strong> Ro&apos;za bo&apos;limida belgilagan kunlaringiz (yil va kun raqami).
+          Ular qurilmalaringiz orasida bir xil ko&apos;rinishi uchun serverda saqlanadi.
+        </li>
+        <li>
           <strong>Eslatma sozlamalari va namoz vaqtlari.</strong> Eslatma sozlamalaringiz hamda 2-jadvalga o&apos;zingiz
           kiritgan namoz vaqtlari.
         </li>
@@ -77,7 +81,7 @@ export default function PrivacyPage() {
       </p>
       <p>
         Quyidagilar <strong>faqat qurilmangiz yoki brauzeringizda</strong> saqlanadi va serverga yuborilmaydi:
-        belgilangan ro&apos;za kunlari, tanlangan mavzu (yorug&apos; yoki qorong&apos;i), tanlangan hudud va tizimga
+        tanlangan mavzu (yorug&apos; yoki qorong&apos;i), tanlangan hudud va tizimga
         kirganingizni eslab turuvchi kirish kaliti.
       </p>
 
@@ -167,8 +171,8 @@ export default function PrivacyPage() {
         </li>
       </ul>
       <p>
-        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, eslatma sozlamalaringiz, namoz
-        vaqtlaringiz va foydalanish sanalaringiz o&apos;chiriladi. Bu amalni qaytarib bo&apos;lmaydi. Tizimga kira olmasangiz,{" "}
+        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, ro&apos;za kunlaringiz, eslatma
+        sozlamalaringiz, namoz vaqtlaringiz va foydalanish sanalaringiz o&apos;chiriladi. Bu amalni qaytarib bo&apos;lmaydi. Tizimga kira olmasangiz,{" "}
         <a className={linkClass} href="mailto:support.praytime@gmail.com">
           support.praytime@gmail.com
         </a>{" "}

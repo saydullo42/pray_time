@@ -25,6 +25,7 @@ class ApiEndpoints {
   static const String trackingDaily = '/tracking/daily/';
   static const String trackingDailyChecklist = '/tracking/daily-checklist/';
   static const String trackingCalendar = '/tracking/calendar/';
+  static const String trackingRoza = '/tracking/roza/';
 
   // Qur'an
   static const String quranSurahs = '/quran/surahs/';

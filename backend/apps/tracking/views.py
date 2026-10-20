@@ -1,12 +1,13 @@
 from django.db import transaction
 from rest_framework import permissions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.params import MAX_YEAR, MIN_YEAR, date_param, int_param
 
-from .models import PRAYER_NAMES, PrayerTrackingRecord
-from .serializers import DailyChecklistSerializer, DailyTrackingSerializer
+from .models import PRAYER_NAMES, PrayerTrackingRecord, RozaDay
+from .serializers import DailyChecklistSerializer, DailyTrackingSerializer, RozaYearSerializer
 
 # Maps the lowercase field names used by the daily-checklist request body to
 # the Uzbek prayer_name values stored on PrayerTrackingRecord.
@@ -83,3 +84,37 @@ class MonthCalendarView(APIView):
                 counts[key] += 1
 
         return Response({"results": counts})
+
+
+class RozaView(APIView):
+    """All the fasting days the user has marked, grouped by year."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        years: dict[str, list[int]] = {}
+        for year, day in RozaDay.objects.filter(user=request.user).values_list("year", "day"):
+            years.setdefault(str(year), []).append(day)
+        # user_id lets a client notice that its cached days belong to another account
+        return Response({"user_id": request.user.pk, "results": years})
+
+
+class RozaYearView(APIView):
+    """Replaces the marked days of one year with the given list (an empty list clears the year)."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    @transaction.atomic
+    def put(self, request, year: int):
+        if not MIN_YEAR <= year <= MAX_YEAR:
+            raise ValidationError({"year": f"{MIN_YEAR} dan {MAX_YEAR} gacha bo'lishi kerak."})
+        serializer = RozaYearSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        days = set(serializer.validated_data["days"])
+
+        mine = RozaDay.objects.filter(user=request.user, year=year)
+        mine.exclude(day__in=days).delete()
+        RozaDay.objects.bulk_create(
+            [RozaDay(user=request.user, year=year, day=day) for day in days], ignore_conflicts=True
+        )
+        return Response({"days": sorted(days)})

@@ -23,5 +23,10 @@ export const tokenStorage = {
   clear() {
     window.localStorage.removeItem(ACCESS_KEY);
     window.localStorage.removeItem(REFRESH_KEY);
+    // The cached Ro'za days belong to the account that just signed out; the next
+    // account must not inherit them.
+    for (const key of Object.keys(window.localStorage)) {
+      if (key.startsWith("roza_")) window.localStorage.removeItem(key);
+    }
   },
 };

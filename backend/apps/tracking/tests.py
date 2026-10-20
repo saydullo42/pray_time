@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from apps.tracking.models import PrayerTrackingRecord
+from apps.tracking.models import PrayerTrackingRecord, RozaDay
 from apps.users.models import User
 
 
@@ -99,3 +99,70 @@ class StoreOnlyMarkedPrayersTests(APITestCase):
         self.client.post(self.URL, {"date": "2026-10-13", **self.ALL_OFF}, format="json")
         results = self.client.get("/api/v1/tracking/calendar/?year=2026&month=10").data["results"]
         self.assertEqual(results, {self.DAY: 3})
+
+
+class RozaTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="r@example.com")
+        self.client.force_authenticate(self.user)
+
+    def put(self, year, days):
+        return self.client.put(f"/api/v1/tracking/roza/{year}/", {"days": days}, format="json")
+
+    def test_requires_authentication(self):
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.get("/api/v1/tracking/roza/").status_code, 401)
+        self.assertEqual(self.put(2026, [1]).status_code, 401)
+
+    def test_empty_at_first(self):
+        self.assertEqual(
+            self.client.get("/api/v1/tracking/roza/").data, {"user_id": self.user.pk, "results": {}}
+        )
+
+    def test_saves_and_returns_days_by_year(self):
+        self.assertEqual(self.put(2026, [3, 1, 2]).data, {"days": [1, 2, 3]})
+        self.put(2025, [30])
+        self.assertEqual(
+            self.client.get("/api/v1/tracking/roza/").data["results"], {"2025": [30], "2026": [1, 2, 3]}
+        )
+
+    def test_put_replaces_the_year(self):
+        self.put(2026, [1, 2, 3])
+        self.put(2026, [2, 5])
+        self.assertEqual(self.client.get("/api/v1/tracking/roza/").data["results"], {"2026": [2, 5]})
+
+    def test_an_empty_list_clears_the_year_and_only_that_year(self):
+        self.put(2026, [1, 2])
+        self.put(2025, [7])
+        self.put(2026, [])
+        self.assertEqual(self.client.get("/api/v1/tracking/roza/").data["results"], {"2025": [7]})
+
+    def test_duplicates_are_ignored_and_saving_twice_is_fine(self):
+        self.put(2026, [4, 4, 4])
+        self.put(2026, [4])
+        self.assertEqual(RozaDay.objects.count(), 1)
+
+    def test_all_thirty_days(self):
+        self.assertEqual(self.put(2026, list(range(1, 31))).status_code, 200)
+        self.assertEqual(RozaDay.objects.count(), 30)
+
+    def test_invalid_input_is_rejected(self):
+        for days in ([0], [31], [-1], ["a"], list(range(1, 32)), None, "1,2"):
+            with self.subTest(days=days):
+                self.assertEqual(self.put(2026, days).status_code, 400)
+        for year in (1899, 2201):
+            with self.subTest(year=year):
+                self.assertEqual(self.put(year, [1]).status_code, 400)
+        self.assertEqual(RozaDay.objects.count(), 0)
+
+    def test_users_cannot_see_or_change_each_others_days(self):
+        other = User.objects.create_user(email="o@example.com")
+        RozaDay.objects.create(user=other, year=2026, day=9)
+        self.put(2026, [1])
+        self.assertEqual(self.client.get("/api/v1/tracking/roza/").data["results"], {"2026": [1]})
+        self.assertEqual(RozaDay.objects.filter(user=other).count(), 1)
+
+    def test_deleting_the_account_deletes_the_days(self):
+        self.put(2026, [1, 2])
+        self.assertEqual(self.client.delete("/api/v1/users/me/").status_code, 204)
+        self.assertEqual(RozaDay.objects.count(), 0)

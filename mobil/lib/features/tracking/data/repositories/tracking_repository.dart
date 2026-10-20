@@ -29,6 +29,33 @@ class TrackingRepository {
     await _client.post(ApiEndpoints.trackingDailyChecklist, data: data);
   }
 
+  /// Every fasting (ro'za) day marked on the server: year -> days (1-30). [userId]
+  /// is the account they belong to.
+  Future<({int userId, Map<int, Set<int>> years})> getRoza() async {
+    final response = await _client.get<Map<String, dynamic>>(
+      ApiEndpoints.trackingRoza,
+    );
+    final data = response.data!;
+    final results = data['results'] as Map<String, dynamic>;
+    return (
+      userId: data['user_id'] as int,
+      years: results.map(
+        (year, days) => MapEntry(
+          int.parse(year),
+          (days as List<dynamic>).map((day) => day as int).toSet(),
+        ),
+      ),
+    );
+  }
+
+  /// Replaces the marked days of [year] (an empty set clears the year).
+  Future<void> saveRozaYear(int year, Set<int> days) async {
+    await _client.put(
+      '${ApiEndpoints.trackingRoza}$year/',
+      data: {'days': days.toList()..sort()},
+    );
+  }
+
   /// Day-of-month -> number of prayers marked done, for calendar coloring.
   Future<Map<int, int>> getMonthCalendarCounts({
     required int year,

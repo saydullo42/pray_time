@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { api } from "@/lib/api";
 
 const OLDEST_YEAR = 1940;
 const YEARS_PER_PAGE = 12;
@@ -22,7 +24,34 @@ export function rozaCanGoOlder(page: number): boolean {
 
 type DaysByYear = Record<number, number[]>;
 
-/** Days of fasting kept, per year. Stored in this browser only (no backend yet). */
+// After the first sync the server is the source of truth for this browser.
+const SYNCED_KEY = "roza_synced";
+// The account the cached days belong to.
+const OWNER_KEY = "roza_owner";
+// Years whose latest change has not reached the server yet (offline, server error).
+const DIRTY_KEY = "roza_dirty";
+
+function readDirty(): number[] {
+  try {
+    return JSON.parse(localStorage.getItem(DIRTY_KEY) ?? "[]") as number[];
+  } catch {
+    return [];
+  }
+}
+
+function writeDirty(years: Iterable<number>) {
+  try {
+    localStorage.setItem(DIRTY_KEY, JSON.stringify([...new Set(years)]));
+  } catch {}
+}
+
+function saveLocal(year: number, days: number[]) {
+  try {
+    localStorage.setItem(`${STORAGE_PREFIX}${year}`, days.join(","));
+  } catch {}
+}
+
+/** Days of fasting kept, per year, as cached in this browser. */
 function loadDays(): DaysByYear {
   const loaded: DaysByYear = {};
   if (typeof window === "undefined") return loaded;
@@ -35,30 +64,111 @@ function loadDays(): DaysByYear {
   return loaded;
 }
 
+async function pushYear(year: number, days: number[]): Promise<boolean> {
+  try {
+    await api.put(`/tracking/roza/${year}/`, { days });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Pulls the days from the server (and sends up what the server lacks). */
+async function syncWithServer(): Promise<DaysByYear | null> {
+  let server: Record<string, number[]>;
+  let userId: string;
+  try {
+    const response = await api.get<{ user_id: number; results: Record<string, number[]> }>("/tracking/roza/");
+    server = response.results;
+    userId = String(response.user_id);
+  } catch {
+    return null; // offline: keep showing the cached days
+  }
+  try {
+    // Days cached for another account (e.g. the session expired and someone else
+    // signed in) must not leak into this one.
+    const owner = localStorage.getItem(OWNER_KEY);
+    if (owner && owner !== userId) {
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith("roza_"))
+        .forEach((key) => localStorage.removeItem(key));
+    }
+    localStorage.setItem(OWNER_KEY, userId);
+  } catch {}
+  const local = loadDays();
+  const dirty = new Set(readDirty());
+  // The first time on this browser, the days marked here before the server stored
+  // them are added to the server's instead of being overwritten.
+  const firstSync = !localStorage.getItem(SYNCED_KEY);
+
+  const merged: DaysByYear = {};
+  const toPush: number[] = [];
+  const years = new Set([...Object.keys(server).map(Number), ...Object.keys(local).map(Number)]);
+  for (const year of years) {
+    const fromServer = server[year] ?? [];
+    const fromHere = local[year] ?? [];
+    if (dirty.has(year)) {
+      merged[year] = fromHere;
+      toPush.push(year);
+    } else if (firstSync) {
+      const union = [...new Set([...fromServer, ...fromHere])].sort((a, b) => a - b);
+      merged[year] = union;
+      if (union.length !== fromServer.length) toPush.push(year);
+    } else {
+      merged[year] = fromServer;
+    }
+  }
+
+  const stillDirty: number[] = [];
+  for (const year of toPush) {
+    if (!(await pushYear(year, merged[year]))) stillDirty.push(year);
+  }
+  writeDirty(stillDirty);
+  if (stillDirty.length === 0) {
+    try {
+      localStorage.setItem(SYNCED_KEY, "1");
+    } catch {}
+  }
+  for (const [year, list] of Object.entries(merged)) saveLocal(Number(year), list);
+  return merged;
+}
+
 function useRozaDays() {
   // Only mounted after the user switches to "Ro'za", so never during SSR.
   const [days, setDays] = useState<DaysByYear>(loadDays);
 
-  function setDone(year: number, day: number, done: boolean) {
-    setDays((prev) => {
-      const set = new Set(prev[year] ?? []);
-      if (done) set.add(day);
-      else set.delete(day);
-      const sorted = [...set].sort((a, b) => a - b);
-      try {
-        localStorage.setItem(`${STORAGE_PREFIX}${year}`, sorted.join(","));
-      } catch {}
-      return { ...prev, [year]: sorted };
+  useEffect(() => {
+    let cancelled = false;
+    syncWithServer().then((merged) => {
+      if (merged && !cancelled) setDays(merged);
     });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /** Shows and caches the new days of a year at once, then sends them to the server. */
+  function commit(year: number, list: number[]) {
+    setDays((prev) => ({ ...prev, [year]: list }));
+    saveLocal(year, list);
+    pushYear(year, list).then((ok) => {
+      const dirty = new Set(readDirty());
+      if (ok) dirty.delete(year);
+      else dirty.add(year);
+      writeDirty(dirty);
+    });
+  }
+
+  function setDone(year: number, day: number, done: boolean) {
+    const set = new Set(days[year] ?? []);
+    if (done) set.add(day);
+    else set.delete(day);
+    commit(year, [...set].sort((a, b) => a - b));
   }
 
   /** Marks all 30 days of a year as kept, or clears the year. */
   function setAllDone(year: number, done: boolean) {
-    const all = done ? Array.from({ length: DAYS }, (_, i) => i + 1) : [];
-    try {
-      localStorage.setItem(`${STORAGE_PREFIX}${year}`, all.join(","));
-    } catch {}
-    setDays((prev) => ({ ...prev, [year]: all }));
+    commit(year, done ? Array.from({ length: DAYS }, (_, i) => i + 1) : []);
   }
 
   return { days, setDone, setAllDone };
