@@ -5,6 +5,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
+import '../../../../core/widgets/mark_all_buttons.dart';
 import '../../data/repositories/tracking_repository.dart';
 import '../providers/roza_provider.dart';
 import '../providers/tracking_provider.dart';
@@ -423,30 +424,12 @@ class _RozaYearDialog extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    label: 'Hammasini o\'chirish',
-                    outlined: true,
-                    foregroundColor: Colors.red,
-                    onPressed: () =>
-                        ref.read(rozaProvider.notifier).setYear(year, {}),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: CustomButton(
-                    label: 'Hammasini belgilash',
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.black,
-                    onPressed: () => ref.read(rozaProvider.notifier).setYear(
-                      year,
-                      {for (var day = 1; day <= _days; day++) day},
-                    ),
-                  ),
-                ),
-              ],
+            MarkAllButtons(
+              onClearAll: () =>
+                  ref.read(rozaProvider.notifier).setYear(year, {}),
+              onMarkAll: () => ref.read(rozaProvider.notifier).setYear(year, {
+                for (var day = 1; day <= _days; day++) day,
+              }),
             ),
           ],
         ),
@@ -805,28 +788,10 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
                 ),
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      label: 'Hammasini o\'chirish',
-                      outlined: true,
-                      isLoading: _isBusy,
-                      foregroundColor: Colors.red,
-                      onPressed: _clearAllForMonth,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: CustomButton(
-                      label: 'Hammasini belgilash',
-                      isLoading: _isBusy,
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.black,
-                      onPressed: _markAllForMonth,
-                    ),
-                  ),
-                ],
+              MarkAllButtons(
+                isBusy: _isBusy,
+                onClearAll: _clearAllForMonth,
+                onMarkAll: _markAllForMonth,
               ),
             ],
           ),
