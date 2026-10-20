@@ -82,7 +82,6 @@ class TrackingCalendar extends StatelessWidget {
               selectedBuilder: (context, day, focusedDay) => _DayCell(
                 day: day,
                 isToday: isSameDay(day, DateTime.now()),
-                isSelected: true,
                 background: dayColor?.call(day),
               ),
             ),
@@ -155,29 +154,18 @@ class _Header extends StatelessWidget {
 
 /// A single day: the date number in a rounded square with an optional
 /// [background] tint (green/amber/red completion status). Today gets a green
-/// outline, the selected day a brighter one, future days are dimmed.
+/// outline (a tapped day gets none), future days are dimmed.
 class _DayCell extends StatelessWidget {
-  const _DayCell({
-    required this.day,
-    this.isToday = false,
-    this.isSelected = false,
-    this.background,
-  });
+  const _DayCell({required this.day, this.isToday = false, this.background});
 
   final DateTime day;
   final bool isToday;
-  final bool isSelected;
   final Color? background;
 
   static const _primary = Color(0xFF1C7C54);
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final selectedColor = dark
-        ? const Color(0xFF4CAF17)
-        : const Color(0xFF2E7D32);
-
     return Opacity(
       opacity: isFutureDate(day) ? 0.35 : 1,
       child: Container(
@@ -186,13 +174,7 @@ class _DayCell extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: background,
-          border: Border.all(
-            color: isSelected
-                ? selectedColor
-                : isToday
-                ? _primary
-                : Colors.transparent,
-          ),
+          border: Border.all(color: isToday ? _primary : Colors.transparent),
         ),
         child: Text('${day.day}', style: const TextStyle(fontSize: 16)),
       ),
