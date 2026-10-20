@@ -756,41 +756,40 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
         padding: const EdgeInsets.all(12),
         child: SizedBox(
           width: double.infinity,
-          height: 460,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: TrackingCalendar(
-                  framed: false,
-                  focusedDay: _focusedDay,
-                  selectedDay: _selectedDay,
-                  onPageChanged: (focused) =>
-                      setState(() => _focusedDay = focused),
-                  onDaySelected: (selected, focused) {
-                    setState(() {
-                      _selectedDay = selected;
-                      _focusedDay = focused;
-                    });
-                    if (!isFutureDate(selected)) {
-                      showDailyChecklistSheet(context, selected);
-                    }
-                  },
-                  dayColor: (day) {
-                    if (day.year == _focusedDay.year &&
-                        day.month == _focusedDay.month) {
-                      return colorForCompletionCount(counts[day.day]);
-                    }
-                    if (day.year == prevMonthDate.year &&
-                        day.month == prevMonthDate.month) {
-                      return colorForCompletionCount(prevMonthCounts[day.day]);
-                    }
-                    if (day.year == nextMonthDate.year &&
-                        day.month == nextMonthDate.month) {
-                      return colorForCompletionCount(nextMonthCounts[day.day]);
-                    }
-                    return null;
-                  },
-                ),
+              // The dialog is only as tall as its content.
+              TrackingCalendar(
+                framed: false,
+                focusedDay: _focusedDay,
+                selectedDay: _selectedDay,
+                onPageChanged: (focused) =>
+                    setState(() => _focusedDay = focused),
+                onDaySelected: (selected, focused) {
+                  setState(() {
+                    _selectedDay = selected;
+                    _focusedDay = focused;
+                  });
+                  if (!isFutureDate(selected)) {
+                    showDailyChecklistSheet(context, selected);
+                  }
+                },
+                dayColor: (day) {
+                  if (day.year == _focusedDay.year &&
+                      day.month == _focusedDay.month) {
+                    return colorForCompletionCount(counts[day.day]);
+                  }
+                  if (day.year == prevMonthDate.year &&
+                      day.month == prevMonthDate.month) {
+                    return colorForCompletionCount(prevMonthCounts[day.day]);
+                  }
+                  if (day.year == nextMonthDate.year &&
+                      day.month == nextMonthDate.month) {
+                    return colorForCompletionCount(nextMonthCounts[day.day]);
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 8),
               MarkAllButtons(
