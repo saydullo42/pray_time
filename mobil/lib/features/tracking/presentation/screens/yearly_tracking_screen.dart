@@ -429,42 +429,72 @@ class _RozaYearDialog extends ConsumerWidget {
   }
 }
 
-/// Marks one fasting day as kept: the year centered on top, and below it a
-/// right-aligned "day - kun" row with a checkbox.
-class _RozaDayDialog extends ConsumerWidget {
+/// Marks one fasting day as kept: the year centered on top, below it a
+/// right-aligned "day - kun" row with a checkbox, and a "Saqlash" button. The
+/// checkbox only takes effect when "Saqlash" is pressed.
+class _RozaDayDialog extends ConsumerStatefulWidget {
   const _RozaDayDialog({required this.year, required this.day});
 
   final int year;
   final int day;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final done = ref.watch(rozaProvider)[year]?.contains(day) ?? false;
+  ConsumerState<_RozaDayDialog> createState() => _RozaDayDialogState();
+}
 
+class _RozaDayDialogState extends ConsumerState<_RozaDayDialog> {
+  late bool _done =
+      ref.read(rozaProvider)[widget.year]?.contains(widget.day) ?? false;
+
+  Future<void> _save() async {
+    await ref
+        .read(rozaProvider.notifier)
+        .setDone(widget.year, widget.day, _done);
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('$year', style: Theme.of(context).textTheme.headlineMedium),
+            Text(
+              '${widget.year}',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('$day - kun', style: const TextStyle(fontSize: 26)),
+                Text(
+                  '${widget.day} - kun',
+                  style: const TextStyle(fontSize: 26),
+                ),
                 const SizedBox(width: 52),
                 Transform.scale(
                   scale: 1.6,
                   child: Checkbox(
-                    value: done,
-                    onChanged: (value) => ref
-                        .read(rozaProvider.notifier)
-                        .setDone(year, day, value ?? false),
+                    value: _done,
+                    onChanged: (value) =>
+                        setState(() => _done = value ?? false),
                   ),
                 ),
                 const SizedBox(width: 4),
               ],
+            ),
+            const SizedBox(height: 24),
+            FractionallySizedBox(
+              widthFactor: 0.6,
+              child: CustomButton(
+                label: 'Saqlash',
+                onPressed: _save,
+                fontSize: 20,
+                backgroundColor: const Color(0xFF396E0D),
+                foregroundColor: Colors.black,
+              ),
             ),
           ],
         ),
