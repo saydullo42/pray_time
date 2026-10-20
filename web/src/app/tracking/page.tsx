@@ -196,7 +196,7 @@ function MonthDetailModal({
           <button
             onClick={() => bulkSet(true)}
             disabled={busy}
-            className="flex-1 cursor-pointer rounded-full border border-[#2E7D32] bg-white py-2 text-sm font-semibold text-[#2E7D32] transition-colors hover:bg-[#C8E6C9] disabled:cursor-default disabled:opacity-60 disabled:hover:bg-white"
+            className="flex-1 cursor-pointer rounded-full border border-[#2E7D32] bg-transparent py-2 text-sm font-semibold text-[#2E7D32] transition-colors hover:bg-[#C8E6C9] disabled:cursor-default disabled:opacity-60 disabled:hover:bg-transparent"
           >
             Hammasini belgilash
           </button>
