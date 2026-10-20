@@ -17,6 +17,9 @@ export const tokenStorage = {
   setAccess(access: string) {
     window.localStorage.setItem(ACCESS_KEY, access);
   },
+  setRefresh(refresh: string) {
+    window.localStorage.setItem(REFRESH_KEY, refresh);
+  },
   clear() {
     window.localStorage.removeItem(ACCESS_KEY);
     window.localStorage.removeItem(REFRESH_KEY);

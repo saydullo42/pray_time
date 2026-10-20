@@ -10,11 +10,15 @@ export class ApiError extends Error {
   }
 }
 
-let refreshPromise: Promise<string | null> | null = null;
+/** "rejected": the refresh token is no longer valid, the person must sign in again.
+ * "unavailable": the server could not be reached or failed; the session is still fine. */
+type RefreshResult = string | "rejected" | "unavailable";
 
-async function refreshAccessToken(): Promise<string | null> {
+let refreshPromise: Promise<RefreshResult> | null = null;
+
+async function refreshAccessToken(): Promise<RefreshResult> {
   const refresh = tokenStorage.getRefresh();
-  if (!refresh) return null;
+  if (!refresh) return "rejected";
 
   if (!refreshPromise) {
     refreshPromise = fetch(`${BASE_URL}/auth/token/refresh/`, {
@@ -22,13 +26,22 @@ async function refreshAccessToken(): Promise<string | null> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh }),
     })
-      .then(async (res) => {
-        if (!res.ok) return null;
+      .then(async (res): Promise<RefreshResult> => {
+        if (res.status === 401) {
+          // The backend rotates refresh tokens, so another tab may have just used
+          // this one and stored a new pair: that session is fine.
+          const current = tokenStorage.getRefresh();
+          const access = tokenStorage.getAccess();
+          return current && current !== refresh && access ? access : "rejected";
+        }
+        if (!res.ok) return "unavailable";
         const data = await res.json();
         tokenStorage.setAccess(data.access);
+        // Every refresh returns a new refresh token and invalidates the old one.
+        if (data.refresh) tokenStorage.setRefresh(data.refresh);
         return data.access as string;
       })
-      .catch(() => null)
+      .catch((): RefreshResult => "unavailable")
       .finally(() => {
         refreshPromise = null;
       });
@@ -69,8 +82,12 @@ async function request<T>(path: string, options: RequestOptions = {}, retried = 
   });
 
   if (res.status === 401 && auth && !retried) {
-    const newToken = await refreshAccessToken();
-    if (newToken) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed === "unavailable") {
+      // Offline or a server hiccup: keep the session and let the caller show an error.
+      throw new ApiError(0, "Internetga ulanishda xatolik yuz berdi.");
+    }
+    if (refreshed !== "rejected") {
       return request<T>(path, options, true);
     }
     tokenStorage.clear();
