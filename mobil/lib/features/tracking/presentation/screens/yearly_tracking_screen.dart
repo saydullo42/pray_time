@@ -387,19 +387,21 @@ class _RozaYearDialog extends ConsumerWidget {
     final doneDays = ref.watch(rozaProvider)[year] ?? const <int>{};
 
     return Dialog(
+      // A wider window than the default, so the day cells are bigger.
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('$year', style: Theme.of(context).textTheme.titleLarge),
+            Text('$year', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 12),
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: _columns,
-              mainAxisSpacing: 6,
-              crossAxisSpacing: 6,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
               children: [
                 for (var day = 1; day <= _days; day++)
                   InkWell(
@@ -418,7 +420,7 @@ class _RozaYearDialog extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: scheme.outlineVariant),
                       ),
-                      child: Text('$day', style: const TextStyle(fontSize: 16)),
+                      child: Text('$day', style: const TextStyle(fontSize: 22)),
                     ),
                   ),
               ],
