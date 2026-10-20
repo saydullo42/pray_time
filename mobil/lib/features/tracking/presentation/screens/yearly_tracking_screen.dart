@@ -489,6 +489,8 @@ class _RozaDayDialogState extends ConsumerState<_RozaDayDialog> {
                   scale: 1.6,
                   child: Checkbox(
                     value: _done,
+                    activeColor: const Color(0xFF2E7D32),
+                    checkColor: Colors.white,
                     onChanged: (value) =>
                         setState(() => _done = value ?? false),
                   ),
