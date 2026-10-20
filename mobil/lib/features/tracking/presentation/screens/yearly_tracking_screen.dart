@@ -422,6 +422,32 @@ class _RozaYearDialog extends ConsumerWidget {
                   ),
               ],
             ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    label: 'Hammasini o\'chirish',
+                    outlined: true,
+                    foregroundColor: Colors.red,
+                    onPressed: () =>
+                        ref.read(rozaProvider.notifier).setYear(year, {}),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: CustomButton(
+                    label: 'Hammasini belgilash',
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.black,
+                    onPressed: () => ref.read(rozaProvider.notifier).setYear(
+                      year,
+                      {for (var day = 1; day <= _days; day++) day},
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

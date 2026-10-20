@@ -122,9 +122,14 @@ class RozaNotifier extends Notifier<Map<int, Set<int>>> {
     state = merged;
   }
 
-  Future<void> setDone(int year, int day, bool done) async {
+  Future<void> setDone(int year, int day, bool done) {
     final days = {...(state[year] ?? <int>{})};
     done ? days.add(day) : days.remove(day);
+    return setYear(year, days);
+  }
+
+  /// Replaces all marked days of [year] (an empty set clears the year).
+  Future<void> setYear(int year, Set<int> days) async {
     _edits++;
     state = {...state, year: days};
     await _saveLocal(year, days);

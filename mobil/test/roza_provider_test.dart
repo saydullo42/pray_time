@@ -101,6 +101,24 @@ void main() {
     expect(server.years, isEmpty); // an emptied year is cleared on the server
   });
 
+  test('a whole year can be marked or cleared at once', () async {
+    final server = _FakeServer();
+    final container = await _container(server);
+    final notifier = container.read(rozaProvider.notifier);
+    await notifier.setDone(2025, 4, true);
+
+    await notifier.setYear(2026, {for (var day = 1; day <= 30; day++) day});
+    await _settle();
+    expect(container.read(rozaProvider)[2026]!.length, 30);
+    expect(server.years[2026]!.length, 30);
+
+    await notifier.setYear(2026, {});
+    await _settle();
+    expect(container.read(rozaProvider)[2026], isEmpty);
+    expect(server.years.containsKey(2026), isFalse);
+    expect(container.read(rozaProvider)[2025], {4}); // other years untouched
+  });
+
   test('marked days are kept on the device and loaded again', () async {
     final server = _FakeServer()..offline = true;
     final first = await _container(server);
