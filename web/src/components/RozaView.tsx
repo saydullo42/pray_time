@@ -52,7 +52,16 @@ function useRozaDays() {
     });
   }
 
-  return { days, setDone };
+  /** Marks all 30 days of a year as kept, or clears the year. */
+  function setAllDone(year: number, done: boolean) {
+    const all = done ? Array.from({ length: DAYS }, (_, i) => i + 1) : [];
+    try {
+      localStorage.setItem(`${STORAGE_PREFIX}${year}`, all.join(","));
+    } catch {}
+    setDays((prev) => ({ ...prev, [year]: all }));
+  }
+
+  return { days, setDone, setAllDone };
 }
 
 /**
@@ -60,7 +69,7 @@ function useRozaDays() {
  * slot (Dekabr) is the newest year of the page, the first (Yanvar) the oldest.
  */
 export function RozaView({ page }: { page: number }) {
-  const { days, setDone } = useRozaDays();
+  const { days, setDone, setAllDone } = useRozaDays();
   const [openYear, setOpenYear] = useState<number | null>(null);
   const [openDay, setOpenDay] = useState<number | null>(null);
   const top = rozaTopYear(page);
@@ -127,6 +136,20 @@ export function RozaView({ page }: { page: number }) {
                   {day}
                 </button>
               ))}
+            </div>
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => setAllDone(openYear, false)}
+                className="flex-1 cursor-pointer rounded-full border border-danger py-2 text-sm text-danger transition-colors hover:bg-danger/15"
+              >
+                Hammasini o&apos;chirish
+              </button>
+              <button
+                onClick={() => setAllDone(openYear, true)}
+                className="flex-1 cursor-pointer rounded-full border border-[#2E7D32] bg-transparent py-2 text-sm font-semibold text-[#2E7D32] transition-colors hover:bg-[#C8E6C9]"
+              >
+                Hammasini belgilash
+              </button>
             </div>
           </div>
 
