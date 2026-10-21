@@ -162,7 +162,9 @@ class _DayCell extends StatelessWidget {
   final bool isToday;
   final Color? background;
 
-  static const _primary = Color(0xFF1C7C54);
+  static const _todayOutline = Color(
+    0xFF4CAF17,
+  ); // same green as "Ko'proq o'qish"
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +176,9 @@ class _DayCell extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           color: background,
-          border: Border.all(color: isToday ? _primary : Colors.transparent),
+          border: Border.all(
+            color: isToday ? _todayOutline : Colors.transparent,
+          ),
         ),
         child: Text('${day.day}', style: const TextStyle(fontSize: 16)),
       ),
