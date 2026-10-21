@@ -327,30 +327,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '* Kalendarga o\'qilgan namozlarni belgilab boring...',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(width: 6),
-                  GestureDetector(
-                    onTap: () => _showCalendarInfo(context),
+            // The extra right padding keeps "Batafsil" off the screen edge.
+            padding: const EdgeInsets.fromLTRB(8, 6, 20, 0),
+            child: Row(
+              children: [
+                // The hint shrinks on a narrow screen; "Batafsil" keeps its size.
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
                     child: Text(
-                      'Batafsil',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF4CAF17),
-                        fontWeight: FontWeight.w800,
-                      ),
+                      '* Kalendarga o\'qilgan namozlarni belgilab boring...',
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 6),
+                GestureDetector(
+                  onTap: () => _showCalendarInfo(context),
+                  child: Text(
+                    'Batafsil',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontSize:
+                          (Theme.of(context).textTheme.bodySmall?.fontSize ??
+                              12) +
+                          1,
+                      color: const Color(0xFF4CAF17),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
