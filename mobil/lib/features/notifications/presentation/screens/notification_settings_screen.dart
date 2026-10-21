@@ -158,7 +158,7 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   'Batafsil',
                   style: TextStyle(
                     color: Color(0xFF4CAF17),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),

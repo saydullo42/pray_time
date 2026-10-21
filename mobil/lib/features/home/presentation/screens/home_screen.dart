@@ -345,7 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       'Batafsil',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: const Color(0xFF4CAF17),
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
