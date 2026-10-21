@@ -328,25 +328,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '* Kalendardagi sanalar ustiga bosing...',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(width: 6),
-                GestureDetector(
-                  onTap: () => _showCalendarInfo(context),
-                  child: Text(
-                    'Ko\'proq o\'qish',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF4CAF17),
-                      fontWeight: FontWeight.w600,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '* Kalendarga o\'qilgan namozlarni belgilab boring...',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(width: 6),
+                  GestureDetector(
+                    onTap: () => _showCalendarInfo(context),
+                    child: Text(
+                      'Batafsil',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF4CAF17),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Padding(
