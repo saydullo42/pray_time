@@ -14,6 +14,9 @@ import '../utils/date_utils.dart';
 import '../widgets/daily_checklist_sheet.dart';
 import '../widgets/tracking_calendar.dart';
 
+/// The green of "Ko'proq o'qish": marks the current year/month/day.
+const _currentGreen = Color(0xFF4CAF17);
+
 /// Year overview: a 3x4 grid of mini monthly calendars, each day tinted by
 /// how many of that day's prayers were marked done. Tapping a month opens a
 /// bigger calendar for it; tapping a date there opens the daily checklist.
@@ -298,7 +301,7 @@ class _RozaYearCard extends ConsumerWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isCurrentYear ? scheme.primary : scheme.outlineVariant,
+            color: isCurrentYear ? _currentGreen : scheme.outlineVariant,
             width: isCurrentYear ? 2 : 1,
           ),
         ),
@@ -309,7 +312,7 @@ class _RozaYearCard extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: isCurrentYear ? scheme.primary : null,
+                color: isCurrentYear ? _currentGreen : null,
               ),
             ),
             const SizedBox(height: 2),
@@ -552,7 +555,7 @@ class _MiniMonthCalendar extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isCurrentMonth ? scheme.primary : scheme.outlineVariant,
+            color: isCurrentMonth ? _currentGreen : scheme.outlineVariant,
             width: isCurrentMonth ? 2 : 1,
           ),
         ),
@@ -563,7 +566,7 @@ class _MiniMonthCalendar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: isCurrentMonth ? scheme.primary : null,
+                color: isCurrentMonth ? _currentGreen : null,
               ),
             ),
             const SizedBox(height: 2),
@@ -616,12 +619,7 @@ class _MiniMonthCalendar extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorForCompletionCount(dayCounts[day]),
           borderRadius: BorderRadius.circular(3),
-          border: isToday
-              ? Border.all(
-                  color: Theme.of(context).colorScheme.primary,
-                  width: 1,
-                )
-              : null,
+          border: isToday ? Border.all(color: _currentGreen, width: 1) : null,
         ),
         child: FittedBox(
           child: Text('$day', style: const TextStyle(fontSize: 10)),
