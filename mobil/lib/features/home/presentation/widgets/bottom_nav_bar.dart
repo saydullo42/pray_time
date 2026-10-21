@@ -12,39 +12,58 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    // Like the website: the selected item is green (no pill behind it), the
+    // others are muted; the same outline icon is used for both states.
+    final selected = theme.brightness == Brightness.dark
+        ? const Color(0xFF4CAF17)
+        : const Color(0xFF2E7D32);
 
-    return NavigationBar(
-      height: 64,
-      selectedIndex: currentIndex,
-      onDestinationSelected: onTap,
-      destinations: [
-        const NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: 'Asosiy',
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        indicatorColor: Colors.transparent,
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected) ? selected : muted,
+          ),
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.bar_chart_outlined),
-          selectedIcon: Icon(Icons.bar_chart),
-          label: 'Yillik',
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: states.contains(WidgetState.selected) ? selected : muted,
+          ),
         ),
-        const NavigationDestination(
-          icon: Icon(Icons.menu_book_outlined),
-          selectedIcon: Icon(Icons.menu_book),
-          label: 'Qur\'on',
-        ),
-        NavigationDestination(
-          icon: _MonoEmojiIcon(color: colorScheme.onSurfaceVariant),
-          selectedIcon: _MonoEmojiIcon(color: colorScheme.onSecondaryContainer),
-          label: 'Duo',
-        ),
-        const NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: 'Profil',
-        ),
-      ],
+      ),
+      child: NavigationBar(
+        height: 64,
+        selectedIndex: currentIndex,
+        onDestinationSelected: onTap,
+        destinations: [
+          const NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            label: 'Asosiy',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.bar_chart_outlined),
+            label: 'Yillik',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.menu_book_outlined),
+            label: 'Qur\'on',
+          ),
+          NavigationDestination(
+            icon: _MonoEmojiIcon(color: muted),
+            selectedIcon: _MonoEmojiIcon(color: selected),
+            label: 'Duo',
+          ),
+          const NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            label: 'Profil',
+          ),
+        ],
+      ),
     );
   }
 }
