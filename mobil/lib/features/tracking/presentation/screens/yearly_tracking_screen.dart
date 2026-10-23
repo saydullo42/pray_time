@@ -571,7 +571,7 @@ class _MiniMonthCalendar extends StatelessWidget {
             Text(
               monthLabel,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 17,
                 fontWeight: FontWeight.w600,
                 color: isCurrentMonth ? _currentGreen : null,
               ),
@@ -629,7 +629,8 @@ class _MiniMonthCalendar extends StatelessWidget {
           border: isToday ? Border.all(color: _currentGreen, width: 1) : null,
         ),
         child: FittedBox(
-          child: Text('$day', style: const TextStyle(fontSize: 10)),
+          fit: BoxFit.scaleDown,
+          child: Text('$day', style: const TextStyle(fontSize: 14)),
         ),
       ),
     );
