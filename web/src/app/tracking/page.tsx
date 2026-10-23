@@ -52,7 +52,7 @@ function TrackingContent() {
         <button
           onClick={() => (isNamoz ? setYear((y) => y - 1) : setRozaPage((p) => p + 1))}
           disabled={!isNamoz && !rozaCanGoOlder(rozaPage)}
-          className="cursor-pointer px-2 text-4xl font-bold leading-none text-foreground-muted hover:text-foreground disabled:cursor-default disabled:opacity-30"
+          className="cursor-pointer px-2 text-4xl font-normal leading-none text-foreground-muted hover:text-foreground disabled:cursor-default disabled:opacity-30"
         >
           ‹
         </button>
@@ -76,7 +76,7 @@ function TrackingContent() {
         <button
           onClick={() => (isNamoz ? setYear((y) => y + 1) : setRozaPage((p) => p - 1))}
           disabled={!isNamoz && rozaPage === 0}
-          className="cursor-pointer px-2 text-4xl font-bold leading-none text-foreground-muted hover:text-foreground disabled:cursor-default disabled:opacity-30"
+          className="cursor-pointer px-2 text-4xl font-normal leading-none text-foreground-muted hover:text-foreground disabled:cursor-default disabled:opacity-30"
         >
           ›
         </button>
