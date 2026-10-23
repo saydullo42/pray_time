@@ -14,8 +14,8 @@ import '../utils/date_utils.dart';
 import '../widgets/daily_checklist_sheet.dart';
 import '../widgets/tracking_calendar.dart';
 
-/// The green of "Ko'proq o'qish": marks the current year/month/day.
-const _currentGreen = Color(0xFF4CAF17);
+/// A darker green than "Ko'proq o'qish": marks the current year/month/day.
+const _currentGreen = Color(0xFF3B8C14);
 
 /// Year overview: a 3x4 grid of mini monthly calendars, each day tinted by
 /// how many of that day's prayers were marked done. Tapping a month opens a
