@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { RequireAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
@@ -25,6 +25,7 @@ function TrackingContent() {
   const [openMonth, setOpenMonth] = useState<number | null>(null);
   const [mode, setMode] = useState<"namoz" | "roza">("namoz");
   const [rozaPage, setRozaPage] = useState(0);
+  const [pickingYear, setPickingYear] = useState(false);
   const isNamoz = mode === "namoz";
 
   const { data, error, isLoading, mutate } = useSWR(isNamoz ? ["yearly-calendar", year] : null, async () => {
@@ -55,9 +56,19 @@ function TrackingContent() {
         >
           ‹
         </button>
-        <span className="min-w-24 text-center text-xl font-medium">
-          {isNamoz ? year : `${rozaBottomYear(rozaPage)} - ${rozaTopYear(rozaPage)}`}
-        </span>
+        {isNamoz ? (
+          <button
+            onClick={() => setPickingYear(true)}
+            aria-label="Yilni tanlash"
+            className="min-w-24 cursor-pointer rounded-lg px-2 text-center text-xl font-medium hover:bg-foreground/10"
+          >
+            {year}
+          </button>
+        ) : (
+          <span className="min-w-24 text-center text-xl font-medium">
+            {`${rozaBottomYear(rozaPage)} - ${rozaTopYear(rozaPage)}`}
+          </span>
+        )}
         <button
           onClick={() => (isNamoz ? setYear((y) => y + 1) : setRozaPage((p) => p - 1))}
           disabled={!isNamoz && rozaPage === 0}
@@ -66,6 +77,17 @@ function TrackingContent() {
           ›
         </button>
       </div>
+
+      {pickingYear && (
+        <YearPicker
+          selected={year}
+          onSelect={(picked) => {
+            setYear(picked);
+            setPickingYear(false);
+          }}
+          onClose={() => setPickingYear(false)}
+        />
+      )}
 
       {!isNamoz && <RozaView page={rozaPage} />}
 
@@ -213,6 +235,52 @@ function MonthDetailModal({
           }}
         />
       )}
+    </div>
+  );
+}
+
+const OLDEST_YEAR = 1940;
+
+/** A scrolling list of years, newest first (this year at the top). */
+function YearPicker({
+  selected,
+  onSelect,
+  onClose,
+}: {
+  selected: number;
+  onSelect: (year: number) => void;
+  onClose: () => void;
+}) {
+  const newest = Math.max(new Date().getFullYear(), selected);
+  const years = Array.from({ length: newest - OLDEST_YEAR + 1 }, (_, i) => newest - i);
+  const selectedRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({ block: "center" });
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center" onClick={onClose}>
+      <div
+        className="themed-scrollbar max-h-[70vh] w-full max-w-sm overflow-y-auto rounded-t-2xl bg-surface p-4 sm:rounded-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <p className="mb-3 text-center font-medium">Yilni tanlang</p>
+        <div className="divide-y divide-outline">
+          {years.map((y) => (
+            <button
+              key={y}
+              ref={y === selected ? selectedRef : undefined}
+              onClick={() => onSelect(y)}
+              className={`block w-full cursor-pointer px-3 py-3 text-center text-lg ${
+                y === selected ? "rounded-lg bg-accent font-semibold text-black" : "hover:bg-surface-alt"
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

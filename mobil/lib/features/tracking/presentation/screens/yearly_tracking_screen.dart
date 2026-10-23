@@ -45,6 +45,20 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
 
   bool get _canGoOlder => _rozaTopYear - _rozaYearsPerPage >= _oldestRozaYear;
 
+  /// Tapping the year (Namoz) opens a scrolling list of years, newest first.
+  Future<void> _pickYear() async {
+    final picked = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => _YearPickerSheet(
+        selected: _year,
+        newest: DateTime.now().year > _year ? DateTime.now().year : _year,
+        oldest: _oldestRozaYear,
+      ),
+    );
+    if (picked != null && mounted) setState(() => _year = picked);
+  }
+
   void _openRozaYear(int year) {
     showDialog<void>(
       context: context,
@@ -96,13 +110,17 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
                   Flexible(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(minWidth: 64),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          isNamoz
-                              ? '$_year'
-                              : '$rozaBottomYear - $_rozaTopYear',
-                          style: Theme.of(context).textTheme.headlineSmall,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: isNamoz ? _pickYear : null,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            isNamoz
+                                ? '$_year'
+                                : '$rozaBottomYear - $_rozaTopYear',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
                         ),
                       ),
                     ),
@@ -797,6 +815,92 @@ class _MonthDetailDialogState extends ConsumerState<_MonthDetailDialog> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A scrolling list of years from [newest] down to [oldest]; opens scrolled to
+/// the [selected] year and returns the year that is tapped.
+class _YearPickerSheet extends StatelessWidget {
+  const _YearPickerSheet({
+    required this.selected,
+    required this.newest,
+    required this.oldest,
+  });
+
+  final int selected;
+  final int newest;
+  final int oldest;
+
+  static const _itemHeight = 56.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = newest - oldest + 1;
+    final selectedIndex = newest - selected;
+    final controller = ScrollController(
+      initialScrollOffset: (selectedIndex * _itemHeight - 3 * _itemHeight)
+          .clamp(0, double.infinity),
+    );
+
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text('Yilni tanlang', style: TextStyle(fontSize: 18)),
+            ),
+            Flexible(
+              child: ListView.separated(
+                controller: controller,
+                shrinkWrap: true,
+                itemCount: count,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+                itemBuilder: (context, index) {
+                  final year = newest - index;
+                  final isSelected = year == selected;
+                  return InkWell(
+                    onTap: () => Navigator.of(context).pop(year),
+                    child: Container(
+                      height: _itemHeight - 1,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 0,
+                      ),
+                      alignment: Alignment.center,
+                      decoration: isSelected
+                          ? BoxDecoration(
+                              color: const Color(0xFF396E0D),
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                          : null,
+                      child: Text(
+                        '$year',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w400,
+                          color: isSelected ? Colors.black : null,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
         ),
       ),
     );
