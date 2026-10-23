@@ -153,31 +153,20 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
         message: error.toString(),
         onRetry: () => ref.invalidate(yearlyCalendarCountsProvider(_year)),
       ),
-      data: (countsByMonth) => Column(
+      // Two months per row: bigger months, so the list scrolls.
+      data: (countsByMonth) => GridView.count(
+        crossAxisCount: 2,
+        childAspectRatio: 1,
+        padding: const EdgeInsets.all(3),
+        mainAxisSpacing: 6,
+        crossAxisSpacing: 6,
         children: [
-          for (var row = 0; row < 4; row++)
-            Expanded(
-              child: Row(
-                children: [
-                  for (var col = 0; col < 3; col++)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: Builder(
-                          builder: (context) {
-                            final month = row * 3 + col + 1;
-                            return _MiniMonthCalendar(
-                              year: _year,
-                              month: month,
-                              dayCounts: countsByMonth[month] ?? const {},
-                              onTap: () => _openMonth(month),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+          for (var month = 1; month <= 12; month++)
+            _MiniMonthCalendar(
+              year: _year,
+              month: month,
+              dayCounts: countsByMonth[month] ?? const {},
+              onTap: () => _openMonth(month),
             ),
         ],
       ),
