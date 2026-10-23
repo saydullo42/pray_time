@@ -56,19 +56,23 @@ function TrackingContent() {
         >
           ‹
         </button>
-        {isNamoz ? (
-          <button
-            onClick={() => setPickingYear(true)}
-            aria-label="Yilni tanlash"
-            className="min-w-24 cursor-pointer rounded-lg px-2 text-center text-xl font-medium hover:bg-foreground/10"
-          >
-            {year}
-          </button>
-        ) : (
-          <span className="min-w-24 text-center text-xl font-medium">
-            {`${rozaBottomYear(rozaPage)} - ${rozaTopYear(rozaPage)}`}
-          </span>
-        )}
+        {/* A fixed-width middle keeps the arrows in place in both modes. */}
+        <div className="flex w-40 justify-center">
+          {isNamoz ? (
+            <button
+              onClick={() => setPickingYear(true)}
+              aria-label="Yilni tanlash"
+              className="flex cursor-pointer items-center gap-1 rounded-lg border border-outline bg-surface px-3 py-1.5 text-xl font-semibold"
+            >
+              {year}
+              <span aria-hidden="true" className="text-xs">
+                ▾
+              </span>
+            </button>
+          ) : (
+            <span className="text-center text-xl font-medium">{`${rozaBottomYear(rozaPage)} - ${rozaTopYear(rozaPage)}`}</span>
+          )}
+        </div>
         <button
           onClick={() => (isNamoz ? setYear((y) => y + 1) : setRozaPage((p) => p - 1))}
           disabled={!isNamoz && rozaPage === 0}
