@@ -15,14 +15,18 @@ const badgeClass =
 const MENU_SECTIONS = ["tracking", "quran", "dua", "profile"];
 // Pages without a footer at all.
 const NO_FOOTER = ["dashboard"];
+// Asosiy, Qur'on, Duo and Profil: a little more space above the footer.
+const LOWER_FOOTER = ["", "quran", "dua", "profile"];
 
 export function Footer() {
   const segments = usePathname().split("/").filter(Boolean);
   if (segments.length >= 2 && MENU_SECTIONS.includes(segments[0])) return null;
   if (NO_FOOTER.includes(segments[0])) return null;
 
+  const lower = segments.length <= 1 && LOWER_FOOTER.includes(segments[0] ?? "");
+
   return (
-    <footer className="border-t border-white/10 bg-[#013220] pb-6 pt-6 text-center text-sm text-white/75">
+    <footer className={`${lower ? "mt-8 " : ""}border-t border-white/10 bg-[#013220] pb-6 pt-6 text-center text-sm text-white/75`}>
       <p className="text-lg font-semibold text-white">Pray Time - namozlaringiz sarhisobi</p>
 
       <p className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1">
