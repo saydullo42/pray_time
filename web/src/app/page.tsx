@@ -51,7 +51,7 @@ function HomeContent() {
   );
 
   return (
-    <div className="mt-2 space-y-6">
+    <div className="-mt-2 space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <LocationSelector />
 
