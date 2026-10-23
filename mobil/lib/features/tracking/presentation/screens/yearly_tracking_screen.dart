@@ -104,25 +104,22 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
                               ? () => setState(() => _rozaPage++)
                               : null),
                   ),
-                  // In Namoz mode the year is narrow, so the arrows sit close
-                  // to it; the trailing spacer below keeps the whole row as
-                  // wide as in Ro'za mode, so the mode button doesn't move.
-                  Flexible(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(minWidth: 64),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(8),
-                        onTap: isNamoz ? _pickYear : null,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            isNamoz
-                                ? '$_year'
-                                : '$rozaBottomYear - $_rozaTopYear',
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                        ),
-                      ),
+                  // A fixed-width middle, so the mode button and the arrows stay
+                  // in place when switching between Namoz and Ro'za.
+                  SizedBox(
+                    width: 126,
+                    child: Center(
+                      child: isNamoz
+                          ? _YearButton(year: _year, onTap: _pickYear)
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '$rozaBottomYear - $_rozaTopYear',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineSmall,
+                              ),
+                            ),
                     ),
                   ),
                   IconButton(
@@ -133,7 +130,6 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
                               ? () => setState(() => _rozaPage--)
                               : null),
                   ),
-                  if (isNamoz) const SizedBox(width: 76),
                 ],
               ),
               const SizedBox(height: 8),
@@ -212,6 +208,40 @@ class _YearlyTrackingScreenState extends ConsumerState<YearlyTrackingScreen> {
 }
 
 /// Dropdown-style button that switches between the Namoz and Ro'za views.
+/// The year in a bordered button with a down arrow, like the Namoz/Ro'za
+/// button; tapping it opens the list of years.
+class _YearButton extends StatelessWidget {
+  const _YearButton({required this.year, required this.onTap});
+
+  final int year;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$year',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            const Icon(Icons.arrow_drop_down, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ModeButton extends StatelessWidget {
   const _ModeButton({required this.mode, required this.onSelected});
 
