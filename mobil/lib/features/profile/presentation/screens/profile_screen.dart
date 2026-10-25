@@ -80,21 +80,21 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text(
-                "Akkauntni o'chirish",
-                style: TextStyle(color: Colors.red),
-              ),
-              onTap: () => _confirmDeleteAccount(context, ref),
-            ),
-            const Divider(),
-            ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text('Chiqish', style: TextStyle(color: Colors.red)),
               onTap: () async {
                 await ref.read(authProvider.notifier).logout();
                 if (context.mounted) context.go(RouteNames.login);
               },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              title: const Text(
+                "Akkauntni o'chirish",
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: () => _confirmDeleteAccount(context, ref),
             ),
           ],
         ),
