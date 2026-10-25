@@ -159,7 +159,18 @@ function MenuRow({
   );
 }
 
-function Dialog({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Dialog({
+  title,
+  onClose,
+  actions,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  /** Extra buttons in the bottom row, left of "Yopish". */
+  actions?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
@@ -170,7 +181,8 @@ function Dialog({ title, onClose, children }: { title: string; onClose: () => vo
       >
         <h2 className="mb-4 text-xl font-semibold">{title}</h2>
         {children}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex items-center justify-end gap-6">
+          {actions}
           <button onClick={onClose} className="cursor-pointer px-2 py-1 font-semibold text-accent-light">
             Yopish
           </button>
@@ -191,14 +203,19 @@ function ContactDialog({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Dialog title="Bog'lanish" onClose={onClose}>
+    <Dialog
+      title="Bog'lanish"
+      onClose={onClose}
+      actions={
+        <button onClick={copy} className="cursor-pointer px-2 py-1 font-semibold text-accent-light">
+          {copied ? "Nusxalandi" : "Nusxalash"}
+        </button>
+      }
+    >
       <p>Bog&apos;lanish uchun:</p>
       <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-2 block break-all text-lg font-semibold text-accent-light underline">
         {SUPPORT_EMAIL}
       </a>
-      <button onClick={copy} className="mt-4 cursor-pointer text-sm font-semibold text-accent-light">
-        {copied ? "Nusxalandi" : "Nusxalash"}
-      </button>
     </Dialog>
   );
 }
