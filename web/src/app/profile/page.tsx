@@ -161,11 +161,14 @@ function MenuRow({
 
 function Dialog({
   title,
+  hideTitle,
   onClose,
   actions,
   children,
 }: {
   title: string;
+  /** Keeps the title for screen readers but does not show it. */
+  hideTitle?: boolean;
   onClose: () => void;
   /** Extra buttons in the bottom row, left of "Yopish". */
   actions?: React.ReactNode;
@@ -179,7 +182,7 @@ function Dialog({
         className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-surface p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-xl font-semibold">{title}</h2>
+        {!hideTitle && <h2 className="mb-4 text-xl font-semibold">{title}</h2>}
         {children}
         <div className="mt-8 flex items-center justify-end gap-6">
           {actions}
@@ -205,6 +208,7 @@ function ContactDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog
       title="Bog'lanish"
+      hideTitle
       onClose={onClose}
       actions={
         <button onClick={copy} className="cursor-pointer px-2 py-1 font-semibold text-accent-light">
@@ -213,7 +217,7 @@ function ContactDialog({ onClose }: { onClose: () => void }) {
       }
     >
       <p>Bog&apos;lanish uchun:</p>
-      <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-2 block break-all text-lg font-semibold text-accent-light underline">
+      <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-2 block break-all text-lg font-semibold text-foreground">
         {SUPPORT_EMAIL}
       </a>
     </Dialog>
