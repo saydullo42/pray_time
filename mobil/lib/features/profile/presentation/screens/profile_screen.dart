@@ -160,21 +160,14 @@ class ProfileScreen extends ConsumerWidget {
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text("Bog'lanish"),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Bog'lanish uchun:"),
-            SizedBox(height: 8),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: SelectableText(
-                _supportEmail,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
+        title: const Text("Bog'lanish uchun:"),
+        content: const FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: SelectableText(
+            _supportEmail,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
         ),
         actions: [
           TextButton(
