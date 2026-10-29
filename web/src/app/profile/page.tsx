@@ -62,16 +62,16 @@ function Content() {
               className="w-full rounded-lg border border-outline bg-transparent px-3 py-2 text-center"
             />
             <div className="flex gap-4">
-              <button onClick={() => setEditing(false)} className="text-sm text-foreground-muted">
+              <button onClick={() => setEditing(false)} className="cursor-pointer text-sm text-foreground-muted">
                 Bekor qilish
               </button>
-              <button onClick={save} disabled={saving} className="text-sm font-semibold text-accent-light">
+              <button onClick={save} disabled={saving} className="cursor-pointer text-sm font-semibold text-accent-light disabled:cursor-default">
                 {saving ? "..." : "Saqlash"}
               </button>
             </div>
           </div>
         ) : (
-          <button onClick={() => setEditing(true)} className="text-lg font-medium">
+          <button onClick={() => setEditing(true)} className="cursor-pointer text-lg font-medium">
             {user.full_name || "Ism kiritilmagan"}
           </button>
         )}
@@ -85,7 +85,7 @@ function Content() {
             <button
               key={opt.value}
               onClick={() => setMode(opt.value)}
-              className={`flex-1 rounded-full py-2 text-sm transition-colors ${
+              className={`flex-1 cursor-pointer rounded-full py-2 text-sm transition-colors ${
                 mode === opt.value ? "bg-accent font-semibold text-black" : "text-foreground-muted"
               }`}
             >
@@ -116,7 +116,7 @@ function Content() {
 
       <button
         onClick={handleLogout}
-        className="mx-auto block w-full max-w-xs rounded-full border border-danger py-3 font-medium text-danger"
+        className="mx-auto block w-full max-w-xs cursor-pointer rounded-full border border-danger py-3 font-medium text-danger"
       >
         Chiqish
       </button>
