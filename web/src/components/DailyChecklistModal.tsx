@@ -145,7 +145,7 @@ export function DailyChecklistModal({
             <button
               onClick={save}
               disabled={saving}
-              className="mx-auto mt-6 block w-3/5 rounded-full bg-[var(--checklist-save-bg)] py-2.5 font-semibold text-black disabled:opacity-60"
+              className="mx-auto mt-6 block w-3/5 cursor-pointer rounded-full bg-[var(--checklist-save-bg)] py-2.5 font-semibold text-black disabled:cursor-default disabled:opacity-60"
             >
               {saving ? "..." : "Saqlash"}
             </button>
