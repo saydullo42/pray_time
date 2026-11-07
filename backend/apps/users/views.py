@@ -6,14 +6,33 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from .google import GoogleAuthError, verify_google_id_token
 from .models import User
 from .serializers import GoogleSignInSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
+
+
+class SafeTokenRefreshSerializer(TokenRefreshSerializer):
+    """simplejwt looks the user up without catching a missing row, so a refresh
+    token of a deleted account ended in a 500. It is a plain 401 instead, which
+    is what makes the apps sign the person out."""
+
+    def validate(self, attrs):
+        try:
+            return super().validate(attrs)
+        except User.DoesNotExist:
+            raise AuthenticationFailed(self.error_messages["no_active_account"], "no_active_account")
+
+
+class SafeTokenRefreshView(TokenRefreshView):
+    serializer_class = SafeTokenRefreshSerializer
 
 
 class GoogleSignInView(APIView):

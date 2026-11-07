@@ -9,7 +9,7 @@ import 'api_exception.dart';
 /// Dio client wired to the Django backend, with auth-token injection,
 /// automatic refresh-token retry and logging.
 class DioClient {
-  DioClient(this._dio, this._secureStorage) {
+  DioClient(this._dio, this._secureStorage, {this.onSessionEnded}) {
     _dio.options
       ..baseUrl = ApiEndpoints.backendBaseUrl
       ..connectTimeout = const Duration(seconds: 15)
@@ -61,6 +61,11 @@ class DioClient {
   final Dio _dio;
   final SecureStorageService _secureStorage;
 
+  /// Called when the saved session can no longer be refreshed (the refresh
+  /// token was rejected, e.g. the account was deleted on another device), so
+  /// the app can send the person to the login screen.
+  final VoidCallback? onSessionEnded;
+
   Dio get raw => _dio;
 
   Future<bool>? _refreshing;
@@ -89,7 +94,10 @@ class DioClient {
   /// session, if the refresh token is missing or no longer valid.
   Future<bool> _refreshAccessToken() async {
     final refresh = await _secureStorage.readRefreshToken();
-    if (refresh == null) return false;
+    if (refresh == null) {
+      onSessionEnded?.call();
+      return false;
+    }
     try {
       // A separate Dio (no interceptors, so no refresh loop) on the same transport.
       final refreshDio = Dio(BaseOptions(baseUrl: _dio.options.baseUrl))
@@ -105,7 +113,10 @@ class DioClient {
       return true;
     } on DioException catch (e) {
       // Only a rejected refresh token ends the session; being offline doesn't.
-      if (e.response?.statusCode == 401) await _secureStorage.clearTokens();
+      if (e.response?.statusCode == 401) {
+        await _secureStorage.clearTokens();
+        onSessionEnded?.call();
+      }
       return false;
     }
   }
@@ -155,9 +166,14 @@ class DioClient {
 
 final dioProvider = Provider<Dio>((ref) => Dio());
 
+/// Counts the times the saved session ended; screens listen to it to go back to
+/// the login screen.
+final sessionEndedProvider = StateProvider<int>((ref) => 0);
+
 final dioClientProvider = Provider<DioClient>((ref) {
   return DioClient(
     ref.watch(dioProvider),
     ref.watch(secureStorageServiceProvider),
+    onSessionEnded: () => ref.read(sessionEndedProvider.notifier).state++,
   );
 });

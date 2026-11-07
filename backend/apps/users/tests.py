@@ -220,3 +220,30 @@ class RegionTests(TestCase):
         self.client.patch("/api/v1/users/me/", {"region": "  Buxoro viloyati  "}, format="json")
         user.refresh_from_db()
         self.assertEqual(user.region, "Buxoro viloyati")
+
+
+class RefreshOfADeletedAccountTests(TestCase):
+    URL = "/api/v1/auth/token/refresh/"
+
+    def test_a_deleted_accounts_refresh_token_is_a_401_not_a_500(self):
+        user = User.objects.create_user(email="gone@example.com")
+        refresh = str(RefreshToken.for_user(user))
+        user.delete()
+        res = APIClient().post(self.URL, {"refresh": refresh}, format="json")
+        self.assertEqual(res.status_code, 401)
+
+    def test_a_valid_refresh_token_still_works_and_rotates(self):
+        user = User.objects.create_user(email="here@example.com")
+        refresh = str(RefreshToken.for_user(user))
+        res = APIClient().post(self.URL, {"refresh": refresh}, format="json")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("access", res.data)
+        self.assertNotEqual(res.data["refresh"], refresh)
+
+    def test_garbage_and_a_reused_token_are_401(self):
+        user = User.objects.create_user(email="here@example.com")
+        refresh = str(RefreshToken.for_user(user))
+        client = APIClient()
+        client.post(self.URL, {"refresh": refresh}, format="json")
+        self.assertEqual(client.post(self.URL, {"refresh": refresh}, format="json").status_code, 401)
+        self.assertEqual(client.post(self.URL, {"refresh": "garbage"}, format="json").status_code, 401)

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/routing/route_names.dart';
 import '../../../notifications/data/services/local_notification_service.dart';
 import '../../../notifications/presentation/providers/reminder_sync_provider.dart';
 import '../../../prayer_times/presentation/providers/region_selection_provider.dart';
@@ -102,6 +104,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen>
   @override
   Widget build(BuildContext context) {
     ref.listen(regionSelectionProvider, (previous, next) => _syncReminders());
+    // The saved session is dead (e.g. the account was deleted elsewhere).
+    ref.listen(sessionEndedProvider, (previous, next) {
+      context.go(RouteNames.login);
+    });
 
     return Scaffold(
       body: widget.navigationShell,

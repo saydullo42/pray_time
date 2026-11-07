@@ -85,6 +85,7 @@ void main() {
   late _FakeBackend backend;
   late _MemorySecureStorage storage;
   late DioClient client;
+  var sessionEnded = 0;
 
   setUp(() {
     backend = _FakeBackend();
@@ -92,8 +93,9 @@ void main() {
       ..access =
           'access-1' // expired
       ..refresh = 'refresh-1';
+    sessionEnded = 0;
     final dio = Dio()..httpClientAdapter = backend;
-    client = DioClient(dio, storage);
+    client = DioClient(dio, storage, onSessionEnded: () => sessionEnded++);
   });
 
   test('a valid access token is used as is, with no refresh', () async {
@@ -138,6 +140,7 @@ void main() {
     );
     expect(storage.access, isNull);
     expect(storage.refresh, isNull);
+    expect(sessionEnded, 1, reason: 'the app must be told to go to login');
   });
 
   test('being offline during the refresh keeps the session', () async {
@@ -148,6 +151,7 @@ void main() {
     );
     expect(storage.refresh, 'refresh-1');
     expect(storage.access, 'access-1');
+    expect(sessionEnded, 0, reason: 'offline is not a sign-out');
   });
 
   test(
@@ -172,5 +176,6 @@ void main() {
       throwsA(isA<ApiException>()),
     );
     expect(backend.refreshCalls, 0);
+    expect(sessionEnded, 1); // nothing to refresh with: the session is over
   });
 }
