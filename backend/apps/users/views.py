@@ -37,6 +37,7 @@ class GoogleSignInView(APIView):
 
         sub = claims["sub"]
         email = claims["email"].lower()
+        is_new_user = False
         with transaction.atomic():
             user = User.objects.filter(google_sub=sub).first()
             if user is None:
@@ -50,6 +51,7 @@ class GoogleSignInView(APIView):
                     full_name=claims.get("name", "")[:150],
                     avatar_url=claims.get("picture"),
                 )
+                is_new_user = True
             elif user.google_sub != sub:
                 user.google_sub = sub
                 user.save(update_fields=["google_sub"])
@@ -63,6 +65,8 @@ class GoogleSignInView(APIView):
                 "access_token": str(refresh.access_token),
                 "refresh_token": str(refresh),
                 "user": UserSerializer(user).data,
+                # True only on the very first sign-in; the app then asks for the region.
+                "is_new_user": is_new_user,
             }
         )
 

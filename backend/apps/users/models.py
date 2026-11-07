@@ -30,6 +30,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     google_sub = models.CharField(max_length=64, unique=True, null=True, blank=True)
     full_name = models.CharField(max_length=150, blank=True)
     avatar_url = models.URLField(max_length=500, blank=True, null=True)
+    # The viloyat / tuman the person chose when registering (and may change later).
+    region = models.CharField(max_length=80, blank=True)
+    district = models.CharField(max_length=80, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)

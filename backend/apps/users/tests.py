@@ -164,3 +164,59 @@ class LogoutAndTokenCleanupTests(TestCase):
         call_command("flushexpiredtokens")
         remaining = list(OutstandingToken.objects.values_list("jti", flat=True))
         self.assertEqual(remaining, [fresh["jti"]])
+
+
+class RegionTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    @patch("apps.users.views.verify_google_id_token", return_value=CLAIMS)
+    def test_the_first_sign_in_is_flagged_as_new_and_later_ones_are_not(self, _verify):
+        first = self.client.post(URL, {"id_token": "t"}, format="json")
+        second = self.client.post(URL, {"id_token": "t"}, format="json")
+        self.assertIs(first.data["is_new_user"], True)
+        self.assertIs(second.data["is_new_user"], False)
+        self.assertEqual(first.data["user"]["region"], "")
+        self.assertEqual(first.data["user"]["district"], "")
+
+    @patch("apps.users.views.verify_google_id_token", return_value=CLAIMS)
+    def test_linking_an_existing_account_is_not_a_new_user(self, _verify):
+        User.objects.create_user(email="person@example.com")
+        res = self.client.post(URL, {"id_token": "t"}, format="json")
+        self.assertIs(res.data["is_new_user"], False)
+
+    def authed(self):
+        user = User.objects.create_user(email="r@example.com")
+        self.client.force_authenticate(user)
+        return user
+
+    def test_the_region_is_saved_on_the_account_and_returned(self):
+        user = self.authed()
+        res = self.client.patch(
+            "/api/v1/users/me/", {"region": "Andijon viloyati", "district": "Baliqchi"}, format="json"
+        )
+        self.assertEqual(res.status_code, 200)
+        user.refresh_from_db()
+        self.assertEqual((user.region, user.district), ("Andijon viloyati", "Baliqchi"))
+        me = self.client.get("/api/v1/users/me/").data
+        self.assertEqual((me["region"], me["district"]), ("Andijon viloyati", "Baliqchi"))
+
+    def test_the_region_can_be_changed_and_other_fields_are_kept(self):
+        user = self.authed()
+        user.full_name = "Kept"
+        user.save()
+        self.client.patch("/api/v1/users/me/", {"region": "A", "district": "B"}, format="json")
+        self.client.patch("/api/v1/users/me/", {"region": "C", "district": "D"}, format="json")
+        user.refresh_from_db()
+        self.assertEqual((user.region, user.district, user.full_name), ("C", "D", "Kept"))
+
+    def test_too_long_values_are_rejected(self):
+        self.authed()
+        res = self.client.patch("/api/v1/users/me/", {"region": "x" * 81}, format="json")
+        self.assertEqual(res.status_code, 400)
+
+    def test_whitespace_is_trimmed(self):
+        user = self.authed()
+        self.client.patch("/api/v1/users/me/", {"region": "  Buxoro viloyati  "}, format="json")
+        user.refresh_from_db()
+        self.assertEqual(user.region, "Buxoro viloyati")

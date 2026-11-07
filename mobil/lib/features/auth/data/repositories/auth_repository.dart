@@ -11,6 +11,14 @@ import '../models/user_model.dart';
 /// [_serverClientId] is the OAuth *web* client id (the same one the backend
 /// accepts); pass it with `--dart-define=GOOGLE_SERVER_CLIENT_ID=...`. It is
 /// what makes Google include an ID token on Android.
+/// A finished Google sign-in: the user, and whether the account was just created.
+class SignInResult {
+  const SignInResult(this.user, {required this.isNewUser});
+
+  final UserModel user;
+  final bool isNewUser;
+}
+
 class AuthRepository {
   AuthRepository(this._client, this._secureStorage);
 
@@ -26,9 +34,10 @@ class AuthRepository {
     serverClientId: _serverClientId.isEmpty ? null : _serverClientId,
   );
 
-  /// Opens Google's account chooser. Returns the signed-in user, or null if
-  /// the person closed the chooser without picking an account.
-  Future<UserModel?> signInWithGoogle() async {
+  /// Opens Google's account chooser. Returns the signed-in user (and whether the
+  /// account is new), or null if the person closed the chooser without picking
+  /// an account.
+  Future<SignInResult?> signInWithGoogle() async {
     final account = await _googleSignIn.signIn();
     if (account == null) return null;
 
@@ -47,7 +56,10 @@ class AuthRepository {
     final data = response.data!;
     await _secureStorage.saveAuthToken(data['access_token'] as String);
     await _secureStorage.saveRefreshToken(data['refresh_token'] as String);
-    return UserModel.fromJson(data['user'] as Map<String, dynamic>);
+    return SignInResult(
+      UserModel.fromJson(data['user'] as Map<String, dynamic>),
+      isNewUser: data['is_new_user'] as bool? ?? false,
+    );
   }
 
   /// Permanently deletes the signed-in account and all of its data.

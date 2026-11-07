@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_location_screen.dart';
 import '../../features/dua/data/models/dua_model.dart';
 import '../../features/dua/presentation/screens/dua_categories_screen.dart';
 import '../../features/dua/presentation/screens/dua_detail_screen.dart';
@@ -40,6 +41,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.login,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.registerLocation,
+        builder: (context, state) => const RegisterLocationScreen(),
       ),
 
       // Main bottom-nav shell: Home / Yillik tracking / Qur'an / Duo / Profile

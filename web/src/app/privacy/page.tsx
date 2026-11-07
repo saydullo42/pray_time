@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         </a>{" "}
         sayti
         <br />
-        Oxirgi yangilanish: 2026-yil 20-oktabr
+        Oxirgi yangilanish: 2026-yil 7-noyabr
       </p>
 
       <p>
@@ -58,6 +58,11 @@ export default function PrivacyPage() {
           Ular qurilmalaringiz orasida bir xil ko&apos;rinishi uchun serverda saqlanadi.
         </li>
         <li>
+          <strong>Viloyat va tuman.</strong> Ro&apos;yxatdan o&apos;tganingizda tanlagan viloyat va tuman nomi
+          (keyin o&apos;zgartirsangiz, yangisi). U namoz vaqtlari qurilmalaringizda bir xil hudud bo&apos;yicha
+          ko&apos;rinishi uchun akkauntingizda saqlanadi.
+        </li>
+        <li>
           <strong>Eslatma sozlamalari va namoz vaqtlari.</strong> Eslatma sozlamalaringiz hamda 2-jadvalga o&apos;zingiz
           kiritgan namoz vaqtlari.
         </li>
@@ -74,14 +79,14 @@ export default function PrivacyPage() {
       </ul>
       <p>
         Xizmat qurilmangizning <strong>joylashuvini (GPS) so&apos;ramaydi va yig&apos;maydi</strong>. Viloyat va
-        tumanni o&apos;zingiz tanlaysiz. Tanlovingiz faqat qurilmangiz yoki brauzeringizda saqlanadi. Namoz vaqtlarini
-        hisoblash uchun faqat tanlangan tumanning koordinatalari serverga yuboriladi, ular sizning akkauntingiz
-        bilan bog&apos;lanmaydi. Kontaktlar ro&apos;yxati, rasm yoki boshqa shaxsiy fayllaringizga kirish talab
+        tumanni o&apos;zingiz tanlaysiz. Tanlovingiz nomi akkauntingizda ham saqlanadi (yuqoriga qarang). Namoz
+        vaqtlarini hisoblash uchun serverga faqat tanlangan tumanning koordinatalari yuboriladi, ular alohida
+        so&apos;rov sifatida yuboriladi va akkauntingiz bilan bog&apos;lanmaydi. Kontaktlar ro&apos;yxati, rasm yoki boshqa shaxsiy fayllaringizga kirish talab
         qilinmaydi.
       </p>
       <p>
         Quyidagilar <strong>faqat qurilmangiz yoki brauzeringizda</strong> saqlanadi va serverga yuborilmaydi:
-        tanlangan mavzu (yorug&apos; yoki qorong&apos;i), tanlangan hudud va tizimga
+        tanlangan mavzu (yorug&apos; yoki qorong&apos;i) va tizimga
         kirganingizni eslab turuvchi kirish kaliti.
       </p>
 
@@ -171,7 +176,7 @@ export default function PrivacyPage() {
         </li>
       </ul>
       <p>
-        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, ro&apos;za kunlaringiz, eslatma
+        O&apos;chirishda email manzilingiz, ismingiz, namoz belgilaringiz, ro&apos;za kunlaringiz, tanlagan hududingiz, eslatma
         sozlamalaringiz, namoz vaqtlaringiz va foydalanish sanalaringiz o&apos;chiriladi. Bu amalni qaytarib bo&apos;lmaydi. Tizimga kira olmasangiz,{" "}
         <a className={linkClass} href="mailto:support.praytime@gmail.com">
           support.praytime@gmail.com

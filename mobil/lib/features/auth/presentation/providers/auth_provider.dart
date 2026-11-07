@@ -16,8 +16,11 @@ class AuthUnauthenticated extends AuthState {
 }
 
 class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated(this.user);
+  const AuthAuthenticated(this.user, {this.isNewUser = false});
   final UserModel user;
+
+  /// True right after the account was created (the app then asks for the region).
+  final bool isNewUser;
 }
 
 class AuthNotifier extends AsyncNotifier<AuthState> {
@@ -35,10 +38,10 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   Future<void> signInWithGoogle() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final user = await _repository.signInWithGoogle();
-      return user == null
+      final result = await _repository.signInWithGoogle();
+      return result == null
           ? const AuthUnauthenticated()
-          : AuthAuthenticated(user);
+          : AuthAuthenticated(result.user, isNewUser: result.isNewUser);
     });
   }
 

@@ -22,6 +22,18 @@ class ProfileRepository {
     );
     return UserModel.fromJson(response.data!);
   }
+
+  /// Saves the viloyat / tuman on the account.
+  Future<UserModel> updateLocation({
+    required String region,
+    required String district,
+  }) async {
+    final response = await _client.patch<Map<String, dynamic>>(
+      ApiEndpoints.profile,
+      data: {'region': region, 'district': district},
+    );
+    return UserModel.fromJson(response.data!);
+  }
 }
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {

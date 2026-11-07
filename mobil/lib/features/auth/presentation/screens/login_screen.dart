@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/route_names.dart';
+import '../../../prayer_times/presentation/providers/region_selection_provider.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -16,8 +17,17 @@ class LoginScreen extends ConsumerWidget {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(next.error.toString())));
-      } else if (next.valueOrNull is AuthAuthenticated) {
-        context.go(RouteNames.home);
+      } else if (next.valueOrNull case final AuthAuthenticated signedIn) {
+        if (signedIn.isNewUser) {
+          // Registering: ask for the viloyat and tuman first.
+          context.go(RouteNames.registerLocation);
+        } else {
+          // Signing in: no questions; the account's saved location is applied.
+          ref
+              .read(regionSelectionProvider.notifier)
+              .adoptFromAccount(signedIn.user);
+          context.go(RouteNames.home);
+        }
       }
     });
 

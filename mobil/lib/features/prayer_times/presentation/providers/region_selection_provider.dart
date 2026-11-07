@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/data/uzbekistan_regions.dart';
 import '../../../../core/storage/local_storage_service.dart';
+import '../../../auth/data/models/user_model.dart';
+import '../../../profile/data/repositories/profile_repository.dart';
 
 class RegionSelection {
   const RegionSelection({
@@ -42,38 +46,69 @@ class RegionSelectionNotifier extends Notifier<RegionSelection> {
     );
   }
 
-  Future<void> setRegion(String regionName) async {
-    final firstDistrict = findRegion(regionName)?.districts.first;
-    if (firstDistrict == null) return;
-
+  Future<void> _applyLocally(String regionName, District district) async {
     final storage = ref.read(localStorageServiceProvider);
     await storage.setString(AppConstants.keySelectedRegion, regionName);
-    await storage.setString(
-      AppConstants.keySelectedDistrict,
-      firstDistrict.name,
-    );
+    await storage.setString(AppConstants.keySelectedDistrict, district.name);
 
     state = RegionSelection(
       regionName: regionName,
-      districtName: firstDistrict.name,
-      latitude: firstDistrict.latitude,
-      longitude: firstDistrict.longitude,
+      districtName: district.name,
+      latitude: district.latitude,
+      longitude: district.longitude,
     );
+  }
+
+  /// Saves the current choice on the account, without bothering the person if
+  /// that fails (offline): the choice is kept on the device in any case.
+  Future<void> _saveToAccountQuietly() async {
+    try {
+      await ref
+          .read(profileRepositoryProvider)
+          .updateLocation(
+            region: state.regionName,
+            district: state.districtName,
+          );
+    } catch (_) {}
+  }
+
+  Future<void> setRegion(String regionName) async {
+    final firstDistrict = findRegion(regionName)?.districts.first;
+    if (firstDistrict == null) return;
+    await _applyLocally(regionName, firstDistrict);
+    unawaited(_saveToAccountQuietly());
   }
 
   Future<void> setDistrict(String districtName) async {
     final district = findDistrict(state.regionName, districtName);
     if (district == null) return;
+    await _applyLocally(state.regionName, district);
+    unawaited(_saveToAccountQuietly());
+  }
 
-    final storage = ref.read(localStorageServiceProvider);
-    await storage.setString(AppConstants.keySelectedDistrict, districtName);
+  /// Sets region and district together and saves them on the account. Unlike
+  /// the pickers on the home screen it reports a failure to save (used when
+  /// registering, where the choice must reach the account).
+  Future<void> setSelection(String regionName, String districtName) async {
+    final district = findDistrict(regionName, districtName);
+    if (district == null) return;
+    await _applyLocally(regionName, district);
+    await ref
+        .read(profileRepositoryProvider)
+        .updateLocation(region: regionName, district: district.name);
+  }
 
-    state = RegionSelection(
-      regionName: state.regionName,
-      districtName: district.name,
-      latitude: district.latitude,
-      longitude: district.longitude,
-    );
+  /// After an existing account signs in: the location saved on the account
+  /// wins on this device; an account without one gets this device's choice.
+  Future<void> adoptFromAccount(UserModel user) async {
+    if (user.hasLocation) {
+      final district = findDistrict(user.region!, user.district!);
+      if (district != null) {
+        await _applyLocally(user.region!, district);
+        return;
+      }
+    }
+    await _saveToAccountQuietly();
   }
 }
 
