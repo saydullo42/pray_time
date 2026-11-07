@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocation } from "@/lib/location-context";
-import { UZBEKISTAN_REGIONS, districtLabel, findRegion } from "@/lib/uzbekistan-regions";
+import { UZBEKISTAN_REGIONS, districtLabel, findRegion, sortAlphabetically } from "@/lib/uzbekistan-regions";
 
 export function LocationSelector() {
   const { regionName, districtName, setRegion, setDistrict } = useLocation();
@@ -36,7 +36,7 @@ export function LocationSelector() {
       {picker === "region" && (
         <PickerModal
           title="Viloyatni tanlang"
-          items={UZBEKISTAN_REGIONS.map((r) => r.name)}
+          items={sortAlphabetically(UZBEKISTAN_REGIONS.map((r) => r.name))}
           selected={regionName}
           onSelect={(name) => {
             setRegion(name);
@@ -48,7 +48,7 @@ export function LocationSelector() {
       {picker === "district" && (
         <PickerModal
           title="Tumanni tanlang"
-          items={districts.map((d) => d.name)}
+          items={sortAlphabetically(districts.map((d) => d.name))}
           labelFor={districtLabel}
           selected={districtName}
           onSelect={(name) => {

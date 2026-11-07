@@ -16,7 +16,7 @@ class LocationSelectorButtons extends ConsumerWidget {
     final picked = await showRegionPickerSheet(
       context,
       title: 'Viloyatni tanlang',
-      items: [for (final r in uzbekistanRegions) r.name],
+      items: sortedAlphabetically([for (final r in uzbekistanRegions) r.name]),
       selected: selection.regionName,
     );
     if (picked != null) {
@@ -30,7 +30,7 @@ class LocationSelectorButtons extends ConsumerWidget {
     final picked = await showRegionPickerSheet(
       context,
       title: 'Tumanni tanlang',
-      items: [for (final d in districts) d.name],
+      items: sortedAlphabetically([for (final d in districts) d.name]),
       selected: selection.districtName,
     );
     if (picked != null) {

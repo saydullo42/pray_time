@@ -257,3 +257,11 @@ String districtLabel(String name) {
   if (name.endsWith('shahri') || name.endsWith('tumani')) return name;
   return '$name tumani';
 }
+
+/// Sorts names alphabetically for the pickers. Apostrophes (o', g', Bo'ka) are
+/// ignored, so "Bo'ka" sits between "Bekobod" and "Chinoz" like in a dictionary.
+List<String> sortedAlphabetically(Iterable<String> names) {
+  String key(String name) =>
+      name.toLowerCase().replaceAll(RegExp("['\u02bb\u02bc\u2018\u2019`]"), '');
+  return [...names]..sort((a, b) => key(a).compareTo(key(b)));
+}

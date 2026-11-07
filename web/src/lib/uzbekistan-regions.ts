@@ -284,3 +284,13 @@ export function districtLabel(name: string): string {
   if (name.endsWith("shahri") || name.endsWith("tumani")) return name;
   return `${name} tumani`;
 }
+
+/** Sorts names alphabetically for the pickers. Apostrophes (o', g', Bo'ka) are
+ * ignored, so "Bo'ka" sits between "Bekobod" and "Chinoz" like in a dictionary. */
+export function sortAlphabetically(names: string[]): string[] {
+  const key = (name: string) => name.toLowerCase().replace(/['\u02bb\u02bc\u2018\u2019`]/g, "");
+  return [...names].sort((a, b) => {
+    const [ka, kb] = [key(a), key(b)];
+    return ka < kb ? -1 : ka > kb ? 1 : 0;
+  });
+}
