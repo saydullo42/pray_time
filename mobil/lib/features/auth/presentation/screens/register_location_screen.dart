@@ -45,6 +45,7 @@ class _RegisterLocationScreenState
       context,
       title: 'Tumanni tanlang',
       items: sortedAlphabetically([for (final d in districts) d.name]),
+      labelFor: districtLabel,
       selected: _district,
     );
     if (picked != null) setState(() => _district = picked);
@@ -113,7 +114,9 @@ class _RegisterLocationScreenState
                 ),
                 const SizedBox(height: 12),
                 _ChoiceButton(
-                  label: _district ?? 'Tumanni tanlang',
+                  label: _district == null
+                      ? 'Tumanni tanlang'
+                      : districtLabel(_district!),
                   chosen: _district != null,
                   onPressed: (_saving || _region == null)
                       ? null

@@ -31,6 +31,7 @@ class LocationSelectorButtons extends ConsumerWidget {
       context,
       title: 'Tumanni tanlang',
       items: sortedAlphabetically([for (final d in districts) d.name]),
+      labelFor: districtLabel,
       selected: selection.districtName,
     );
     if (picked != null) {

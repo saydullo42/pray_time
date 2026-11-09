@@ -201,7 +201,7 @@ void main() {
 
       await tester.tap(find.text('Tumanni tanlang').first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Baliqchi'));
+      await tester.tap(find.text('Baliqchi tumani'));
       await tester.pumpAndSettle();
       expect(continueButton(tester).onPressed, isNotNull);
 
@@ -231,7 +231,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Tumanni tanlang').first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Baliqchi'));
+      await tester.tap(find.text('Baliqchi tumani'));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Andijon viloyati').first);
@@ -253,7 +253,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Tumanni tanlang').first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Baliqchi'));
+      await tester.tap(find.text('Baliqchi tumani'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Davom etish'));
       await tester.pumpAndSettle();

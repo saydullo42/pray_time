@@ -7,6 +7,7 @@ Future<String?> showRegionPickerSheet(
   required String title,
   required List<String> items,
   required String? selected,
+  String Function(String name)? labelFor,
 }) {
   return showModalBottomSheet<String>(
     context: context,
@@ -14,8 +15,12 @@ Future<String?> showRegionPickerSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
-    builder: (context) =>
-        _RegionPickerSheet(title: title, items: items, selected: selected),
+    builder: (context) => _RegionPickerSheet(
+      title: title,
+      items: items,
+      selected: selected,
+      labelFor: labelFor ?? (name) => name,
+    ),
   );
 }
 
@@ -24,11 +29,15 @@ class _RegionPickerSheet extends StatelessWidget {
     required this.title,
     required this.items,
     required this.selected,
+    required this.labelFor,
   });
 
   final String title;
   final List<String> items;
   final String? selected;
+
+  /// The text shown for an item (the item itself is what the sheet returns).
+  final String Function(String name) labelFor;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +63,7 @@ class _RegionPickerSheet extends StatelessWidget {
                   final isSelected = name == selected;
                   return ListTile(
                     title: Text(
-                      name,
+                      labelFor(name),
                       style: TextStyle(
                         fontWeight: isSelected
                             ? FontWeight.w700
