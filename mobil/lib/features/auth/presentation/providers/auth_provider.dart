@@ -21,6 +21,11 @@ class AuthAuthenticated extends AuthState {
 
   /// True right after the account was created (the app then asks for the region).
   final bool isNewUser;
+
+  /// The viloyat and tuman are asked right after sign-in when the account has
+  /// none saved: a brand-new account, or one made on the website (which does
+  /// not save a location), so the saved location is always applied afterwards.
+  bool get needsLocation => isNewUser || !user.hasLocation;
 }
 
 class AuthNotifier extends AsyncNotifier<AuthState> {

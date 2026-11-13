@@ -18,11 +18,11 @@ class LoginScreen extends ConsumerWidget {
           ..hideCurrentSnackBar()
           ..showSnackBar(SnackBar(content: Text(next.error.toString())));
       } else if (next.valueOrNull case final AuthAuthenticated signedIn) {
-        if (signedIn.isNewUser) {
-          // Registering: ask for the viloyat and tuman first.
+        if (signedIn.needsLocation) {
+          // No location on the account yet: ask for the viloyat and tuman.
           context.go(RouteNames.registerLocation);
         } else {
-          // Signing in: no questions; the account's saved location is applied.
+          // The account has a location: no questions; it is applied.
           ref
               .read(regionSelectionProvider.notifier)
               .adoptFromAccount(signedIn.user);
