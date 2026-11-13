@@ -10,14 +10,25 @@ class NotificationSettingsNotifier
     return ref.watch(notificationSettingsRepositoryProvider).get();
   }
 
-  Future<void> updateSettings(NotificationSettingsModel settings) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      await ref.read(notificationSettingsRepositoryProvider).save(settings);
-      await _ensureReminderPermissions();
-      await ref.read(reminderSyncProvider).sync(settings: settings);
-      return settings;
+  // Saves run one after another, in the order the person made the changes.
+  Future<void> _saving = Future.value();
+
+  /// Shows the new settings at once (no loading screen, so the buttons and
+  /// switches stay where they are) and saves them and reschedules the
+  /// reminders in the background. If that fails the screen shows the error.
+  Future<void> updateSettings(NotificationSettingsModel settings) {
+    state = AsyncData(settings);
+    final save = _saving.then((_) async {
+      try {
+        await ref.read(notificationSettingsRepositoryProvider).save(settings);
+        await _ensureReminderPermissions();
+        await ref.read(reminderSyncProvider).sync(settings: settings);
+      } catch (error, stack) {
+        state = AsyncError(error, stack);
+      }
     });
+    _saving = save;
+    return save;
   }
 
   /// Reminders can't show without the notification permission (Android 13+).
