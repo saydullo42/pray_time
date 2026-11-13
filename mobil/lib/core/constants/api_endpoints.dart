@@ -2,9 +2,14 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   /// Base URL of the Django backend. Override via --dart-define=BACKEND_BASE_URL=...
+  /// A release build with no override uses the production server (so a build
+  /// made without the flag can't point at the emulator's localhost); a debug
+  /// run uses the Android emulator's address of the computer.
   static const String backendBaseUrl = String.fromEnvironment(
     'BACKEND_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8000/api/v1',
+    defaultValue: bool.fromEnvironment('dart.vm.product')
+        ? 'https://api.pray-time.uz/api/v1'
+        : 'http://10.0.2.2:8000/api/v1',
   );
 
   // Auth ("Continue with Google")
