@@ -13,7 +13,9 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
     return switch (stored) {
       'light' => ThemeMode.light,
       'dark' => ThemeMode.dark,
-      _ => ThemeMode.system,
+      'system' => ThemeMode.system,
+      // Nothing chosen yet (a fresh install): dark is the app's default.
+      _ => ThemeMode.dark,
     };
   }
 
