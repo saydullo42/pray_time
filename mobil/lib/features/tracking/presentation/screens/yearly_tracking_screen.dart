@@ -530,8 +530,12 @@ class _RozaDayDialogState extends ConsumerState<_RozaDayDialog> {
                   scale: 1.6,
                   child: Checkbox(
                     value: _done,
-                    activeColor: const Color(0xFF2E7D32),
-                    checkColor: Colors.white,
+                    activeColor: context.isLightTheme
+                        ? context.accentFill
+                        : const Color(0xFF2E7D32),
+                    checkColor: context.isLightTheme
+                        ? Colors.black
+                        : Colors.white,
                     onChanged: (value) =>
                         setState(() => _done = value ?? false),
                   ),
@@ -546,7 +550,7 @@ class _RozaDayDialogState extends ConsumerState<_RozaDayDialog> {
                 label: 'Saqlash',
                 onPressed: _save,
                 fontSize: 20,
-                backgroundColor: const Color(0xFF396E0D),
+                backgroundColor: context.accentFill,
                 foregroundColor: Colors.black,
               ),
             ),
