@@ -12,6 +12,7 @@ import '../../../prayer_times/presentation/providers/prayer_times_provider.dart'
 import '../../../prayer_times/presentation/widgets/hijri_gregorian_date_header.dart';
 import '../../../prayer_times/presentation/widgets/hijri_yearly_calendar_dialog.dart';
 import '../../../prayer_times/presentation/widgets/location_selector_buttons.dart';
+import '../../../prayer_times/presentation/widgets/prayer_time_picker.dart';
 import '../../../tracking/presentation/providers/tracking_provider.dart';
 import '../../../tracking/presentation/utils/completion_color.dart';
 import '../../../tracking/presentation/utils/date_utils.dart';
@@ -170,60 +171,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     if (!mounted) return;
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: initial,
-      helpText: '',
-      builder: (context, child) {
-        final theme = Theme.of(context);
-        return Theme(
-          data: theme.copyWith(
-            timePickerTheme: theme.timePickerTheme.copyWith(
-              cancelButtonStyle: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF4CAF17),
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              confirmButtonStyle: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF4CAF17),
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              dialHandColor: const Color(0xFF396E0D),
-              hourMinuteColor: WidgetStateColor.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return const Color(0xFF396E0D);
-                }
-                return theme.colorScheme.onSurface.withValues(alpha: 0.12);
-              }),
-              dialTextColor: WidgetStateColor.resolveWith(
-                (states) => theme.colorScheme.onSurface,
-              ),
-            ),
-          ),
-          child: Stack(
-            children: [
-              child!,
-              Positioned(
-                top: 130,
-                left: 16,
-                right: 16,
-                child: IgnorePointer(
-                  child: Text(
-                    prayer,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+    final picked = await showPrayerTimePicker(
+      context,
+      prayer: prayer,
+      initial: existing == null ? null : initial,
     );
     if (picked == null) return;
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../data/models/custom_prayer_time_model.dart';
 import '../../data/repositories/prayer_times_repository.dart';
+import '../widgets/prayer_time_picker.dart';
 
 /// Lets the user manually override any of the five prayer times, e.g. to
 /// follow their local mosque's schedule instead of the calculated times.
@@ -27,9 +28,10 @@ class _CustomPrayerTimeScreenState
   bool _isSaving = false;
 
   Future<void> _pickTime(String prayer) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: _selected[prayer] ?? TimeOfDay.now(),
+    final picked = await showPrayerTimePicker(
+      context,
+      prayer: prayer,
+      initial: _selected[prayer],
     );
     if (picked != null) setState(() => _selected[prayer] = picked);
   }
