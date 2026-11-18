@@ -14,6 +14,10 @@ class AppColors {
   static const Color lightSurfaceStrong = Color(0xFFADAFA9);
   static const Color lightOnSurface = Color(0xFF1A1C1A);
 
+  // Muted text (weekday names, prayer names), as on the website
+  static const Color lightMuted = Color(0xFF5B655F);
+  static const Color darkMuted = Color(0xFF9FB0A7);
+
   // Dark theme
   static const Color darkBackground = Color(0xFF0F1512);
   static const Color darkSurface = Color(0xFF17201B);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../notifications/presentation/providers/reminder_sync_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../prayer_times/data/models/custom_prayer_time_model.dart';
@@ -437,7 +438,6 @@ class _PrayerTimesBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final entries = <(String, DateTime)>[
       ('Bomdod', prayerTime.fajr),
       ('Quyosh', prayerTime.sunrise),
@@ -452,7 +452,7 @@ class _PrayerTimesBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
-        border: Border.all(color: scheme.outline),
+        border: Border.all(color: context.softOutline),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -467,7 +467,9 @@ class _PrayerTimesBar extends StatelessWidget {
                     child: Text(
                       entry.$1,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: context.mutedText,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -498,7 +500,6 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheme = Theme.of(context).colorScheme;
     final overrides =
         ref.watch(customPrayerTimeOverridesProvider).valueOrNull ??
         const CustomPrayerTimeModel();
@@ -518,7 +519,7 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
-        border: Border.all(color: scheme.outline),
+        border: Border.all(color: context.softOutline),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -536,7 +537,9 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
                       child: Text(
                         entry.$1,
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.titleSmall,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: context.mutedText,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 4),

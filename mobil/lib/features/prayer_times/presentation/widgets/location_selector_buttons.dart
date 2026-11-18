@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/data/uzbekistan_regions.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../providers/region_selection_provider.dart';
 import 'region_picker_sheet.dart';
 
@@ -89,7 +90,7 @@ class _SelectorButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
-          border: Border.all(color: scheme.outline),
+          border: Border.all(color: context.softOutline),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../constants/app_colors.dart';
+import '../theme/theme_colors.dart';
 
 const _danger = Color(0xFFC62828);
 const _green = Color(0xFF2E7D32);
@@ -67,6 +69,7 @@ class _PillButton extends StatelessWidget {
         minimumSize: const Size.fromHeight(40),
         padding: const EdgeInsets.symmetric(horizontal: 8),
         foregroundColor: color,
+        backgroundColor: context.isLightTheme ? AppColors.lightSurface : null,
         side: BorderSide(color: color),
         shape: const StadiumBorder(),
         textStyle: TextStyle(

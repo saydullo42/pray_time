@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../utils/date_utils.dart';
 
 /// The month calendar, styled like the one on the website: a framed card with a
@@ -32,9 +33,6 @@ class TrackingCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final muted = scheme.onSurfaceVariant;
-
     final calendar = LayoutBuilder(
       builder: (context, constraints) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -62,12 +60,12 @@ class TrackingCalendar extends StatelessWidget {
               weekdayStyle: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
-                color: muted,
+                color: context.mutedText,
               ),
               weekendStyle: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
-                color: muted,
+                color: context.mutedText,
               ),
             ),
             calendarStyle: const CalendarStyle(outsideDaysVisible: false),
@@ -95,7 +93,7 @@ class TrackingCalendar extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
-        border: Border.all(color: scheme.outline),
+        border: Border.all(color: context.softOutline),
         borderRadius: BorderRadius.circular(16),
       ),
       child: calendar,

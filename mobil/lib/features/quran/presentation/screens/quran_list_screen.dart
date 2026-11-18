@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routing/route_names.dart';
+import '../../../../core/theme/theme_colors.dart';
 
 class QuranListScreen extends StatelessWidget {
   const QuranListScreen({super.key});
@@ -10,8 +12,13 @@ class QuranListScreen extends StatelessWidget {
     final buttonStyle = OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(64),
       side: BorderSide.none,
-      foregroundColor: Colors.white,
-      backgroundColor: const Color(0xFF004225),
+      // Light theme: like the cards of the Duolar section; dark: dark green.
+      foregroundColor: context.isLightTheme
+          ? AppColors.lightOnSurface
+          : Colors.white,
+      backgroundColor: context.isLightTheme
+          ? AppColors.lightSurface
+          : const Color(0xFF004225),
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     );
 

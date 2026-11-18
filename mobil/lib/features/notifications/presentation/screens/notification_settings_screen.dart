@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../data/models/reminder_sound.dart';
@@ -129,10 +130,18 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 const SizedBox(width: 16),
                 Switch(
                   value: settings.useCustomTimes,
-                  activeThumbColor: const Color(0xFF396E0D),
-                  activeTrackColor: const Color(0xFFA5D493),
-                  inactiveThumbColor: const Color(0xFF396E0D),
-                  inactiveTrackColor: const Color(0xFFA5D493),
+                  activeThumbColor: context.isLightTheme
+                      ? const Color(0xFF7D807A)
+                      : const Color(0xFF396E0D),
+                  activeTrackColor: context.isLightTheme
+                      ? const Color(0xFFC4C6C0)
+                      : const Color(0xFFA5D493),
+                  inactiveThumbColor: context.isLightTheme
+                      ? const Color(0xFF7D807A)
+                      : const Color(0xFF396E0D),
+                  inactiveTrackColor: context.isLightTheme
+                      ? const Color(0xFFC4C6C0)
+                      : const Color(0xFFA5D493),
                   onChanged: (useCustomTimes) => ref
                       .read(notificationSettingsProvider.notifier)
                       .updateSettings(
@@ -172,7 +181,12 @@ class NotificationSettingsScreen extends ConsumerWidget {
               SwitchListTile(
                 title: Text(prayer),
                 value: settings.enabledPrayers.contains(prayer),
-                activeThumbColor: const Color(0xFF396E0D),
+                activeThumbColor: context.isLightTheme
+                    ? const Color(0xFF7D807A)
+                    : const Color(0xFF396E0D),
+                activeTrackColor: context.isLightTheme
+                    ? const Color(0xFFC4C6C0)
+                    : null,
                 onChanged: (enabled) {
                   final updated = Set<String>.from(settings.enabledPrayers);
                   enabled ? updated.add(prayer) : updated.remove(prayer);
@@ -204,7 +218,14 @@ class NotificationSettingsScreen extends ConsumerWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF396E0D),
                 ),
-                child: Text(findReminderSound(settings.reminderSound).label),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(findReminderSound(settings.reminderSound).label),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.keyboard_arrow_down, size: 20),
+                  ],
+                ),
               ),
             ),
           ],

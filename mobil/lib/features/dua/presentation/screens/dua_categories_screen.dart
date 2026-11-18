@@ -28,7 +28,8 @@ class DuaCategoriesScreen extends ConsumerWidget {
             final category = categories[index];
             return Card(
               child: ListTile(
-                leading: const Icon(Icons.menu_book_outlined),
+                // No icon, but the same space, so the names stay where they were.
+                leading: const SizedBox(width: 24),
                 title: Text(category.name),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push(

@@ -9,6 +9,7 @@ import '../../../../core/widgets/mark_all_buttons.dart';
 import '../../data/repositories/tracking_repository.dart';
 import '../providers/roza_provider.dart';
 import '../providers/tracking_provider.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../utils/completion_color.dart';
 import '../utils/date_utils.dart';
 import '../widgets/daily_checklist_sheet.dart';
@@ -590,6 +591,8 @@ class _MiniMonthCalendar extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
+          // The same fill as the month calendar's card.
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isCurrentMonth ? _currentGreen : scheme.outlineVariant,
@@ -900,7 +903,7 @@ class _YearPickerSheet extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: isSelected
                           ? BoxDecoration(
-                              color: const Color(0xFF396E0D),
+                              color: context.accentFill,
                               borderRadius: BorderRadius.circular(10),
                             )
                           : null,
