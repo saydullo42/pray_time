@@ -140,6 +140,9 @@ class LocalNotificationService {
           _channelName,
           importance: Importance.high,
           priority: Priority.high,
+          // Shown in full on the lock screen too (not "content hidden").
+          visibility: NotificationVisibility.public,
+          category: AndroidNotificationCategory.reminder,
           // A long sound can be silenced: removing the notification stops it.
           actions: findReminderSound(reminderSoundId).hasStopButton
               ? const [
