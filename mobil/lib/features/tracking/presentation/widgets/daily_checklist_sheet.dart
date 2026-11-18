@@ -5,6 +5,8 @@ import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/date_converter.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/loading_indicator.dart';
+import '../../../notifications/presentation/providers/notification_settings_provider.dart';
+import '../../../prayer_times/data/models/custom_times_apply.dart';
 import '../../../prayer_times/data/models/prayer_time_model.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_provider.dart';
 import '../providers/tracking_provider.dart';
@@ -69,7 +71,15 @@ class _DailyChecklistSheetState extends ConsumerState<DailyChecklistSheet> {
         widget.date.day == now.day;
     if (isToday) {
       try {
-        times = await ref.read(todayPrayerTimesProvider.future);
+        var chosen = await ref.read(todayPrayerTimesProvider.future);
+        // The times the person chose for their reminders: table 2 (their own
+        // times) when it's selected, otherwise the computed ones.
+        final settings = await ref.read(notificationSettingsProvider.future);
+        if (settings.useCustomTimes) {
+          final own = await ref.read(customPrayerTimeOverridesProvider.future);
+          chosen = chosen.withCustomTimes(own);
+        }
+        times = chosen;
       } catch (_) {}
     }
     if (mounted) {

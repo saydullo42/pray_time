@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/storage/local_storage_service.dart';
-import '../../../prayer_times/data/models/custom_prayer_time_model.dart';
+import '../../../prayer_times/data/models/custom_times_apply.dart';
 import '../../../prayer_times/data/models/prayer_time_model.dart';
 import '../../../prayer_times/data/repositories/prayer_times_repository.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_provider.dart';
@@ -123,7 +123,7 @@ class ReminderSync {
       final days =
           times
               .where((t) => !t.date.isBefore(first) && !t.date.isAfter(last))
-              .map((t) => overrides == null ? t : _applyOverrides(t, overrides))
+              .map((t) => overrides == null ? t : t.withCustomTimes(overrides))
               .toList()
             ..sort((a, b) => a.date.compareTo(b.date));
 
@@ -131,34 +131,6 @@ class ReminderSync {
     } catch (error) {
       debugPrint('Reminder sync skipped: $error');
     }
-  }
-
-  /// Merges table-2 (manual) overrides onto the computed times, falling
-  /// back to the computed time for any field the user hasn't overridden.
-  PrayerTimeModel _applyOverrides(
-    PrayerTimeModel base,
-    CustomPrayerTimeModel overrides,
-  ) {
-    DateTime? parse(String? hhmm) {
-      if (hhmm == null) return null;
-      final parts = hhmm.split(':');
-      return DateTime(
-        base.date.year,
-        base.date.month,
-        base.date.day,
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-      );
-    }
-
-    return base.copyWith(
-      fajr: parse(overrides.fajr),
-      dhuhr: parse(overrides.dhuhr),
-      asr: parse(overrides.asr),
-      maghrib: parse(overrides.maghrib),
-      isha: parse(overrides.isha),
-      isCustom: overrides.hasAnyOverride,
-    );
   }
 }
 
