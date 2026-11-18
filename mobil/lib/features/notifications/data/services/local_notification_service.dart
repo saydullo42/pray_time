@@ -5,6 +5,12 @@ import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 import '../models/reminder_sound.dart';
 
+/// Runs when the "To'xtatish" button of a reminder is tapped. The button
+/// removes the notification, which makes Android stop its sound; nothing else
+/// has to happen here, but the plugin needs a callback for such buttons.
+@pragma('vm:entry-point')
+void reminderActionTapped(NotificationResponse response) {}
+
 /// Thin wrapper around flutter_local_notifications, responsible only for
 /// initialization and scheduling a single notification. Deciding *which*
 /// notifications to schedule (based on prayer times + user settings) lives
@@ -36,6 +42,7 @@ class LocalNotificationService {
     const iosSettings = DarwinInitializationSettings();
     await _plugin.initialize(
       const InitializationSettings(android: androidSettings, iOS: iosSettings),
+      onDidReceiveBackgroundNotificationResponse: reminderActionTapped,
     );
 
     final androidPlugin = _plugin
@@ -133,6 +140,16 @@ class LocalNotificationService {
           _channelName,
           importance: Importance.high,
           priority: Priority.high,
+          // A long sound can be silenced: removing the notification stops it.
+          actions: findReminderSound(reminderSoundId).hasStopButton
+              ? const [
+                  AndroidNotificationAction(
+                    'stop',
+                    "To'xtatish",
+                    cancelNotification: true,
+                  ),
+                ]
+              : null,
         ),
         iOS: DarwinNotificationDetails(sound: '$reminderSoundId.wav'),
       ),

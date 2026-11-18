@@ -7,11 +7,21 @@ class ReminderSound {
     required this.id,
     required this.label,
     this.extension = 'wav',
+    this.seconds = 3,
   });
 
   final String id;
   final String label;
   final String extension;
+
+  /// Length of the sound; a long one gets a "To'xtatish" button on the
+  /// reminder so it can be silenced.
+  final int seconds;
+
+  /// Sounds longer than this get the stop button.
+  static const stopButtonAfterSeconds = 10;
+
+  bool get hasStopButton => seconds > stopButtonAfterSeconds;
 
   String get assetPath => 'assets/sounds/$id.$extension';
 }
@@ -26,6 +36,7 @@ const reminderSounds = <ReminderSound>[
     id: 'allohning_99_ismi',
     label: 'Allohning 99 ismi',
     extension: 'mp3',
+    seconds: 240,
   ),
 ];
 
