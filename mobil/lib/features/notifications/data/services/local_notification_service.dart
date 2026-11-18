@@ -19,7 +19,13 @@ class LocalNotificationService {
   /// Android notification channel sounds are fixed once created, so each
   /// selectable [ReminderSound] gets its own channel; scheduling just picks
   /// the channel matching the user's current choice.
-  static String _channelId(String soundId) => 'prayer_reminders_$soundId';
+  ///
+  /// The `_v2` channels replace the first ones, which release builds created
+  /// with a sound that had been stripped from the app (so they stayed silent
+  /// and Android never lets a channel's sound be changed afterwards).
+  static String _channelId(String soundId) => 'prayer_reminders_v2_$soundId';
+
+  static String _oldChannelId(String soundId) => 'prayer_reminders_$soundId';
 
   Future<void> init() async {
     tz_data.initializeTimeZones();
@@ -37,6 +43,7 @@ class LocalNotificationService {
           AndroidFlutterLocalNotificationsPlugin
         >();
     for (final sound in reminderSounds) {
+      await androidPlugin?.deleteNotificationChannel(_oldChannelId(sound.id));
       await androidPlugin?.createNotificationChannel(
         AndroidNotificationChannel(
           _channelId(sound.id),
