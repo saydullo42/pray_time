@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
@@ -59,6 +60,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 label: 'Saqlash',
                 isLoading: profileAsync.isLoading,
                 onPressed: _save,
+                // Dark theme: green text on a dark fill.
+                backgroundColor: context.isLightTheme
+                    ? null
+                    : const Color(0xFF1D2A22),
+                foregroundColor: context.isLightTheme
+                    ? null
+                    : const Color(0xFF4CAF17),
               ),
             ],
           ),
