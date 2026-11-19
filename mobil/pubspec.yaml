@@ -149,3 +149,7 @@ flutter:
     - family: NotoNaskhArabic
       fonts:
         - asset: assets/fonts/NotoNaskhArabic-Regular.ttf
+    # The website's sans font (variable weight), used for the prayer times.
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist.ttf

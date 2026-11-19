@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../notifications/presentation/providers/reminder_sync_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/theme/prayer_time_style.dart';
 import '../../../../core/theme/theme_colors.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/loading_indicator.dart';
@@ -429,7 +430,7 @@ class _PrayerTimesBar extends StatelessWidget {
                     child: Text(
                       DateFormat.Hm().format(entry.$2),
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: prayerTimeStyle(context),
                     ),
                   ),
                 ],
@@ -499,7 +500,7 @@ class _ManualPrayerTimesBar extends ConsumerWidget {
                       child: Text(
                         entry.$2,
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: prayerTimeStyle(context),
                       ),
                     ),
                   ],
