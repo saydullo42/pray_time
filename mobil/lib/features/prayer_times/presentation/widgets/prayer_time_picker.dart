@@ -5,12 +5,17 @@ import 'package:flutter/material.dart';
 List<int> allowedHours(String prayer) =>
     List.generate(12, (i) => prayer == 'Bomdod' ? i : 12 + i);
 
-/// [t] moved into [prayer]'s hours (e.g. an old 17:45 for Bomdod becomes 05:45),
-/// keeping the minutes.
+/// The minutes that can be chosen: every five, 00 to 55.
+const allowedMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+
+/// [t] moved into [prayer]'s hours (an old 17:45 for Bomdod becomes 05:45) and
+/// its minutes rounded to the nearest five (05:47 becomes 05:45).
 TimeOfDay fitToPrayer(String prayer, TimeOfDay t) {
-  if (allowedHours(prayer).contains(t.hour)) return t;
-  final hour = prayer == 'Bomdod' ? t.hour % 12 : 12 + t.hour % 12;
-  return TimeOfDay(hour: hour, minute: t.minute);
+  final hour = allowedHours(prayer).contains(t.hour)
+      ? t.hour
+      : (prayer == 'Bomdod' ? t.hour % 12 : 12 + t.hour % 12);
+  final minute = ((t.minute / 5).round() * 5).clamp(0, 55);
+  return TimeOfDay(hour: hour, minute: minute);
 }
 
 const _defaultTimes = {
@@ -22,7 +27,8 @@ const _defaultTimes = {
 };
 
 /// Asks for [prayer]'s time with an hour list limited to its half of the day
-/// (see [allowedHours]) and the minutes 00-59. Returns null if cancelled.
+/// (see [allowedHours]) and the minutes in fives ([allowedMinutes]). Returns
+/// null if cancelled.
 Future<TimeOfDay?> showPrayerTimePicker(
   BuildContext context, {
   required String prayer,
@@ -54,11 +60,11 @@ class _PrayerTimeDialogState extends State<_PrayerTimeDialog> {
 
   late final List<int> _hours = allowedHours(widget.prayer);
   late int _hourIndex = _hours.indexOf(widget.initial.hour);
-  late int _minute = widget.initial.minute;
+  late int _minuteIndex = allowedMinutes.indexOf(widget.initial.minute);
   late final FixedExtentScrollController _hourController =
       FixedExtentScrollController(initialItem: _hourIndex);
   late final FixedExtentScrollController _minuteController =
-      FixedExtentScrollController(initialItem: _minute);
+      FixedExtentScrollController(initialItem: _minuteIndex);
 
   @override
   void dispose() {
@@ -144,10 +150,10 @@ class _PrayerTimeDialogState extends State<_PrayerTimeDialog> {
           const Text(':', style: TextStyle(fontSize: 34)),
           _wheel(
             controller: _minuteController,
-            count: 60,
-            label: (i) => i.toString().padLeft(2, '0'),
-            selected: _minute,
-            onChanged: (i) => _minute = i,
+            count: allowedMinutes.length,
+            label: (i) => allowedMinutes[i].toString().padLeft(2, '0'),
+            selected: _minuteIndex,
+            onChanged: (i) => _minuteIndex = i,
             loop: true,
           ),
         ],
@@ -162,7 +168,10 @@ class _PrayerTimeDialogState extends State<_PrayerTimeDialog> {
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(
-            TimeOfDay(hour: _hours[_hourIndex], minute: _minute % 60),
+            TimeOfDay(
+              hour: _hours[_hourIndex],
+              minute: allowedMinutes[_minuteIndex],
+            ),
           ),
           child: const Text(
             'OK',

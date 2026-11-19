@@ -10,6 +10,25 @@ void main() {
     }
   });
 
+  test('the minutes are every five, 00 to 55', () {
+    expect(allowedMinutes, [for (var m = 0; m < 60; m += 5) m]);
+  });
+
+  test('an old time with other minutes is rounded to the nearest five', () {
+    expect(
+      fitToPrayer('Asr', const TimeOfDay(hour: 16, minute: 47)),
+      const TimeOfDay(hour: 16, minute: 45),
+    );
+    expect(
+      fitToPrayer('Asr', const TimeOfDay(hour: 16, minute: 48)),
+      const TimeOfDay(hour: 16, minute: 50),
+    );
+    expect(
+      fitToPrayer('Asr', const TimeOfDay(hour: 16, minute: 58)),
+      const TimeOfDay(hour: 16, minute: 55),
+    );
+  });
+
   test('an old time outside the prayer\'s hours is moved into them', () {
     expect(
       fitToPrayer('Bomdod', const TimeOfDay(hour: 17, minute: 45)),
@@ -122,5 +141,33 @@ void main() {
     await tester.tap(find.text('Bekor qilish'));
     await tester.pumpAndSettle();
     expect(result, isNull);
+  });
+
+  testWidgets('one step of the minute wheel is five minutes', (tester) async {
+    TimeOfDay? result;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => ElevatedButton(
+            onPressed: () async => result = await showPrayerTimePicker(
+              context,
+              prayer: 'Asr',
+              initial: const TimeOfDay(hour: 16, minute: 0),
+            ),
+            child: const Text('open'),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.drag(
+      find.byType(ListWheelScrollView).last,
+      const Offset(0, -56),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    expect(result, const TimeOfDay(hour: 16, minute: 5));
   });
 }
